@@ -10,7 +10,7 @@ function ChangeBackground() {
 }
 function LoadBlogs() {
     fetch("./Dataset/Blogs/bloglist.json")
-        .then((response) => response.json())
+        .then((response) => { return response.json(); } )
         .then((data) => BlogList = data);
     console.log(BlogList);
 }
