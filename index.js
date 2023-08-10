@@ -1,5 +1,5 @@
 let BackgroundList = ["1.webp", "2.webp"];
-BlogNameList = null;
+BlogList = null;
 let LastId = -1;
 function ChangeBackground() {
     var id = LastId;
@@ -9,24 +9,10 @@ function ChangeBackground() {
     document.body.background = "./Backgrounds/" + BackgroundList[id];
 }
 function LoadBlogs() {
-    $.ajax({
-        url: "./Dataset/Blogs", //目标目录路径
-        success: function (data) {
-        $(data).find("a:contains(.html)").each(function () {
-                let tmp = $(this).attr("href");
-                let idx = tmp.lastIndexOf('/');
-                tmp = tmp.slice(idx + 1, tmp.length);
-                BlogNameList.push(tmp);
-            });
-            var reg = /.*(?=\.html)/;
-            
-            var pathList = "";
-            for (path in BlogNameList) {
-                pathList.append(path + "\n");
-            }
-            alert(pathList);
-        }
-    });
+    fetch("./Dataset/Blogs/bloglist.json")
+        .then((response) => response.json())
+        .then((data) => BlogList = data);
+    console.log(BlogList);
 }
 
 function ShowBlogList() {

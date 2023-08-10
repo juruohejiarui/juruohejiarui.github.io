@@ -1,0 +1,14 @@
+{
+    "Blog" : [
+        {
+            "Path": "test.html",
+            "Title": "Test1",
+            "ShortCut": "This is test1."
+        },
+        {
+            "Path": "test2.html",
+            "Title": "Test2",
+            "ShortCut": "This is test2."
+        }
+    ]
+}
