@@ -20,11 +20,11 @@ function LoadBlogs() {
             });
             var reg = /.*(?=\.html)/;
             
-            BlogNameList.sort((x, y) => { //对文件名进行排序
-                x = x.match(reg)[0];
-                y = y.match(reg)[0];
-                return parseInt(x) - parseInt(y);
-            });
+            var pathList = "";
+            for (path in BlogNameList) {
+                pathList.append(path + "\n");
+            }
+            alert(pathList);
         }
     });
 }
