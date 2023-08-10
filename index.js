@@ -1,5 +1,5 @@
 let BackgroundList = ["1.webp", "2.webp"];
-BlogList = null;
+var BlogList = null;
 let LastId = -1;
 function ChangeBackground() {
     var id = LastId;
