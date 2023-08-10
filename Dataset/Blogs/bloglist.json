@@ -1,4 +1,4 @@
-BlogInfo = {
+var BlogInfo = {
     "BlogList" : [
         {
             "Path": "test.html",
