@@ -1,5 +1,5 @@
-{
-    "Blog" : [
+BlogInfo = {
+    "BlogList" : [
         {
             "Path": "test.html",
             "Title": "Test1",

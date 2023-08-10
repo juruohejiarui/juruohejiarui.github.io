@@ -9,18 +9,20 @@ function ChangeBackground() {
     document.body.background = "./Backgrounds/" + BackgroundList[id];
 }
 function LoadBlogs() {
-    fetch("./Dataset/Blogs/bloglist.json")
-        .then((response) => { return response.json(); } )
-        .then((data) => BlogList = data);
-    console.log(BlogList);
+    var blog_json = document.createElement("script");
+    blog_json.src = "./Dataset/Blogs/bloglist.json";
+    blog_json.type = "text/javascript";
+    document.head.appendChild(blog_json);
+    BlogList = BlogInfo.BlogList;
 }
 
 function ShowBlogList() {
-    for (var i = 0; i < BlogNameList.length; i++)
-        document.body += BlogNameList;
+    for (var i = 0; i < BlogList.length; i++)
+        console.log(BlogList[i]);
 }
 
 function Init() {
     ChangeBackground();
     LoadBlogs();
+    ShowBlogList();
 }
