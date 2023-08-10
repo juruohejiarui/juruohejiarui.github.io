@@ -9,10 +9,6 @@ function ChangeBackground() {
     document.body.background = "./Backgrounds/" + BackgroundList[id];
 }
 function LoadBlogs() {
-    var blog_json = document.createElement("script");
-    blog_json.src = "./Dataset/Blogs/bloglist.json";
-    blog_json.type = "text/javascript";
-    document.head.appendChild(blog_json);
     BlogList = BlogInfo.BlogList;
 }
 
