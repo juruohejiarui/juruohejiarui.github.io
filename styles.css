@@ -82,7 +82,13 @@
 }
 .blog-topbar {
     background-color: #eeeeee;
+    position:absolute;
+    height: 30px;
+    width: 100%;
 }
 .blog-content {
+    padding: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
     background-color: #eeffffff;
 }
