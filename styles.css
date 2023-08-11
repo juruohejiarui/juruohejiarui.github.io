@@ -83,7 +83,7 @@
 .blog-topbar {
     background-color: #eeeeee;
     position:absolute;
-    height: 30px;
+    height: auto;
     width: 100%;
 }
 .blog-content {
