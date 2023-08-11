@@ -3,12 +3,72 @@ var BlogInfo = {
         {
             "Path": "test.html",
             "Title": "Test1",
-            "ShortCut": "This is test1."
+            "ShortCut": "This is test1.",
+            "Time": "2023.8.11",
+            "Labels": ["test", "杂项"]
         },
         {
             "Path": "test2.html",
             "Title": "Test2",
-            "ShortCut": "This is test2."
-        }
+            "ShortCut": "This is test2.",
+            "Time": "2023.8.12",
+            "Labels": ["test", "杂项"]
+        },
+        {
+            "Path": "test2.html",
+            "Title": "Test2",
+            "ShortCut": "This is test2.",
+            "Time": "2023.8.12",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test2.html",
+            "Title": "Test2",
+            "ShortCut": "This is test2.",
+            "Time": "2023.8.12",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test2.html",
+            "Title": "Test2",
+            "ShortCut": "This is test2.",
+            "Time": "2023.8.12",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test2.html",
+            "Title": "Test2",
+            "ShortCut": "This is test2.",
+            "Time": "2023.8.12",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test2.html",
+            "Title": "Test2",
+            "ShortCut": "This is test2.",
+            "Time": "2023.8.12",
+            "Labels": ["test", "杂项"]
+        },
+        {
+            "Path": "test.html",
+            "Title": "Test1",
+            "ShortCut": "This is test1.",
+            "Time": "2023.8.11",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test.html",
+            "Title": "Test1",
+            "ShortCut": "This is test1.",
+            "Time": "2023.8.11",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test.html",
+            "Title": "Test1",
+            "ShortCut": "This is test1.",
+            "Time": "2023.8.11",
+            "Labels": ["test", "杂项"]
+        },{
+            "Path": "test.html",
+            "Title": "Test1",
+            "ShortCut": "This is test1.",
+            "Time": "2023.8.11",
+            "Labels": ["test", "杂项"]
+        },
     ]
 }

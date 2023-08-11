@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.js"></script>
+    <link rel="stylesheet"  type="text/css" href="./styles.css">
     <link rel="stylesheet" href="./MDL/material.min.css">
     <script src="./MDL/material.min.js"></script>
     <script src="./index.js"></script>
+    <script src="./blogmanager.js"></script>
     <script src="./Dataset/Blogs/bloglist.json" type="text/javascript"></script>
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
     <meta charset="UTF-8">
@@ -21,5 +25,58 @@
         mdl-button--colored
         mdl-js-button mdl-button--raised mdl-js-ripple-effect"
         onclick="ChangeBackground()">更换背景</button>
+    <div id="BlogLinkList">
+        <div id="BlogLinkListContent">
+            <div class="bloglink">
+                <div class="bloglink-content">
+                    <div class="bloglink-title">Blog Title</div>
+                    <div class="bloglink-shortcut">
+                        This is the shortcut of this blog<br/>
+                        I have a good idea which is too large for this page
+                    </div>
+                </div>
+                <div class="bloglink-actions">
+                    <button class="bloglink-sort">
+                        The sort of this blog
+                    </button>
+                    <button class="bloglink-label">
+                        label1
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="mdl-button 
+                mdl-js-button mdl-js-ripple-effect 
+                mdl-button--raised mdl-button--colored" 
+                onclick="LastPage()">
+                <i class="material-icons">arrow_back</i>
+            </button>
+            <div class="mdl-button 
+                mdl-js-button mdl-js-ripple-effect 
+                mdl-button--raised mdl-button--colored
+                "
+                id="NowPage">
+            </div>
+            <button class="mdl-button 
+                mdl-js-button mdl-js-ripple-effect 
+                mdl-button--raised mdl-button--colored" 
+                onclick="NextPage()">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </div>
+    </div>
+    <div id="BlogDisplay">
+        <div class="blog-topbar">
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect"
+            onclick="BlogBack()">
+            <i class="material-icons">arrow_back</i>
+            </button>
+        </div>
+        <div id="BlogDisplayContent" class="blog-content">
+
+        </div>
+    </div>
+    
 </body>
 </html>
