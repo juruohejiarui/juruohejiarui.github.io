@@ -58,7 +58,8 @@ function ShowBlog(id, from) {
     OnShowElement = document.getElementById("BlogDisplay");
     OnShowElement.style.display = "";
     From = from;
-    BuildBlogContentHtml(document.getElementById("BlogDisplayContent"), BlogList[id].Path);
+    BuildBlogContentHtml(document.getElementById("BlogDisplayContent"), 
+        "./Dataset/Blogs/" + BlogList[id].Path);
 }
 
 function Init() {
