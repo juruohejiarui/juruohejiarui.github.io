@@ -24,8 +24,9 @@
     <button class="mdl-button 
         mdl-button--colored
         mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+        style="position: fixed; bottom: 0; right: 0;"
         onclick="ChangeBackground()">更换背景</button>
-    <div id="BlogLinkList">
+    <div id="BlogLinkList" style="margin: 10px">
         <div id="BlogLinkListContent">
             <div class="bloglink">
                 <div class="bloglink-content">
@@ -66,7 +67,7 @@
             </button>
         </div>
     </div>
-    <div id="BlogDisplay">
+    <div id="BlogDisplay" class="blog" style="display: none;">
         <div class="blog-topbar">
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect"
             onclick="BlogBack()">

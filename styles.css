@@ -82,13 +82,20 @@
 }
 .blog-topbar {
     background-color: #eeeeee;
-    position:absolute;
+    position:fixed;
     height: auto;
     width: 100%;
+    top: 0%;
 }
 .blog-content {
+    margin-top: 50px;
     padding: 20px;
     margin-left: 10%;
     margin-right: 10%;
-    background-color: #eeffffff;
+    background-color: #ffffff;
+}
+.blog {
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
