@@ -63,3 +63,10 @@
 	border-radius: 5px;
 	margin-bottom: 5px;
 }
+
+.content {
+	margin-left: 10%;
+	margin-right: 10%;
+	font-size: 20px;
+	font-family: 'Times New Roman', Times, serif;
+}
