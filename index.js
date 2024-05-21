@@ -50,7 +50,7 @@ function ShowArticles(articles, params) {
 			innerHTML += "<a class=\"href\" href=\"" + href + "\">" + article.labels[j] + "</a>"
 		}
 		innerHTML += "</div>"
-		article.innerHTML = innerHTML;
+		articleDiv.innerHTML = innerHTML;
 		articlesDiv.appendChild(articleDiv);
 	}
 }
