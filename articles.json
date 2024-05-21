@@ -15,17 +15,17 @@
 	},
 	{
 		"index":2,
-		"title":"gdt,idt and tss",
+		"title":"GDT, IDT and TSS",
 		"labels":["OS"],
 		"file": "gdt&idt&tss.html",
-		"updateTime":1716276274.7879467
+		"updateTime":1716278836.9299812
 	},
 	{
 		"index":3,
-		"title":"memory",
+		"title":"Memory",
 		"labels":["OS"],
 		"file": "memory.html",
-		"updateTime":1716276292.3918753
+		"updateTime":1716278854.6623113
 	},
 	{
 		"index":4,

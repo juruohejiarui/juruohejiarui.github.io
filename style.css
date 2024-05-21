@@ -37,6 +37,7 @@
 
 .href:hover {
 	text-decoration: underline;
+	outline: none;
 }
 
 .main-list {
@@ -65,9 +66,26 @@
 }
 
 .content {
+	padding: 5px;
 	background-color: #fff;
 	margin-left: 10%;
 	margin-right: 10%;
+	font-size: 15px;
+	font-family: 'Times New Roman', Times, serif;
+}
+p1 {
 	font-size: 20px;
+	font-family: 'Times New Roman', Times, serif;
+}
+p2 {
+	font-size: 18px;
+	font-family: 'Times New Roman', Times, serif;
+}
+p3 {
+	font-size: 16px;
+	font-family: 'Times New Roman', Times, serif;
+}
+p4 {
+	font-size: 14px;
 	font-family: 'Times New Roman', Times, serif;
 }

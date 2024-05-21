@@ -26,6 +26,7 @@ In the initialization period, due to the limitation of space usage, I disable th
 
 ## Description of Items
 Let me first introduce the names and meaning of the attribute bits.
+
 - **P**, Present. it should be $1$.
 - **R/W**, Read/Write. $1$: Allows to write this memory $0$: Not allowed to write. and this page is read-only
 - **U/S**, User/Supervisor. $1$: This page can be accessed by all privilege level. $0$: user is not allowed to use this page.
@@ -40,6 +41,7 @@ PS: I ignore some useless attribute bit.
 
 ### PGD
 A PGD can manage the whole virtual address space, while one entry of PGD can manage $512\texttt{GB}$ .
+
 - $0$: **P**
 - $1$: **R/W**
 - $2$: **U/S**

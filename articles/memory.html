@@ -96,10 +96,36 @@
 <p>In some scenarios, PLD would disappear (when the <strong>PS</strong> bit of PMD is set to <span class="math inline">0</span>, which will be introduced later) and the <span class="math inline">0...21</span>-th bits will be directly used as the offset inside page, which means that we use <span class="math inline">2<code>MB</code></span> pages instead of <span class="math inline">4<code>KB</code></span> pages. In other scenarios, both PLD and PMD would disapper and the <span class="math inline">0...30</span>-th bits will be directly used as the offset inside page</p>
 <p>In the initialization period, due to the limitation of space usage, I disable the PLD and use <span class="math inline">2<code>MB</code></span> pages instead.</p>
 <h2 id="description-of-items">Description of Items</h2>
-<p>Let me first introduce the names and meaning of the attribute bits. - <strong>P</strong>, Present. it should be <span class="math inline">1</span>. - <strong>R/W</strong>, Read/Write. <span class="math inline">1</span>: Allows to write this memory <span class="math inline">0</span>: Not allowed to write. and this page is read-only - <strong>U/S</strong>, User/Supervisor. <span class="math inline">1</span>: This page can be accessed by all privilege level. <span class="math inline">0</span>: user is not allowed to use this page. - <strong>PWT</strong>, Page-level Write-Through. <span class="math inline">1</span>: Write-though caching is enabled. <span class="math inline">0</span>: Write-back is enabled. - <strong>PCD</strong>, Cache Disable. <span class="math inline">1</span>: This page will not be cached. <span class="math inline">0</span>: will be cached. - <strong>A</strong>, Accessed. This bit is to shown whether a this item was used during converting, which will be adjust by MMU (the convertion tool of CPU) automatically. - <strong>D</strong>, Dirty. This bit is used to shown whether a page has been written to. - <strong>PS</strong>, Page Size. <span class="math inline">1</span>: This item directly maps to a page. <span class="math inline">0</span>: This item leads to a page table of the next level. - <strong>G</strong>, Global. This bit tells the processor not to invalidate the TLB entry corresponding to the page upon a instruction <code>mov</code> to <code>CR3</code> instruction. And the <strong>PGE</strong> bit of <code>CR4</code> (the <span class="math inline">7</span>-th bit) should be set. In this project, this bit should be <span class="math inline">0</span>.</p>
+<p>Let me first introduce the names and meaning of the attribute bits.</p>
+<ul>
+<li><strong>P</strong>, Present. it should be <span class="math inline">1</span>.</li>
+<li><strong>R/W</strong>, Read/Write. <span class="math inline">1</span>: Allows to write this memory <span class="math inline">0</span>: Not allowed to write. and this page is read-only</li>
+<li><strong>U/S</strong>, User/Supervisor. <span class="math inline">1</span>: This page can be accessed by all privilege level. <span class="math inline">0</span>: user is not allowed to use this page.</li>
+<li><strong>PWT</strong>, Page-level Write-Through. <span class="math inline">1</span>: Write-though caching is enabled. <span class="math inline">0</span>: Write-back is enabled.</li>
+<li><strong>PCD</strong>, Cache Disable. <span class="math inline">1</span>: This page will not be cached. <span class="math inline">0</span>: will be cached.</li>
+<li><strong>A</strong>, Accessed. This bit is to shown whether a this item was used during converting, which will be adjust by MMU (the convertion tool of CPU) automatically.</li>
+<li><strong>D</strong>, Dirty. This bit is used to shown whether a page has been written to.</li>
+<li><strong>PS</strong>, Page Size. <span class="math inline">1</span>: This item directly maps to a page. <span class="math inline">0</span>: This item leads to a page table of the next level.</li>
+<li><strong>G</strong>, Global. This bit tells the processor not to invalidate the TLB entry corresponding to the page upon a instruction <code>mov</code> to <code>CR3</code> instruction. And the <strong>PGE</strong> bit of <code>CR4</code> (the <span class="math inline">7</span>-th bit) should be set. In this project, this bit should be <span class="math inline">0</span>.</li>
+</ul>
 <p>PS: I ignore some useless attribute bit.</p>
 <h3 id="pgd">PGD</h3>
-<p>A PGD can manage the whole virtual address space, while one entry of PGD can manage <span class="math inline">512<code>GB</code></span> . - <span class="math inline">0</span>: <strong>P</strong> - <span class="math inline">1</span>: <strong>R/W</strong> - <span class="math inline">2</span>: <strong>U/S</strong> - <span class="math inline">3</span>: <strong>PWT</strong> - <span class="math inline">4</span>: <strong>PCD</strong> - <span class="math inline">5</span>: <strong>A</strong> - <span class="math inline">6</span>: Ignored. - <span class="math inline">7</span>: <strong>PS</strong>, Reserved and must be <span class="math inline">0</span>. - <span class="math inline">8...10</span>: Ignored. - <span class="math inline">11</span>: <strong>R</strong>, something not so important and can will be set to <span class="math inline">0</span> . - <span class="math inline">12...47</span>: The <span class="math inline">12...47</span>-th of the <span class="math inline">4<code>KB</code></span>-aligned address of the PUD referenced by this item. - <span class="math inline">48...62</span>: From <span class="math inline">48...51</span>-th bits, which are reserved, the values should be <span class="math inline">0</span>. And the <span class="math inline">52...62</span>-th bits are ignored. - <span class="math inline">63</span>: In this project, this bit should be <span class="math inline">0</span>.</p>
+<p>A PGD can manage the whole virtual address space, while one entry of PGD can manage <span class="math inline">512<code>GB</code></span> .</p>
+<ul>
+<li><span class="math inline">0</span>: <strong>P</strong></li>
+<li><span class="math inline">1</span>: <strong>R/W</strong></li>
+<li><span class="math inline">2</span>: <strong>U/S</strong></li>
+<li><span class="math inline">3</span>: <strong>PWT</strong></li>
+<li><span class="math inline">4</span>: <strong>PCD</strong></li>
+<li><span class="math inline">5</span>: <strong>A</strong></li>
+<li><span class="math inline">6</span>: Ignored.</li>
+<li><span class="math inline">7</span>: <strong>PS</strong>, Reserved and must be <span class="math inline">0</span>.</li>
+<li><span class="math inline">8...10</span>: Ignored.</li>
+<li><span class="math inline">11</span>: <strong>R</strong>, something not so important and can will be set to <span class="math inline">0</span> .</li>
+<li><span class="math inline">12...47</span>: The <span class="math inline">12...47</span>-th of the <span class="math inline">4<code>KB</code></span>-aligned address of the PUD referenced by this item.</li>
+<li><span class="math inline">48...62</span>: From <span class="math inline">48...51</span>-th bits, which are reserved, the values should be <span class="math inline">0</span>. And the <span class="math inline">52...62</span>-th bits are ignored.</li>
+<li><span class="math inline">63</span>: In this project, this bit should be <span class="math inline">0</span>.</li>
+</ul>
 <h3 id="pud">PUD</h3>
 <ul>
 <li><span class="math inline">0...5</span>: These bits are the same as those of PGD</li>

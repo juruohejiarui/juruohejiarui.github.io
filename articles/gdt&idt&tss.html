@@ -114,7 +114,33 @@
 <li><span class="math inline">56...63</span>: <span class="math inline">24...31</span>-th bits for <strong>base</strong>.</li>
 </ul>
 <p>There are something different for the system segment. Specifically, the descriptor is 128-bit long. And the <span class="math inline">64...95</span>-th bits stores the <span class="math inline">32...63</span>-th bits of <strong>base</strong>, while the <span class="math inline">96...127</span>-th bits are reserved and the meaning of other bits are the same as those in descriptor for code and data segment.</p>
-<p>a GDT is a block of memory following the format that shown below: |Address|Description| |:—:|:—:| |GDT Base Address <span class="math inline"> + 0</span> |must be <span class="math inline">0</span>| |GDT Base Address <span class="math inline"> + 8</span> |entry <span class="math inline">1</span>| |GDT Base Address <span class="math inline"> + 16</span> |entry <span class="math inline">2</span>| |<span class="math inline">⋮</span>|<span class="math inline">⋮</span>|</p>
+<p>a GDT is a block of memory following the format that shown below:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Address</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">GDT Base Address <span class="math inline"> + 0</span></td>
+<td style="text-align: center;">must be <span class="math inline">0</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">GDT Base Address <span class="math inline"> + 8</span></td>
+<td style="text-align: center;">entry <span class="math inline">1</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">GDT Base Address <span class="math inline"> + 16</span></td>
+<td style="text-align: center;">entry <span class="math inline">2</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">⋮</span></td>
+<td style="text-align: center;"><span class="math inline">⋮</span></td>
+</tr>
+</tbody>
+</table>
 <p>The address of GDT is stored in the register <code>gdtr</code>(GDT register). The instruction <code>lgdt</code> can be applied to update <code>gdtr</code>, which accepts a value as the pointer to the GDT base address.</p>
 <h2 id="practice">Practice</h2>
 <p>From the forms above, we can write the segment descriptor for 64-bit flag mode.</p>

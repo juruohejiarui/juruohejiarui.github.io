@@ -30,6 +30,7 @@ One item of GDT can be described using the following List:
 There are something different for the system segment. Specifically, the descriptor is 128-bit long. And the $64...95$-th bits stores the $32...63$-th bits of **base**, while the $96...127$-th bits are reserved and the meaning of other bits are the same as those in descriptor for code and data segment.
   
 a GDT is a block of memory following the format that shown below:
+
 |Address|Description|
 |:---:|:---:|
 |GDT Base Address $+ 0$ |must be $0$|
