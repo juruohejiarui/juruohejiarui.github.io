@@ -42,6 +42,8 @@
 .main-list {
 	margin-top: 50px;
 	text-align: center;
+	padding-left: 10%;
+	padding-right: 10%;
 }
 
 .article-list-element-title {
