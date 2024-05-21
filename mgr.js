@@ -1,22 +1,19 @@
-function loadJSON(path) {
-	var url = "articles.json";
+function loadJSON(path, action) {
+	var url = path;
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", url);
 	xhr.send(null);
-	var res = null;
 	xhr.onload = function() {
 		if (xhr.status == 200)
-			res = JSON.parse(xhr.responseText);
+			action(JSON.parse(xhr.responseText));
 	};
-	return res
 }
-function loadArticles() {
-	var articles = loadJSON("articles.json");
-	var articlesDiv = document.getElementById("articles");
+
+function ShowArticles(articles) {
+	var articlesDiv = document.getElementById("articleList");
 	for (var i = 0; i < articles.length; i++) {
 		var article = articles[i];
 		var articleDiv = document.createElement("div");
-		articleDiv.className = "article";
 		articleDiv.innerHTML = "<h2>" + article.title + "</h2>";
 		articlesDiv.appendChild(articleDiv);
 	}

@@ -1,3 +1,3 @@
 window.onload = function() {
-	loadArticles();
+	loadJSON("articles.json", ShowArticles)
 }

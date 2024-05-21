@@ -144,12 +144,12 @@ def Mgr_outputArticles() :
 	oFile = open("articles.json", "w")
 	oFile.write("[\n")
 	for article in articles :
-		oFile.write(f'\t{{"index":{article.index},"title":"{article.title}","labels":[')
+		oFile.write(f'\t{{\n\t\t"index":{article.index},\n\t\t"title":"{article.title}",\n\t\t"labels":[')
 		for label in article.labelList :
 			oFile.write(f'"{label.name}"')
 			if label != article.labelList[-1] :
 				oFile.write(',')
-		oFile.write(']}')
+		oFile.write(f'],\n\t\t\"file\": \"{article.sourcePath[article.sourcePath.find("articles") + 9 : ]}\"\n\t}}')
 		if article != articles[-1] :
 			oFile.write(',')
 		oFile.write('\n')
