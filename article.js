@@ -19,4 +19,5 @@ window.onload = function() {
 function showArticleInfo(articleInfo, params) {
 	title = document.getElementById("title");
 	title.innerHTML = articleInfo.title;
+	document.title = articleInfo.title;
 }
