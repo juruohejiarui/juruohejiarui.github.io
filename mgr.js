@@ -5,7 +5,8 @@ function loadJSON(path) {
 	xhr.send(null);
 	res = null;
 	xhr.onload = function() {
-		res = JSON.parse(xhr.responseText);
+		if (xhr.status == 200)
+			res = JSON.parse(xhr.responseText);
 	};
 	return res
 }
