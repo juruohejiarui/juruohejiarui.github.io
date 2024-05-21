@@ -42,7 +42,8 @@ function ShowArticles(articles, params) {
 	for (var i = params.pageId * 10; i < Math.min((params.pageId * 10 + 10, articles.length)); i++) {
 		var article = list[i];
 		var articleDiv = document.createElement("div");
-		articleDiv.innerHTML = "<h2>" + article.title + "</h2>" + "<p>" + article.labels + "</p>";
+		articleDiv.className = "article-list-element";
+		articleDiv.innerHTML = "<div class=\"article-list-element-title\">" + article.title + "</h2>" + "<p>" + article.labels + "</p>";
 		articlesDiv.appendChild(articleDiv);
 	}
 }
