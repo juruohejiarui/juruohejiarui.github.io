@@ -149,7 +149,8 @@ def Mgr_outputArticles() :
 			oFile.write(f'"{label.name}"')
 			if label != article.labelList[-1] :
 				oFile.write(',')
-		oFile.write(f'],\n\t\t\"file\": \"{article.sourcePath[article.sourcePath.find("articles") + 9 : ]}\"\n\t}}')
+		oFile.write(f'],\n\t\t\"file\": \"{article.sourcePath[article.sourcePath.find("articles") + 9 : ]}\",\n')
+		oFile.write(f"\t\t\"updateTime\":{article.updateTime}\n\t}}")
 		if article != articles[-1] :
 			oFile.write(',')
 		oFile.write('\n')
