@@ -43,7 +43,14 @@ function ShowArticles(articles, params) {
 		var article = list[i];
 		var articleDiv = document.createElement("div");
 		articleDiv.className = "article-list-element";
-		articleDiv.innerHTML = "<div class=\"article-list-element-title\">" + article.title + "</div>" + "<p>" + article.labels + "</p>";
+		innerHTML = "<a class=\"article-list-element-title\">" + article.title + "</a>"
+		innerHTML += "<div>"
+		for (var j = 0; j < article.labels.length; j++) {
+			href = "index.html?label=" + article.labels[j];
+			innerHTML += "<a class=\"href\" href=\"" + href + "\">" + article.labels[j] + "</a>"
+		}
+		innerHTML += "</div>"
+		article.innerHTML = innerHTML;
 		articlesDiv.appendChild(articleDiv);
 	}
 }
