@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>memory</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1 id="segment-registers">Segment Registers</h1>
+<ul>
+<li><code>ds</code>: Data Segment</li>
+<li><code>es</code>: Extend Segment</li>
+<li><code>cs</code>: Code Segment</li>
+<li><code>ss</code>: Stack Segment</li>
+<li><code>fs</code> and <code>gs</code>: General-purpose Segment</li>
+</ul>
+<p>In long-mode, <code>ds, es, ss, cs</code> are treated as their <strong>base</strong> was <span class="math inline">0</span> no matter what the descriptor is. The limit check is disabled.</p>
+<h1 id="paging-and-page-table">Paging and Page Table</h1>
+<p>In long-mode, the size of one address is <span class="math inline">64</span> bits, but the highest 8 bits are just the copy of the <span class="math inline">47</span> bit (counting from <span class="math inline">0</span>). Therefore the effective number of digits in a memory address is <span class="math inline">48</span>.</p>
+<p>While the segment memory management is nearly disabled, paging system is used to convert virtual address to physics address, allowing the isolation of processes and giving convenience for implementation of non contiguous memory occupation of one process. Paging divides an virtual address into <span class="math inline">5</span> parts from higher bits to lower bits. The first <span class="math inline">4</span> parts are all 9-bit long, and is used as the index of one level of page table. And the last part is <span class="math inline">12</span>-bit long and used as the offset inside page.</p>
+<p>In my project, <span class="math inline">4</span> levels of page table are named from highest level to lowest level as Page Global Directory (PGD), Page Upper Directory (PUD), Page Middle Directory (PMD), Page Lower Directory (PLD).</p>
+<p>For one page table, base physics address should be aligned to <span class="math inline">4<code>KB</code></span>. There are <span class="math inline">512</span> items, which called “entries”, in one pages, each item is a <span class="math inline">64</span>-bit integer. Thus, the size of one page table is <span class="math inline">512 × 8<code>B</code> = 4<code>KB</code></span> .</p>
+<p>The structure of items in each level is different. For items of PGD, PUD and PMD, one item contains the pointer (a physics address) to the next level page table, along with some attributes of the memory that managed by this item. While PLD contains the base physics address managed by this page and some attributes. The details of these structures will be shown below.</p>
+<p>The address of PGD is stored in register <code>CR3</code>, and <code>movq</code> can be used to modify and access it. Because of the effect of TLB (a cache for speeding up the convertion), the adjustment of page table may not make effects immediately, but <code>movq xxx, %cr3</code> can compulsorily flush the TLB.</p>
+<p>In some scenarios, PLD would disappear (when the <strong>PS</strong> bit of PMD is set to <span class="math inline">0</span>, which will be introduced later) and the <span class="math inline">0...21</span>-th bits will be directly used as the offset inside page, which means that we use <span class="math inline">2<code>MB</code></span> pages instead of <span class="math inline">4<code>KB</code></span> pages. In other scenarios, both PLD and PMD would disapper and the <span class="math inline">0...30</span>-th bits will be directly used as the offset inside page</p>
+<p>In the initialization period, due to the limitation of space usage, I disable the PLD and use <span class="math inline">2<code>MB</code></span> pages instead.</p>
+<h2 id="description-of-items">Description of Items</h2>
+<p>Let me first introduce the names and meaning of the attribute bits. - <strong>P</strong>, Present. it should be <span class="math inline">1</span>. - <strong>R/W</strong>, Read/Write. <span class="math inline">1</span>: Allows to write this memory <span class="math inline">0</span>: Not allowed to write. and this page is read-only - <strong>U/S</strong>, User/Supervisor. <span class="math inline">1</span>: This page can be accessed by all privilege level. <span class="math inline">0</span>: user is not allowed to use this page. - <strong>PWT</strong>, Page-level Write-Through. <span class="math inline">1</span>: Write-though caching is enabled. <span class="math inline">0</span>: Write-back is enabled. - <strong>PCD</strong>, Cache Disable. <span class="math inline">1</span>: This page will not be cached. <span class="math inline">0</span>: will be cached. - <strong>A</strong>, Accessed. This bit is to shown whether a this item was used during converting, which will be adjust by MMU (the convertion tool of CPU) automatically. - <strong>D</strong>, Dirty. This bit is used to shown whether a page has been written to. - <strong>PS</strong>, Page Size. <span class="math inline">1</span>: This item directly maps to a page. <span class="math inline">0</span>: This item leads to a page table of the next level. - <strong>G</strong>, Global. This bit tells the processor not to invalidate the TLB entry corresponding to the page upon a instruction <code>mov</code> to <code>CR3</code> instruction. And the <strong>PGE</strong> bit of <code>CR4</code> (the <span class="math inline">7</span>-th bit) should be set. In this project, this bit should be <span class="math inline">0</span>.</p>
+<p>PS: I ignore some useless attribute bit.</p>
+<h3 id="pgd">PGD</h3>
+<p>A PGD can manage the whole virtual address space, while one entry of PGD can manage <span class="math inline">512<code>GB</code></span> . - <span class="math inline">0</span>: <strong>P</strong> - <span class="math inline">1</span>: <strong>R/W</strong> - <span class="math inline">2</span>: <strong>U/S</strong> - <span class="math inline">3</span>: <strong>PWT</strong> - <span class="math inline">4</span>: <strong>PCD</strong> - <span class="math inline">5</span>: <strong>A</strong> - <span class="math inline">6</span>: Ignored. - <span class="math inline">7</span>: <strong>PS</strong>, Reserved and must be <span class="math inline">0</span>. - <span class="math inline">8...10</span>: Ignored. - <span class="math inline">11</span>: <strong>R</strong>, something not so important and can will be set to <span class="math inline">0</span> . - <span class="math inline">12...47</span>: The <span class="math inline">12...47</span>-th of the <span class="math inline">4<code>KB</code></span>-aligned address of the PUD referenced by this item. - <span class="math inline">48...62</span>: From <span class="math inline">48...51</span>-th bits, which are reserved, the values should be <span class="math inline">0</span>. And the <span class="math inline">52...62</span>-th bits are ignored. - <span class="math inline">63</span>: In this project, this bit should be <span class="math inline">0</span>.</p>
+<h3 id="pud">PUD</h3>
+<ul>
+<li><span class="math inline">0...5</span>: These bits are the same as those of PGD</li>
+<li><span class="math inline">6</span>: <strong>D</strong></li>
+<li><span class="math inline">7</span>: <strong>PS</strong>. <span class="math inline">1</span>: this entry directly maps to a <span class="math inline">1<code>GB</code></span> page and then <span class="math inline">12</span>-th bit of this entry is <strong>PAT</strong> bit. <span class="math inline">0</span>: this entry refers to a PMD. During this project, this bit is always <span class="math inline">0</span>.</li>
+<li><span class="math inline">8</span>: <strong>G</strong>. If <strong>PS</strong> is <span class="math inline">0</span>, then this bit will be ignore. But as what I said before, throughout this project, this bit will be always <span class="math inline">0</span>.</li>
+<li><span class="math inline">9...10</span>: Ignored.</li>
+<li><span class="math inline">11</span>: <strong>R</strong>.</li>
+<li>if <strong>PS</strong>=<span class="math inline">1</span>:
+<ul>
+<li><span class="math inline">12</span>: <strong>PAT</strong></li>
+<li><span class="math inline">13...29</span>: Reserved and should be <span class="math inline">0</span>.</li>
+<li><span class="math inline">30...47</span>: The <span class="math inline">30...47</span>-th bits of the <span class="math inline">1<code>GB</code></span>-aligned physics page referenced by this entry.</li>
+</ul></li>
+<li>if <strong>PS</strong>=<span class="math inline">0</span>:
+<ul>
+<li><span class="math inline">12...47</span>: The <span class="math inline">12...47</span>-th of the <span class="math inline">4<code>KB</code></span>-aligned address of the PMD referenced by this item.</li>
+</ul></li>
+<li>The rest bits are the same as those of PGD.</li>
+</ul>
+<h3 id="pmd">PMD</h3>
+<p>The description of PMD is similar to PUD, so I will not show it again. The only difference is that when <strong>PS</strong>=1, the <span class="math inline">21...48</span>-th bits reference to the <span class="math inline">2<code>MB</code></span>-aligned physics page.</p>
+<h3 id="pld">PLD</h3>
+<ul>
+<li><span class="math inline">0...11</span>: These bits are the same as those in PGD. But the <strong>PS</strong> bit should be zero.</li>
+<li><span class="math inline">12...47</span>: The <span class="math inline">12...47</span>-th of the <span class="math inline">4<code>KB</code></span>-aligned physics page referenced by this entry.</li>
+<li><span class="math inline">47...63</span>: These bits are the same as those in PGD.</li>
+</ul>
+<h1 id="memory-management">Memory Management</h1>
+<h2 id="initialization-process">Initialization Process</h2>
+<p>During the initialization period, the kernel program will first use the mapped address space in <code>head.S</code>, whose size is below <span class="math inline">512<code>MB</code></span> to build the page table of ‘directly mapping address space’ (DMAS), and along with the page array, the zone array and the bitmap. The addresses of the elements of these three arrays are contiguous respectively and within the range of DMAS, so the program will first set the zone arrays, then find the valid address space to set the page array and bitmap respectively.</p>
+<p>DMAS is an area whose virtual address is just the physics address added up with an offse. The maximum virtual address space is <span class="math inline">[<code>0xffff880000000000</code>, <code>0xffffC80000000000</code>]</span>, and maximum size is <span class="math inline">64<code>TB</code></span>. The following equation is the the relationship of the physics address and the virtual address of this space:</p>
+<p><br /><span class="math display">physics address = virtual address − <code>0xffff880000000000</code></span><br /></p>
+<p>After initialization of DMAS and those arrays, the Buddy System is built, also using virtual address in DMAS. Then the cache for page table management is built up, by allocating the memory from the Buddy System. Then the SLAB System is built, also by applying the APIs of Buddy System.</p>
+<h2 id="apis-and-algorithms-behind-them">APIs and Algorithms behind Them</h2>
+<h3 id="basic-memory-management">Basic Memory Management</h3>
+<p>for every <span class="math inline">4<code>KB</code></span> page, there is a structure to manage its attributes, physics address and numbers of reference. A zone struct manage the pages that belongs to it and the general attribute of these pages, like the reference number, free page number and active page number. each bit of the bitmap stores whether this page is allocated or not. This basic management structure is temporary used to manage the memory that used to build the Buddy System and page table of DMAS.</p>
+<p><strong>PS</strong> - This management system can only manage the pages in the range of DMAS. - No API for releasing pages. - Once the buddy system is built up, it is invalid to use this system, excepts the <code>BsMemManage_setPageAttr(Page *, u64 attr)</code> and <code>BsMemMange_getPageAttr(Page *)</code>.</p>
+<p><strong>APIs</strong>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co">// initialize this system</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="dt">void</span> BsMemManage_init()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="co">// allocate NUM pages and set the attributes of them to ATTR</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>Page *BsMemManage_alloc(<span class="dt">int</span> num, <span class="dt">int</span> attr) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="co">// get the attribute of PAGE</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>u64 BsMemManage_getPageAttr(Page *page);</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="co">// set the attribute of PAGE to ATTR</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="dt">void</span> BsMemManage_setPageAttr(Page *page, u64 attr);</span></code></pre></div>
+<h3 id="buddy-system">Buddy System</h3>
+<p>This system divides the pages into groups, whose size a power of 2. These group is called page frame. Let <span class="math inline"><em>S</em><sub><em>f</em></sub> = log<sub>2</sub>(the number of pages in the page frame <em>f</em>)</span>. We say that <span class="math inline"><em>f</em></span> is in the <strong>frame group</strong> <span class="math inline"><em>i</em></span> if and only if <span class="math inline"><em>S</em><sub><em>f</em></sub> = <em>i</em></span> . Due to the limitation of kernel memory used, <span class="math inline"><em>S</em><sub><em>f</em></sub> ∈ [0, 11]</span>. In one page frame, the first page is called <strong>head page</strong>. Kernel and Users can allocate and free a <strong>whole</strong> page frame. All the pages in one allocated page frame has the same attribute, which is stored in the head page of this page frame. Furthermore, the head page has an attribute call <code>Page_Flag_HeadPage</code> , while the others don’t.</p>
+<p>Two basic operations of this system is “division” and “merger”. Division is to split a page frame into two buddy page frames, who sizes are the same, while the “merger” it to merge two buddy page frames into a larger page frame. It is be noticed that two buddy page frames are called buddies is not because of the same size of them, and the true reason is that their are “born” from the same page frame.</p>
+<p>When initializing this system, the page frame will be merged to ensure that the number is page frames is minimum. When it is asked to allocate a page frame, while there is no page frames that meet its requirement of size, the system will divide a page frame which is larger than the requirement recursively, and get the prefix of it to allocate. When a page frame is going to be released, the system will try to merge recursively when its buddy is also free.</p>
+<p>The algorithm for finding the buddy of one page is using the numbering method which is similar to that of segment tree. Another important part is use a bitmap to manage whether the states of allocation (allocated/free) of one pages and their buddies are the same. One page and its buddy share the same bit. When one page is allocated or released, that bit will be reversed.</p>
+<p><strong>APIs</strong>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="dt">void</span> Buddy_init();</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>Page *Buddy_alloc(<span class="dt">int</span> log2Size, u64 attr);</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="dt">void</span> Buddy_free(Page *);</span></code></pre></div>
+<h3 id="page-table">Page Table</h3>
+<p>This system manages the PGD, PUP, PMD, PLD entries and includes the allocation and releasing of page table. Like Slab system, a cache pool is used. When the size of this cache pool meets the minimum, a page frame will be allocated using Buddy System and the size of cache pool will reach its maximum. When a page table is released and the size of the cache pool exceeds the maximum, then the page that contains this page table will be directly released to Buddy System.</p>
+<p><strong>APIs</strong>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="dt">void</span> PageTable_init();</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="dt">void</span> PageTable_map(u64 vAddr, u64 pAddr); <span class="co">// map a memory block [pAddr, pAddr + Page_4KSize - 1] to [vAddr, vAddr + page_4KSize - 1]</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="dt">void</span> PageTable_unmap(u64 vAddr);</span></code></pre></div>
+<h3 id="slab">SLAB</h3>
+<p>This system contains a series of cache pool differentiated by size. from <span class="math inline">2<sup>5</sup><code>B</code>, 2<sup>6</sup><code>B</code>...1<code>MB</code></span> . There will be numbers of memory blocks in each cache pool, which sizes are all <span class="math inline">2<code>MB</code></span> , Thus one memory block can allocate <span class="math inline">$\frac{2\texttt{MB}}{\text{Size of the pool that this block belongs to}}$</span>, Additionally, when a memory block is completely free, and the numbers of free objects the pool that this block belongs to is higher than <span class="math inline">$\frac{3}{2}\times (\text{numbers of free objects of this block})$</span>, then this block will be released. When a pool runs out of free objects, then a new memory block will be allocated from Buddy System.</p>
+<p>Additionally, since this system only used in kernel program, the virtual address of allocated memory block is always in DMAS range.</p>
+<p><strong>APIs</strong>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="dt">void</span> SLAB_init();</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="dt">void</span> *kmalloc(u64 size, u64 arg);</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="dt">void</span> free(<span class="dt">void</span> *addr);</span></code></pre></div>
+</body>
+</html>

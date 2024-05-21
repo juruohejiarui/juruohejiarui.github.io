@@ -1,0 +1,1 @@
+{"title": "memory", "labels": ["OS"], "description": "# Segment Registers\n- ``ds``: Data Segment\n- ``es``: Extend Segment\n- ``cs``: Code Segment\n- ``ss``:"}

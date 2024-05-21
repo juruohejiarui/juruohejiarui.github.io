@@ -43,7 +43,8 @@ function ShowArticles(articles, params) {
 		var article = list[i];
 		var articleDiv = document.createElement("div");
 		articleDiv.className = "article-list-element";
-		innerHTML = "<a class=\"article-list-element-title\">" + article.title + "</a>"
+		articleUrl = "article.html?path=" + encodeURIComponent(article.file);
+		innerHTML = "<a class=\"article-list-element-title\" href=\"" + articleUrl + "\">" + article.title + "</a>"
 		innerHTML += "<div>"
 		for (var j = 0; j < article.labels.length; j++) {
 			href = "index.html?label=" + article.labels[j];

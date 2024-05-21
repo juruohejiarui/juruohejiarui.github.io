@@ -1,1 +1,1 @@
-{"title": "test1 copy", "labels": []}
+{"title": "test2", "labels": ["test1-label", "test2-label"], "description": "This is a markdown test 2\n$\\texttt{ttt}$"}

@@ -14,9 +14,11 @@ class MarkdownInfo (object) :
 		confFile = open(confPath, "w")
 		print("Find a new article: " + self.sourcePath)
 		print("Please set the configuration for the article.")
+		# load title
 		print("title (\"{}\" as default): ".format(dstPath[dstPath.find("articles") + 9 : -5]))
 		title = input()
 		if title == "" : title = dstPath[dstPath.find("articles") + 9 : -5]
+		# load labels
 		labels = []
 		print("labels (separated by \",\"): ")
 		labels = input().split(",")
@@ -24,7 +26,9 @@ class MarkdownInfo (object) :
 		for label in labels :
 			if label != "" :
 				trueLabels.append(label)
-		confFile.write(json.dumps({"title":title, "labels":trueLabels}))
+		# load description
+		description = open(self.sourcePath, "r").read(100)
+		confFile.write(json.dumps({"title":title, "labels":trueLabels, "description":description }))
 		pass
 	
 def MdMgr_init() :

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>gdt&idt&tss</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<p>This page aims to record the structure of Global Descriptor Table(GDT), Interrupt Descriptor Table(IDT) and Task State Segment(TSS) in long-mode.</p>
+<h1 id="gdt">GDT</h1>
+<h2 id="description">Description</h2>
+<p>One item of GDT can be described using the following List:</p>
+<ul>
+<li><span class="math inline">0...15</span>: <span class="math inline">0...15</span>-th bits of <strong>limit</strong></li>
+<li><span class="math inline">16...31</span>: <span class="math inline">0...15</span>-th bits of <strong>base</strong></li>
+<li><span class="math inline">32...39</span>: <span class="math inline">16...23</span>-th bits of <strong>base</strong></li>
+<li><span class="math inline">40...47</span>: <strong>Access Byte</strong>
+<ul>
+<li><span class="math inline">40</span>: <strong>A</strong>, accessable. recommended to be <span class="math inline">1</span></li>
+<li><span class="math inline">41</span>: <strong>RW</strong>, readable/writeable.
+<ul>
+<li>for code segment: readable(<span class="math inline">1</span>), unreadable(<span class="math inline">0</span>), write access is never allowed for code segments</li>
+<li>for data segment: writeable(<span class="math inline">1</span>), unwriteable(<span class="math inline">0</span>), data segments are always readable.</li>
+</ul></li>
+<li><span class="math inline">42</span>: <strong>DC</strong>, direction/conforming.
+<ul>
+<li>for code segment: <span class="math inline">0</span>: code in this segment can only be executed from the ring set in <strong>DPL</strong>. <span class="math inline">1</span>, code int this segment can be executed from an equal or lower (<span class="math inline">≤</span>) privilege level.</li>
+<li>for data segment: <span class="math inline">0</span>: grows up; <span class="math inline">1</span> grows down.</li>
+</ul></li>
+<li><span class="math inline">43</span>: <strong>E</strong>, executable. <span class="math inline">0</span>: this segment is a data segment; <span class="math inline">1</span>: this segment is a code segment.</li>
+<li><span class="math inline">44</span>: <strong>Descriptor type</strong>. <span class="math inline">0</span>: defines a system segment (e.g. a Task State Segment); <span class="math inline">1</span>: defines a code or data segment</li>
+<li><span class="math inline">45...46</span>: <strong>privilege level</strong>. <span class="math inline">0 (<em>h</em><em>i</em><em>g</em><em>h</em><em>e</em><em>s</em><em>t</em>)...3 (<em>l</em><em>o</em><em>w</em><em>e</em><em>s</em><em>t</em>)</span></li>
+<li><span class="math inline">47</span>: <strong>present</strong>. must be <span class="math inline">1</span>.</li>
+</ul></li>
+<li><span class="math inline">48...51</span>: <span class="math inline">16...19</span>-th bits of <strong>limit</strong>.</li>
+<li><span class="math inline">52...55</span>: <strong>Flags</strong>
+<ul>
+<li><span class="math inline">52</span>: reserved. must be <span class="math inline">0</span></li>
+<li><span class="math inline">53</span>: <strong>L</strong>, long-mode code flag. <span class="math inline">1</span>: descriptor defines a 64-bit code segment, then the DV should be <span class="math inline">0</span> ; <span class="math inline">1</span>, otherwise.</li>
+<li><span class="math inline">54</span>: <strong>DB</strong>, size. <span class="math inline">0</span>: defines a 16-bit protected mode segment; <span class="math inline">1</span>: defines a 32-bit protected mode segment.</li>
+<li><span class="math inline">55</span>: <strong>G</strong>, Granularity. <span class="math inline">0</span>: the <strong>limit</strong> is in 1 byte blocks; <span class="math inline">1</span>: the <strong>limit</strong> is in <span class="math inline">4<code>KB</code></span> blocks.</li>
+</ul></li>
+<li><span class="math inline">56...63</span>: <span class="math inline">24...31</span>-th bits for <strong>base</strong>.</li>
+</ul>
+<p>There are something different for the system segment. Specifically, the descriptor is 128-bit long. And the <span class="math inline">64...95</span>-th bits stores the <span class="math inline">32...63</span>-th bits of <strong>base</strong>, while the <span class="math inline">96...127</span>-th bits are reserved and the meaning of other bits are the same as those in descriptor for code and data segment.</p>
+<p>a GDT is a block of memory following the format that shown below: |Address|Description| |:—:|:—:| |GDT Base Address <span class="math inline"> + 0</span> |must be <span class="math inline">0</span>| |GDT Base Address <span class="math inline"> + 8</span> |entry <span class="math inline">1</span>| |GDT Base Address <span class="math inline"> + 16</span> |entry <span class="math inline">2</span>| |<span class="math inline">⋮</span>|<span class="math inline">⋮</span>|</p>
+<p>The address of GDT is stored in the register <code>gdtr</code>(GDT register). The instruction <code>lgdt</code> can be applied to update <code>gdtr</code>, which accepts a value as the pointer to the GDT base address.</p>
+<h2 id="practice">Practice</h2>
+<p>From the forms above, we can write the segment descriptor for 64-bit flag mode.</p>
+<p>For the 64-bit kernel code segment, we have:</p>
+<pre><code>P(47th) = DescriptorType(44th) = E(43th) = 1
+L(53th) = 1</code></pre>
+<p>then the value of this descriptor should be <span class="math inline"><code>0x0020980000000000</code></span></p>
+<p>For the 64-bit kernel data segment, we have:</p>
+<pre><code>P(47th) = DescriptorType(44th) = RW(42th) = 1</code></pre>
+<p>Then the value should be <span class="math inline"><code>0x0000920000000000</code></span></p>
+<p>The following code shown the initial GDT, which is used in the initialization period of kernel program:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>ENTRY(gdtTable)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>    .quad <span class="bn">0x0000000000000000</span>    <span class="co">/* NULL */</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>    .quad <span class="bn">0x0020980000000000</span>    <span class="co">/* kernel code 64-bit */</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    .quad <span class="bn">0x0000920000000000</span>    <span class="co">/* kernel data 64-bit */</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>    .quad <span class="bn">0x0000000000000000</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>    .quad <span class="bn">0x0000000000000000</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>    .quad <span class="bn">0x0020f80000000000</span>    <span class="co">/* user code 64-bit */</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>    .quad <span class="bn">0x0000f20000000000</span>    <span class="co">/* user data 64-bit */</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>    .quad <span class="bn">0x00cf9a000000ffff</span>    <span class="co">/* kernel code 32-bit */</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>    .quad <span class="bn">0x00cf92000000ffff</span>    <span class="co">/* kernel data 32-bit */</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>    .fill <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">0</span>              <span class="co">/* TSS (jmp one segment &lt;9&gt;) in long-mode 128-bit 50*/</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>gdtEnd:</span></code></pre></div>
+<h1 id="tss">TSS</h1>
+<h2 id="description-1">Description</h2>
+<p>The structure and application of TSS in 32-bit mode and 64-bit mode are quite different, and we will specifically focus on 64-bit mode.</p>
+<p><span class="math inline"><code>rsp</code>0...<code>rsp</code>2</span> are stack pointer used to load the stack when a privilege level changes from lower level to higher level.</p>
+<p><span class="math inline"><code>IST</code>1...<code>IST</code>7</span> are stack pointer used to load the stack when an entry in IDT has an <strong>IST</strong> value other than <span class="math inline">0</span>.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Item Name</th>
+<th>Offset</th>
+<th>Length</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Reserved</td>
+<td><span class="math inline"><code>0x00</code></span></td>
+<td><span class="math inline">4<code>B</code></span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><code>rsp</code>0</span></td>
+<td><span class="math inline"><code>0x04</code></span></td>
+<td><span class="math inline">8<code>B</code></span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><code>rsp</code>1</span></td>
+<td><span class="math inline"><code>0x0C</code></span></td>
+<td><span class="math inline">8<code>B</code></span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><code>rsp</code>2</span></td>
+<td><span class="math inline"><code>0x14</code></span></td>
+<td><span class="math inline">8<code>B</code></span></td>
+</tr>
+<tr class="odd">
+<td>Reserved</td>
+<td><span class="math inline"><code>0x1C</code></span></td>
+<td><span class="math inline">8<code>B</code></span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><code>IST</code>1...<code>IST</code>7</span></td>
+<td><span class="math inline"><code>0x24</code></span></td>
+<td><span class="math inline">8<code>B</code> × 7</span></td>
+</tr>
+<tr class="odd">
+<td>Reserved</td>
+<td><span class="math inline"><code>0x5C</code></span></td>
+<td><span class="math inline">12<code>B</code></span></td>
+</tr>
+<tr class="even">
+<td>IOPB</td>
+<td><span class="math inline"><code>0x66</code></span></td>
+<td><span class="math inline">2<code>B</code></span></td>
+</tr>
+</tbody>
+</table>
+<p>Instruction <code>ltr</code> can be used to load the TSS, which accepts an offset based on GDT as the description of TSS, then, modifies the register <code>tr</code>.</p>
+<p>For example,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode as"><code class="sourceCode actionscript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">// assume that the offset of TSS descriptor is on GDT base address + 0x10</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>mov $<span class="bn">0x10</span>, %ax</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>ltr $ax</span></code></pre></div>
+<p>can load the TSS in <code>gdtr + 0x50</code>.</p>
+<h2 id="practice-1">Practice</h2>
+<p>The first step is to set up the descriptor of TSS in GDT. Following the description above, we can write down the value of each bit of the descirptor.</p>
+<p>Let <span class="math inline"><em>A</em></span> be the address of TSS Table. Then the descriptor can be written like:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>((A&gt;&gt;<span class="dv">32</span>)&lt;&lt;<span class="dv">64</span>) | (((A&gt;&gt;<span class="dv">24</span>)&amp;((<span class="dv">1</span>&lt;&lt;<span class="dv">8</span>)-<span class="dv">1</span>))&lt;&lt;<span class="dv">56</span>) | (Flag=<span class="dv">0</span>) | present(<span class="dv">47</span><span class="er">th</span>) | E(<span class="dv">43</span><span class="er">th</span>) | A(<span class="dv">40</span><span class="er">th</span>) | ((A&amp;<span class="bn">0xffffff</span>)&lt;&lt;<span class="dv">16</span>) | (<span class="bn">0x103</span>)</span></code></pre></div>
+<p>Then comes to applying this TSS to CPU, since that we have modified the descriptor in the GDT, then we can simply use assembly code to load it.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode as"><code class="sourceCode actionscript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>mov <span class="bn">0x50</span>, %rax</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>ltr %rax</span></code></pre></div>
+<h1 id="idt">IDT</h1>
+<h2 id="description-2">Description</h2>
+<p>There are at most <span class="math inline">256</span> items in one IDT, and every item is a 128-bit integer. Once an interrupt, trap or error is triggered, CPU will search for the description on the IDT, then jump to the corresponded program, which aims to handle the interrupt/trap/error. If there is no description for this interrupt/trap/error, then “general protection” will be triggered.</p>
+<p>The item of IDT is called <strong>Interrupt Vector</strong> or <strong>Gate Descriptor</strong>, which can be descripted using the following list:</p>
+<ul>
+<li><span class="math inline">0...15</span>: <span class="math inline">0...15</span>-th bits of <strong>Offset</strong></li>
+<li><span class="math inline">16...31</span>: the segment selector <span class="math inline"> ∈ [0, 2<sup>15</sup> − 1]</span></li>
+<li><span class="math inline">32...34</span>: the IST index. if <span class="math inline"> = 0</span>, then the IST will not be used.</li>
+<li><span class="math inline">35...39</span>: reserved.</li>
+<li><span class="math inline">40...43</span>: Gate Type. <span class="math inline"><code>0xE</code></span>: This is a 64-bit interrupt gate. <span class="math inline"><code>0xF</code></span>: This is a 64-bit Trap gate.</li>
+<li><span class="math inline">44</span>: should be <span class="math inline">0</span>.</li>
+<li><span class="math inline">45...46</span>: <strong>DPL</strong>, Processor privilege level. Used to Defined which are allowed to access this interrupt via <code>int</code> instruction. Hardware interrupt ignores this mechanism.</li>
+<li><span class="math inline">47</span>: Must be <span class="math inline">1</span></li>
+<li><span class="math inline">48...63</span>: the <span class="math inline">16...31</span>-th bits of <strong>Offset</strong></li>
+<li><span class="math inline">64...95</span>: the <span class="math inline">32...63</span>-th bits of <strong>Offset</strong></li>
+<li><span class="math inline">96...127</span>: reserved.</li>
+</ul>
+</body>
+</html>
