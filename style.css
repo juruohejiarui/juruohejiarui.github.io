@@ -73,6 +73,10 @@
 	font-size: 15px;
 	font-family: 'Times New Roman', Times, serif;
 }
+code {
+	font-family: 'Consolas', 'ubuntu mono', 'Courier New', Courier, monospace;
+	font-size: 15px;
+}
 h1 {
 	font-size: 24px;
 	font-family: 'Times New Roman', Times, serif;
