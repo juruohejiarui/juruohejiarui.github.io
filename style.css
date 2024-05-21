@@ -1,0 +1,29 @@
+.topbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	background-color: #333;
+}
+
+.topbar-element {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	display: inline-block;
+	padding: 10px;
+	font-size: 20px;
+	min-width: 50px;
+	min-height: 30px;
+	color: #fff;
+	border-bottom: 2px solid #333;
+	text-decoration: none;
+}
+
+.topbar-element:hover {
+	border-bottom: 2px solid #fff;
+}
+
+.topbar-element:focus {
+	background-color: #555;
+	outline: none;
+}
