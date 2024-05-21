@@ -9,7 +9,7 @@ class MarkdownInfo (object) :
 	def generateHtml(self) :
 		# generate the html file
 		dstPath : str = self.sourcePath[0 : -3] + ".html"
-		os.system("pandoc -s \"{}\" -o \"{}\"".format(self.sourcePath, dstPath))
+		os.system("pandoc -s \"{}\" --mathml -o \"{}\"".format(self.sourcePath, dstPath))
 		confPath = dstPath + ".json"
 		confFile = open(confPath, "w")
 		print("Find a new article: " + self.sourcePath)

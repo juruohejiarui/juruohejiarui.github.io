@@ -82,38 +82,38 @@
 <h2 id="description">Description</h2>
 <p>One item of GDT can be described using the following List:</p>
 <ul>
-<li><span class="math inline">0...15</span>: <span class="math inline">0...15</span>-th bits of <strong>limit</strong></li>
-<li><span class="math inline">16...31</span>: <span class="math inline">0...15</span>-th bits of <strong>base</strong></li>
-<li><span class="math inline">32...39</span>: <span class="math inline">16...23</span>-th bits of <strong>base</strong></li>
-<li><span class="math inline">40...47</span>: <strong>Access Byte</strong>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>.</mi><mi>.</mi><mn>.15</mn></mrow><annotation encoding="application/x-tex">0...15</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>.</mi><mi>.</mi><mn>.15</mn></mrow><annotation encoding="application/x-tex">0...15</annotation></semantics></math>-th bits of <strong>limit</strong></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mi>.</mi><mi>.</mi><mn>.31</mn></mrow><annotation encoding="application/x-tex">16...31</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>.</mi><mi>.</mi><mn>.15</mn></mrow><annotation encoding="application/x-tex">0...15</annotation></semantics></math>-th bits of <strong>base</strong></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>.</mi><mi>.</mi><mn>.39</mn></mrow><annotation encoding="application/x-tex">32...39</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mi>.</mi><mi>.</mi><mn>.23</mn></mrow><annotation encoding="application/x-tex">16...23</annotation></semantics></math>-th bits of <strong>base</strong></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mi>.</mi><mi>.</mi><mn>.47</mn></mrow><annotation encoding="application/x-tex">40...47</annotation></semantics></math>: <strong>Access Byte</strong>
 <ul>
-<li><span class="math inline">40</span>: <strong>A</strong>, accessable. recommended to be <span class="math inline">1</span></li>
-<li><span class="math inline">41</span>: <strong>RW</strong>, readable/writeable.
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>: <strong>A</strong>, accessable. recommended to be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>41</mn><annotation encoding="application/x-tex">41</annotation></semantics></math>: <strong>RW</strong>, readable/writeable.
 <ul>
-<li>for code segment: readable(<span class="math inline">1</span>), unreadable(<span class="math inline">0</span>), write access is never allowed for code segments</li>
-<li>for data segment: writeable(<span class="math inline">1</span>), unwriteable(<span class="math inline">0</span>), data segments are always readable.</li>
+<li>for code segment: readable(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>), unreadable(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>), write access is never allowed for code segments</li>
+<li>for data segment: writeable(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>), unwriteable(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>), data segments are always readable.</li>
 </ul></li>
-<li><span class="math inline">42</span>: <strong>DC</strong>, direction/conforming.
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>42</mn><annotation encoding="application/x-tex">42</annotation></semantics></math>: <strong>DC</strong>, direction/conforming.
 <ul>
-<li>for code segment: <span class="math inline">0</span>: code in this segment can only be executed from the ring set in <strong>DPL</strong>. <span class="math inline">1</span>, code int this segment can be executed from an equal or lower (<span class="math inline">≤</span>) privilege level.</li>
-<li>for data segment: <span class="math inline">0</span>: grows up; <span class="math inline">1</span> grows down.</li>
+<li>for code segment: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: code in this segment can only be executed from the ring set in <strong>DPL</strong>. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>, code int this segment can be executed from an equal or lower (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≤</mo><annotation encoding="application/x-tex">\leq</annotation></semantics></math>) privilege level.</li>
+<li>for data segment: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: grows up; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> grows down.</li>
 </ul></li>
-<li><span class="math inline">43</span>: <strong>E</strong>, executable. <span class="math inline">0</span>: this segment is a data segment; <span class="math inline">1</span>: this segment is a code segment.</li>
-<li><span class="math inline">44</span>: <strong>Descriptor type</strong>. <span class="math inline">0</span>: defines a system segment (e.g. a Task State Segment); <span class="math inline">1</span>: defines a code or data segment</li>
-<li><span class="math inline">45...46</span>: <strong>privilege level</strong>. <span class="math inline">0 (<em>h</em><em>i</em><em>g</em><em>h</em><em>e</em><em>s</em><em>t</em>)...3 (<em>l</em><em>o</em><em>w</em><em>e</em><em>s</em><em>t</em>)</span></li>
-<li><span class="math inline">47</span>: <strong>present</strong>. must be <span class="math inline">1</span>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>43</mn><annotation encoding="application/x-tex">43</annotation></semantics></math>: <strong>E</strong>, executable. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: this segment is a data segment; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>: this segment is a code segment.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>44</mn><annotation encoding="application/x-tex">44</annotation></semantics></math>: <strong>Descriptor type</strong>. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: defines a system segment (e.g. a Task State Segment); <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>: defines a code or data segment</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>45</mn><mi>.</mi><mi>.</mi><mn>.46</mn></mrow><annotation encoding="application/x-tex">45...46</annotation></semantics></math>: <strong>privilege level</strong>. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mspace width="0.222em"></mspace><mstyle mathvariant="normal"><mo stretchy="false" form="prefix">(</mo><mi>h</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>e</mi><mi>s</mi><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mstyle><mi>.</mi><mi>.</mi><mn>.3</mn><mspace width="0.222em"></mspace><mstyle mathvariant="normal"><mo stretchy="false" form="prefix">(</mo><mi>l</mi><mi>o</mi><mi>w</mi><mi>e</mi><mi>s</mi><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mstyle></mrow><annotation encoding="application/x-tex">0~\mathrm{(highest)}...3~\mathrm{(lowest)}</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>47</mn><annotation encoding="application/x-tex">47</annotation></semantics></math>: <strong>present</strong>. must be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.</li>
 </ul></li>
-<li><span class="math inline">48...51</span>: <span class="math inline">16...19</span>-th bits of <strong>limit</strong>.</li>
-<li><span class="math inline">52...55</span>: <strong>Flags</strong>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mi>.</mi><mi>.</mi><mn>.51</mn></mrow><annotation encoding="application/x-tex">48...51</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mi>.</mi><mi>.</mi><mn>.19</mn></mrow><annotation encoding="application/x-tex">16...19</annotation></semantics></math>-th bits of <strong>limit</strong>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>52</mn><mi>.</mi><mi>.</mi><mn>.55</mn></mrow><annotation encoding="application/x-tex">52...55</annotation></semantics></math>: <strong>Flags</strong>
 <ul>
-<li><span class="math inline">52</span>: reserved. must be <span class="math inline">0</span></li>
-<li><span class="math inline">53</span>: <strong>L</strong>, long-mode code flag. <span class="math inline">1</span>: descriptor defines a 64-bit code segment, then the DV should be <span class="math inline">0</span> ; <span class="math inline">1</span>, otherwise.</li>
-<li><span class="math inline">54</span>: <strong>DB</strong>, size. <span class="math inline">0</span>: defines a 16-bit protected mode segment; <span class="math inline">1</span>: defines a 32-bit protected mode segment.</li>
-<li><span class="math inline">55</span>: <strong>G</strong>, Granularity. <span class="math inline">0</span>: the <strong>limit</strong> is in 1 byte blocks; <span class="math inline">1</span>: the <strong>limit</strong> is in <span class="math inline">4<code>KB</code></span> blocks.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>52</mn><annotation encoding="application/x-tex">52</annotation></semantics></math>: reserved. must be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>53</mn><annotation encoding="application/x-tex">53</annotation></semantics></math>: <strong>L</strong>, long-mode code flag. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>: descriptor defines a 64-bit code segment, then the DV should be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> ; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>, otherwise.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>54</mn><annotation encoding="application/x-tex">54</annotation></semantics></math>: <strong>DB</strong>, size. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: defines a 16-bit protected mode segment; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>: defines a 32-bit protected mode segment.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>55</mn><annotation encoding="application/x-tex">55</annotation></semantics></math>: <strong>G</strong>, Granularity. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>: the <strong>limit</strong> is in 1 byte blocks; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>: the <strong>limit</strong> is in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mtext mathvariant="monospace">𝙺𝙱</mtext></mrow><annotation encoding="application/x-tex">4\texttt{KB}</annotation></semantics></math> blocks.</li>
 </ul></li>
-<li><span class="math inline">56...63</span>: <span class="math inline">24...31</span>-th bits for <strong>base</strong>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>56</mn><mi>.</mi><mi>.</mi><mn>.63</mn></mrow><annotation encoding="application/x-tex">56...63</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>24</mn><mi>.</mi><mi>.</mi><mn>.31</mn></mrow><annotation encoding="application/x-tex">24...31</annotation></semantics></math>-th bits for <strong>base</strong>.</li>
 </ul>
-<p>There are something different for the system segment. Specifically, the descriptor is 128-bit long. And the <span class="math inline">64...95</span>-th bits stores the <span class="math inline">32...63</span>-th bits of <strong>base</strong>, while the <span class="math inline">96...127</span>-th bits are reserved and the meaning of other bits are the same as those in descriptor for code and data segment.</p>
+<p>There are something different for the system segment. Specifically, the descriptor is 128-bit long. And the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mi>.</mi><mi>.</mi><mn>.95</mn></mrow><annotation encoding="application/x-tex">64...95</annotation></semantics></math>-th bits stores the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>.</mi><mi>.</mi><mn>.63</mn></mrow><annotation encoding="application/x-tex">32...63</annotation></semantics></math>-th bits of <strong>base</strong>, while the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>96</mn><mi>.</mi><mi>.</mi><mn>.127</mn></mrow><annotation encoding="application/x-tex">96...127</annotation></semantics></math>-th bits are reserved and the meaning of other bits are the same as those in descriptor for code and data segment.</p>
 <p>a GDT is a block of memory following the format that shown below:</p>
 <table>
 <thead>
@@ -124,20 +124,20 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">GDT Base Address <span class="math inline"> + 0</span></td>
-<td style="text-align: center;">must be <span class="math inline">0</span></td>
+<td style="text-align: center;">GDT Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">+ 0</annotation></semantics></math></td>
+<td style="text-align: center;">must be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">GDT Base Address <span class="math inline"> + 8</span></td>
-<td style="text-align: center;">entry <span class="math inline">1</span></td>
+<td style="text-align: center;">GDT Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">+ 8</annotation></semantics></math></td>
+<td style="text-align: center;">entry <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">GDT Base Address <span class="math inline"> + 16</span></td>
-<td style="text-align: center;">entry <span class="math inline">2</span></td>
+<td style="text-align: center;">GDT Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">+ 16</annotation></semantics></math></td>
+<td style="text-align: center;">entry <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><span class="math inline">⋮</span></td>
-<td style="text-align: center;"><span class="math inline">⋮</span></td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>⋮</mi><annotation encoding="application/x-tex">\vdots</annotation></semantics></math></td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>⋮</mi><annotation encoding="application/x-tex">\vdots</annotation></semantics></math></td>
 </tr>
 </tbody>
 </table>
@@ -147,10 +147,10 @@
 <p>For the 64-bit kernel code segment, we have:</p>
 <pre><code>P(47th) = DescriptorType(44th) = E(43th) = 1
 L(53th) = 1</code></pre>
-<p>then the value of this descriptor should be <span class="math inline"><code>0x0020980000000000</code></span></p>
+<p>then the value of this descriptor should be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶𝟸𝟶𝟿𝟾𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x0020980000000000}</annotation></semantics></math></p>
 <p>For the 64-bit kernel data segment, we have:</p>
 <pre><code>P(47th) = DescriptorType(44th) = RW(42th) = 1</code></pre>
-<p>Then the value should be <span class="math inline"><code>0x0000920000000000</code></span></p>
+<p>Then the value should be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶𝟶𝟶𝟿𝟸𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x0000920000000000}</annotation></semantics></math></p>
 <p>The following code shown the initial GDT, which is used in the initialization period of kernel program:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>ENTRY(gdtTable)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>    .quad <span class="bn">0x0000000000000000</span>    <span class="co">/* NULL */</span></span>
@@ -167,8 +167,8 @@ L(53th) = 1</code></pre>
 <h1 id="tss">TSS</h1>
 <h2 id="description-1">Description</h2>
 <p>The structure and application of TSS in 32-bit mode and 64-bit mode are quite different, and we will specifically focus on 64-bit mode.</p>
-<p><span class="math inline"><code>rsp</code>0...<code>rsp</code>2</span> are stack pointer used to load the stack when a privilege level changes from lower level to higher level.</p>
-<p><span class="math inline"><code>IST</code>1...<code>IST</code>7</span> are stack pointer used to load the stack when an entry in IDT has an <strong>IST</strong> value other than <span class="math inline">0</span>.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚛𝚜𝚙</mtext><mn>0</mn><mi>.</mi><mi>.</mi><mi>.</mi><mtext mathvariant="monospace">𝚛𝚜𝚙</mtext><mn>2</mn></mrow><annotation encoding="application/x-tex">\texttt{rsp}0...\texttt{rsp}2</annotation></semantics></math> are stack pointer used to load the stack when a privilege level changes from lower level to higher level.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><mn>1</mn><mi>.</mi><mi>.</mi><mi>.</mi><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><mn>7</mn></mrow><annotation encoding="application/x-tex">\texttt{IST}1...\texttt{IST}7</annotation></semantics></math> are stack pointer used to load the stack when an entry in IDT has an <strong>IST</strong> value other than <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</p>
 <table>
 <thead>
 <tr class="header">
@@ -180,43 +180,43 @@ L(53th) = 1</code></pre>
 <tbody>
 <tr class="odd">
 <td>Reserved</td>
-<td><span class="math inline"><code>0x00</code></span></td>
-<td><span class="math inline">4<code>B</code></span></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x00}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">4\texttt{B}</annotation></semantics></math></td>
 </tr>
 <tr class="even">
-<td><span class="math inline"><code>rsp</code>0</span></td>
-<td><span class="math inline"><code>0x04</code></span></td>
-<td><span class="math inline">8<code>B</code></span></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚛𝚜𝚙</mtext><mn>0</mn></mrow><annotation encoding="application/x-tex">\texttt{rsp}0</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟺</mtext><annotation encoding="application/x-tex">\texttt{0x04}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">8\texttt{B}</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
-<td><span class="math inline"><code>rsp</code>1</span></td>
-<td><span class="math inline"><code>0x0C</code></span></td>
-<td><span class="math inline">8<code>B</code></span></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚛𝚜𝚙</mtext><mn>1</mn></mrow><annotation encoding="application/x-tex">\texttt{rsp}1</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝙲</mtext><annotation encoding="application/x-tex">\texttt{0x0C}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">8\texttt{B}</annotation></semantics></math></td>
 </tr>
 <tr class="even">
-<td><span class="math inline"><code>rsp</code>2</span></td>
-<td><span class="math inline"><code>0x14</code></span></td>
-<td><span class="math inline">8<code>B</code></span></td>
-</tr>
-<tr class="odd">
-<td>Reserved</td>
-<td><span class="math inline"><code>0x1C</code></span></td>
-<td><span class="math inline">8<code>B</code></span></td>
-</tr>
-<tr class="even">
-<td><span class="math inline"><code>IST</code>1...<code>IST</code>7</span></td>
-<td><span class="math inline"><code>0x24</code></span></td>
-<td><span class="math inline">8<code>B</code> × 7</span></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚛𝚜𝚙</mtext><mn>2</mn></mrow><annotation encoding="application/x-tex">\texttt{rsp}2</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟷𝟺</mtext><annotation encoding="application/x-tex">\texttt{0x14}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">8\texttt{B}</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
 <td>Reserved</td>
-<td><span class="math inline"><code>0x5C</code></span></td>
-<td><span class="math inline">12<code>B</code></span></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟷𝙲</mtext><annotation encoding="application/x-tex">\texttt{0x1C}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">8\texttt{B}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><mn>1</mn><mi>.</mi><mi>.</mi><mi>.</mi><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><mn>7</mn></mrow><annotation encoding="application/x-tex">\texttt{IST}1...\texttt{IST}7</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟸𝟺</mtext><annotation encoding="application/x-tex">\texttt{0x24}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mtext mathvariant="monospace">𝙱</mtext><mo>×</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">8\texttt{B}\times 7</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td>Reserved</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟻𝙲</mtext><annotation encoding="application/x-tex">\texttt{0x5C}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">12\texttt{B}</annotation></semantics></math></td>
 </tr>
 <tr class="even">
 <td>IOPB</td>
-<td><span class="math inline"><code>0x66</code></span></td>
-<td><span class="math inline">2<code>B</code></span></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟼𝟼</mtext><annotation encoding="application/x-tex">\texttt{0x66}</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">2\texttt{B}</annotation></semantics></math></td>
 </tr>
 </tbody>
 </table>
@@ -228,27 +228,27 @@ L(53th) = 1</code></pre>
 <p>can load the TSS in <code>gdtr + 0x50</code>.</p>
 <h2 id="practice-1">Practice</h2>
 <p>The first step is to set up the descriptor of TSS in GDT. Following the description above, we can write down the value of each bit of the descirptor.</p>
-<p>Let <span class="math inline"><em>A</em></span> be the address of TSS Table. Then the descriptor can be written like:</p>
+<p>Let <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> be the address of TSS Table. Then the descriptor can be written like:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>((A&gt;&gt;<span class="dv">32</span>)&lt;&lt;<span class="dv">64</span>) | (((A&gt;&gt;<span class="dv">24</span>)&amp;((<span class="dv">1</span>&lt;&lt;<span class="dv">8</span>)-<span class="dv">1</span>))&lt;&lt;<span class="dv">56</span>) | (Flag=<span class="dv">0</span>) | present(<span class="dv">47</span><span class="er">th</span>) | E(<span class="dv">43</span><span class="er">th</span>) | A(<span class="dv">40</span><span class="er">th</span>) | ((A&amp;<span class="bn">0xffffff</span>)&lt;&lt;<span class="dv">16</span>) | (<span class="bn">0x103</span>)</span></code></pre></div>
 <p>Then comes to applying this TSS to CPU, since that we have modified the descriptor in the GDT, then we can simply use assembly code to load it.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode as"><code class="sourceCode actionscript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>mov <span class="bn">0x50</span>, %rax</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>ltr %rax</span></code></pre></div>
 <h1 id="idt">IDT</h1>
 <h2 id="description-2">Description</h2>
-<p>There are at most <span class="math inline">256</span> items in one IDT, and every item is a 128-bit integer. Once an interrupt, trap or error is triggered, CPU will search for the description on the IDT, then jump to the corresponded program, which aims to handle the interrupt/trap/error. If there is no description for this interrupt/trap/error, then “general protection” will be triggered.</p>
+<p>There are at most <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>256</mn><annotation encoding="application/x-tex">256</annotation></semantics></math> items in one IDT, and every item is a 128-bit integer. Once an interrupt, trap or error is triggered, CPU will search for the description on the IDT, then jump to the corresponded program, which aims to handle the interrupt/trap/error. If there is no description for this interrupt/trap/error, then “general protection” will be triggered.</p>
 <p>The item of IDT is called <strong>Interrupt Vector</strong> or <strong>Gate Descriptor</strong>, which can be descripted using the following list:</p>
 <ul>
-<li><span class="math inline">0...15</span>: <span class="math inline">0...15</span>-th bits of <strong>Offset</strong></li>
-<li><span class="math inline">16...31</span>: the segment selector <span class="math inline"> ∈ [0, 2<sup>15</sup> − 1]</span></li>
-<li><span class="math inline">32...34</span>: the IST index. if <span class="math inline"> = 0</span>, then the IST will not be used.</li>
-<li><span class="math inline">35...39</span>: reserved.</li>
-<li><span class="math inline">40...43</span>: Gate Type. <span class="math inline"><code>0xE</code></span>: This is a 64-bit interrupt gate. <span class="math inline"><code>0xF</code></span>: This is a 64-bit Trap gate.</li>
-<li><span class="math inline">44</span>: should be <span class="math inline">0</span>.</li>
-<li><span class="math inline">45...46</span>: <strong>DPL</strong>, Processor privilege level. Used to Defined which are allowed to access this interrupt via <code>int</code> instruction. Hardware interrupt ignores this mechanism.</li>
-<li><span class="math inline">47</span>: Must be <span class="math inline">1</span></li>
-<li><span class="math inline">48...63</span>: the <span class="math inline">16...31</span>-th bits of <strong>Offset</strong></li>
-<li><span class="math inline">64...95</span>: the <span class="math inline">32...63</span>-th bits of <strong>Offset</strong></li>
-<li><span class="math inline">96...127</span>: reserved.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>.</mi><mi>.</mi><mn>.15</mn></mrow><annotation encoding="application/x-tex">0...15</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>.</mi><mi>.</mi><mn>.15</mn></mrow><annotation encoding="application/x-tex">0...15</annotation></semantics></math>-th bits of <strong>Offset</strong></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mi>.</mi><mi>.</mi><mn>.31</mn></mrow><annotation encoding="application/x-tex">16...31</annotation></semantics></math>: the segment selector <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><msup><mn>2</mn><mn>15</mn></msup><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\in[0, 2^{15}-1]</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>.</mi><mi>.</mi><mn>.34</mn></mrow><annotation encoding="application/x-tex">32...34</annotation></semantics></math>: the IST index. if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">=0</annotation></semantics></math>, then the IST will not be used.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>35</mn><mi>.</mi><mi>.</mi><mn>.39</mn></mrow><annotation encoding="application/x-tex">35...39</annotation></semantics></math>: reserved.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mi>.</mi><mi>.</mi><mn>.43</mn></mrow><annotation encoding="application/x-tex">40...43</annotation></semantics></math>: Gate Type. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙴</mtext><annotation encoding="application/x-tex">\texttt{0xE}</annotation></semantics></math>: This is a 64-bit interrupt gate. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙵</mtext><annotation encoding="application/x-tex">\texttt{0xF}</annotation></semantics></math>: This is a 64-bit Trap gate.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>44</mn><annotation encoding="application/x-tex">44</annotation></semantics></math>: should be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>45</mn><mi>.</mi><mi>.</mi><mn>.46</mn></mrow><annotation encoding="application/x-tex">45...46</annotation></semantics></math>: <strong>DPL</strong>, Processor privilege level. Used to Defined which are allowed to access this interrupt via <code>int</code> instruction. Hardware interrupt ignores this mechanism.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>47</mn><annotation encoding="application/x-tex">47</annotation></semantics></math>: Must be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mi>.</mi><mi>.</mi><mn>.63</mn></mrow><annotation encoding="application/x-tex">48...63</annotation></semantics></math>: the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mi>.</mi><mi>.</mi><mn>.31</mn></mrow><annotation encoding="application/x-tex">16...31</annotation></semantics></math>-th bits of <strong>Offset</strong></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mi>.</mi><mi>.</mi><mn>.95</mn></mrow><annotation encoding="application/x-tex">64...95</annotation></semantics></math>: the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>.</mi><mi>.</mi><mn>.63</mn></mrow><annotation encoding="application/x-tex">32...63</annotation></semantics></math>-th bits of <strong>Offset</strong></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>96</mn><mi>.</mi><mi>.</mi><mn>.127</mn></mrow><annotation encoding="application/x-tex">96...127</annotation></semantics></math>: reserved.</li>
 </ul>
 </body>
 </html>

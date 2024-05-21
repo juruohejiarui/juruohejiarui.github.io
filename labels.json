@@ -1,5 +1,5 @@
 [
-	{"index":0,"name":"test1-label","articles":[0,1]},
-	{"index":1,"name":"test2-label","articles":[0]},
-	{"index":2,"name":"OS","articles":[4,5,2,3]}
+	{"index":0,"name":"OS","articles":[0,1,4,5]},
+	{"index":1,"name":"test2","articles":[2]},
+	{"index":2,"name":"test1","articles":[3]}
 ]
