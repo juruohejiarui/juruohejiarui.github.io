@@ -5,7 +5,7 @@ window.onload = function() {
 	// get parameters from url
 	var searchParams = new URLSearchParams(window.location.search);
 	if (searchParams.has("path")) params.path = searchParams.get("path");
-	params.path = "articles/" + decodeURIComponent(params.path) + ".html";
+	params.path = "articles/" + decodeURIComponent(params.path);
 
 	if (params.path == null) return ;
 	loadJSON(params.path, showArticleInfo, params);
