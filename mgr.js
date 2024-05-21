@@ -3,7 +3,7 @@ function loadJSON(path) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", url);
 	xhr.send(null);
-	res = null;
+	var res = null;
 	xhr.onload = function() {
 		if (xhr.status == 200)
 			res = JSON.parse(xhr.responseText);
