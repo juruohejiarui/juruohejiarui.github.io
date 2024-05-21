@@ -126,18 +126,21 @@ def _saveCache() :
 		if article != articles[-1] :
 			outputFile.write(f',')
 		outputFile.write('\n')
-	outputFile.write(f'],\n\t"labels":[\n')
+	outputFile.write(f'\t],\n\t"labels":[\n')
+	isFir = True
 	for label in labelDict.values() :
-		outputFile.write(f'\t\t{{\n\t\t\t"name":\"{label.name}\",\n\t\t\t"index":{label.index},\n\t\t\t"articles":[')
+		if len(label.articles) == 0 :
+			continue
+		if not isFir : outputFile.write(",\n")
+		isFir = False
+		outputFile.write("\t\t")
+		outputFile.write(f'{{\n\t\t\t"name":\"{label.name}\",\n\t\t\t"index":{label.index},\n\t\t\t"articles":[')
 		for article in label.articles :
 			outputFile.write(f'{article.index}')
 			if article != label.articles[-1] :
 				outputFile.write(f',')
 		outputFile.write(f']\n\t\t}}')
-		if label != list(labelDict.values())[-1] :
-			outputFile.write(f',')
-		outputFile.write('\n')
-	outputFile.write(f'\t]\n}}\n')
+	outputFile.write(f'\n\t]\n}}\n')
 	pass
 	
 def Mgr_outputArticles() :
@@ -159,17 +162,20 @@ def Mgr_outputArticles() :
 def Mgr_outputLabels() :
 	oFile = open("labels.json", "w")
 	oFile.write("[\n")
+	isFir = True
 	for label in labelDict.values() :
-		oFile.write(f'\t{{"index":{label.index},"name":"{label.name}","articles":[')
+		if len(label.articles) == 0 :
+			continue
+		if not isFir : oFile.write(",\n")
+		isFir = False
+		oFile.write("\t")
+		oFile.write(f'{{"index":{label.index},"name":"{label.name}","articles":[')
 		for article in label.articles :
 			oFile.write(f'{article.index}')
 			if article != label.articles[-1] :
 				oFile.write(',')
 		oFile.write(']}')
-		if label != list(labelDict.values())[-1] :
-			oFile.write(',')
-		oFile.write('\n')
-	oFile.write(']')
+	oFile.write('\n]')
 
 # delete an article
 def Mgr_deleteArticle(index : int) :
