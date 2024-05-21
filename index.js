@@ -11,7 +11,7 @@ window.onload = function() {
 	if (params.pageId == null) params.pageId = 0;
 	else params.pageId = parseInt(params.pageId);
 
-	loadJSON("articles.json", ShowArticles, params);
+	loadJSON("articles.json", showArticles, params);
 
 	curPageId = params.pageId;
 	curLabel = params.label;
@@ -20,7 +20,7 @@ window.onload = function() {
 curLabel = null;
 curPageId = 0;
 
-function ShowArticles(articles, params) {
+function showArticles(articles, params) {
 	var articlesDiv = document.getElementById("articleList");
 	list = [];
 	for (var i = 0; i < articles.length; i++) {

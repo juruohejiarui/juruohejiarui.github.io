@@ -8,10 +8,15 @@ window.onload = function() {
 	params.path = "articles/" + decodeURIComponent(params.path) + ".html";
 
 	if (params.path == null) return ;
-	loadJSON(params.path, ShowArticleInfo, params);
+	loadJSON(params.path, showArticleInfo, params);
 
 	contentDiv = document.getElementById("content");
 	fetch(params.path).then(response => response.text()).then(text => {
 		contentDiv.innerHTML = text;
 	});
+}
+
+function showArticleInfo(articleInfo, params) {
+	title = document.getElementById("title");
+	title.innerHTML = articleInfo.title;
 }

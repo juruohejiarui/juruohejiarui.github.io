@@ -9,14 +9,14 @@ window.onload = function() {
 	if (params.pageId == null) params.pageId = 0;
 	else params.pageId = parseInt(params.pageId);
 
-	loadJSON("labels.json", ShowLabels, params);
+	loadJSON("labels.json", showLabels, params);
 
 	curPageId = params.pageId;
 }
 
 curPageId = 0;
 
-function ShowLabels(labels, params) {
+function showLabels(labels, params) {
 	var labelsDiv = document.getElementById("labelList");
 	if (params.pageId * 10 >= labels.length) params.pageId = Math.floor(labels.length / 10.0);
 	for (var i = params.pageId * 10; i < Math.min((params.pageId * 10 + 10, labels.length)); i++) {
