@@ -13,7 +13,7 @@ window.onload = function() {
 
 	loadJSON("articles.json", ShowArticles, params);
 
-	curPage = params.pageId;
+	curPageId = params.pageId;
 	curLabel = params.label;
 }
 
@@ -49,14 +49,14 @@ function ShowArticles(articles, params) {
 
 function nextPage() {
 	if (curLabel != null) 
-		window.location.assign("labels.html?label=" + curLabel + "&pageId=" + (curPageId + 1));
+		window.location.assign("index.html?label=" + curLabel + "&pageId=" + (curPageId + 1));
 	else
-		window.location.assign("labels.html?pageId=" + (curPageId + 1));
+		window.location.assign("index.html?pageId=" + (curPageId + 1));
 }
 
 function prevPage() {
 	if (curLabel != null) 
-		window.location.assign("labels.html?label=" + curLabel + "&pageId=" + Math.max(0, curPageId - 1));
+		window.location.assign("index.html?label=" + curLabel + "&pageId=" + Math.max(0, curPageId - 1));
 	else 
-		window.location.assign("labels.html?pageId=" + Math.max(0, curPageId - 1));
+		window.location.assign("index.html?pageId=" + Math.max(0, curPageId - 1));
 }

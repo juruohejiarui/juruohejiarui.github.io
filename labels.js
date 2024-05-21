@@ -11,7 +11,7 @@ window.onload = function() {
 
 	loadJSON("labels.json", ShowLabels, params);
 
-	curPage = params.pageId;
+	curPageId = params.pageId;
 }
 
 curPageId = 0;
