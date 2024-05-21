@@ -39,14 +39,20 @@
 	text-decoration: underline;
 }
 
+.main-list {
+	margin-top: 50px;
+	text-align: center;
+}
+
 .article-list-element-title {
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-family:'Times New Roman', Times, serif;
 	font-size: 30px;
 	color: #333;
 	padding: 5px;
 }
 
 .article-list-element {
+	text-align: left;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	font-size: 15px;
 	background-color: #fff;
