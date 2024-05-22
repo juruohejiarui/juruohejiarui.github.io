@@ -40,5 +40,12 @@
 		"labels":["OS"],
 		"file": "interrupt&trap.html",
 		"updateTime":1716279893.5998378
+	},
+	{
+		"index":6,
+		"title":"分治",
+		"labels":["碎碎念"],
+		"file": "分治.html",
+		"updateTime":1716359024.4764695
 	}
 ]

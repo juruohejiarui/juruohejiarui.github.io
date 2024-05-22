@@ -203,5 +203,3 @@ def Mgr_deleteLabel(index : int) :
 def Mgr_addLabel(name : str) :
 	getLabel(name)
 	_saveCache()
-
-
