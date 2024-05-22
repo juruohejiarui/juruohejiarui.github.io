@@ -94,3 +94,7 @@ h4 {
 	font-size: 18px;
 	font-family: 'Times New Roman', Times, serif;
 }
+math {
+	font-family: 'Cambria Math', 'Times New Roman', Times, serif;
+	font-size: 15px;
+}
