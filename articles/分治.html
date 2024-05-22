@@ -12,6 +12,68 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
 </head>
 <body>
@@ -30,7 +92,7 @@ T(n)=a\cdot T\left(\frac{n}{b}\right)+f(n)
 <ul>
 <li>Case 1: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>O</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mi>b</mi></msub><mi>a</mi><mo>−</mo><mi>ϵ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mtext mathvariant="normal">where</mtext><mspace width="0.222em"></mspace><mi>ϵ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(n)=O\left(n^{\log_b a-\epsilon}\right) \text{where}~\epsilon&gt;0</annotation></semantics></math>, 那么 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mi>b</mi></msub><mi>a</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(n)=\Theta\left(n^{\log_b a}\right)</annotation></semantics></math></li>
 <li>Case 2: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mi>b</mi></msub><mi>a</mi></mrow></msup><mo>⋅</mo><msubsup><mo>log</mo><mn>2</mn><mi>k</mi></msubsup><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mtext mathvariant="normal">where</mtext><mspace width="0.222em"></mspace><mi>k</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(n)=\Theta\left(n^{\log _b a} \cdot \log_2^k n\right) \text{where}~k\ge 0</annotation></semantics></math>，那么 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mi>b</mi></msub><mi>a</mi></mrow></msup><msubsup><mo>log</mo><mn>2</mn><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msubsup><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(n)=\Theta\left(n^{\log_b a}\log _2^{k+1} n\right)</annotation></semantics></math></li>
-<li>Case 3: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mi>b</mi></msub><mi>a</mi><mo>+</mo><mi>ϵ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mtext mathvariant="normal">where</mtext><mspace width="0.222em"></mspace><mi>ϵ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(n)=\Omega\left(n^{\log_b a+\epsilon}\right) \text{where}~\epsilon&gt;0</annotation></semantics></math> ，那么 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T(n)=\Theta(f(n))</annotation></semantics></math></li>
+<li>Case 3: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mi>b</mi></msub><mi>a</mi><mo>+</mo><mi>ϵ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mtext mathvariant="normal">where</mtext><mspace width="0.222em"></mspace><mi>ϵ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(n)=\Omega\left(n^{\log_b a+\epsilon}\right) \text{where}~\epsilon&gt;0</annotation></semantics></math> ，并且 <span class="math inline">$\exist c, n_0~\text{s.t}~\forall n\ge n_0, af\left(\frac{n}{b}\right)\leq cf(n)$</span> 那么 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T(n)=\Theta(f(n))</annotation></semantics></math></li>
 </ul>
 <h3 id="examples">Examples</h3>
 <p>对于归并排序：</p>
@@ -67,5 +129,51 @@ T(n)=3\cdot T\left(\frac{n}{2}\right) + \Theta(n)
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>7</mn><mo>⋅</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>Θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 T(n)=7\cdot T\left(\frac{n}{2}\right) + \Theta\left(n^2\right)
 </annotation></semantics></math> 根据 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>n</mi><mn>2</mn></msup><mo>=</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mn>2</mn></msub><mn>7</mn><mo>−</mo><msub><mo>log</mo><mn>2</mn></msub><mfrac><mn>7</mn><mn>2</mn></mfrac></mrow></msup></mrow><annotation encoding="application/x-tex">n^2=n^{\log_2 7-\log_2 \frac{7}{2}}</annotation></semantics></math> ，可以得到 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><msub><mo>log</mo><mn>2</mn></msub><mn>7</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(n)=\Theta\left(n^{\log_2 7}\right)</annotation></semantics></math> 。</p>
+<h1 id="平面最近点对">平面最近点对</h1>
+<p>考虑平面上有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math> 个点 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mi>…</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo>,</mo><msub><mi>y</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x_1,y_1),(x_2,y_2)\dots (x_n,y_n)</annotation></semantics></math> ，现在需要求出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle mathvariant="normal"><mi>A</mi><mi>N</mi><mi>S</mi></mstyle><mo>=</mo><munder><mo>min</mo><mrow><mn>1</mn><mo>≤</mo><mi>i</mi><mo>&lt;</mo><mi>j</mi><mo>≤</mo><mi>n</mi></mrow></munder><msqrt><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mi>x</mi><mi>j</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mi>y</mi><mi>j</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow></msqrt></mrow><annotation encoding="application/x-tex">
+\mathrm{ANS}=\min_{1\leq i&lt;j\leq n} \sqrt{(x_i-x_j)^2+(y_i-y_j)^2}
+</annotation></semantics></math></p>
+<p>范围是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>≤</mo><mi>n</mi><mo>≤</mo><mn>2</mn><mo>×</mo><msup><mn>10</mn><mn>5</mn></msup><mo>,</mo><mo>∀</mo><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">]</mo><mo>∩</mo><mstyle mathvariant="double-struck"><mi>ℤ</mi></mstyle><mo>,</mo><mn>0</mn><mo>≤</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mo>,</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mo>≤</mo><msup><mn>10</mn><mn>9</mn></msup></mrow><annotation encoding="application/x-tex">1\leq n\leq 2\times 10^5, \forall i\in [1,n]\cap \mathbb{Z}, 0\leq |x_i|, |y_i|\leq 10^9</annotation></semantics></math> 。</p>
+<p>首先将所有的点按照 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> 坐标从小到大排序，使用归并，假设现在需要处理编号（排序后的编号）在 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>,</mo><mi>r</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[l,r]</annotation></semantics></math> 之间的点，取出 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> 的中位数 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>m</mi></msub><annotation encoding="application/x-tex">x_m</annotation></semantics></math>，然后将 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>,</mo><mtext mathvariant="normal">mid</mtext><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[l, \text{mid}]</annotation></semantics></math> 和 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mtext mathvariant="normal">mid</mtext><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[\text{mid}+1,r]</annotation></semantics></math> 这两个子区间的答案分别求出，得到他们的较小值 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math> ，并且将两个区间的点按照 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math> 从小到大排序。</p>
+<p>现在可以认为，只有横坐标在 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>x</mi><mi>m</mi></msub><mo>−</mo><mi>d</mi><mo>,</mo><msub><mi>x</mi><mi>m</mi></msub><mo>+</mo><mi>d</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[x_m-d,x_m+d]</annotation></semantics></math> 之间的点才可能更新答案。因此将左右两个子区间的满足这个条件的点分别取出，得到两个点的序列 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>,</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">L,R</annotation></semantics></math> ，这两个序列也是按照 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math> 从小到大排序的。</p>
+<p>对于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math> 中的节点 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><msub><mi>L</mi><mi>i</mi></msub></msub><mo>,</mo><msub><mi>y</mi><msub><mi>L</mi><mi>i</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\left(x_{L_i},y_{L_i}\right)</annotation></semantics></math>，考虑可能可以更新答案的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math> 中的点，显然只有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math> 在 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>y</mi><msub><mi>L</mi><mi>i</mi></msub></msub><mo>−</mo><mi>d</mi><mo>,</mo><msub><mi>y</mi><msub><mi>L</mi><mi>i</mi></msub></msub><mo>+</mo><mi>d</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\left[y_{L_i}-d,y_{L_i}+d\right]</annotation></semantics></math> 的点才能更新答案，将 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>x</mi><mi>m</mi></msub><mo>,</mo><msub><mi>x</mi><mi>m</mi></msub><mo>+</mo><mi>d</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[x_m,x_m+d]</annotation></semantics></math> 和 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>y</mi><msub><mi>L</mi><mi>i</mi></msub></msub><mo>−</mo><mi>d</mi><mo>,</mo><msub><mi>y</mi><msub><mi>L</mi><mi>i</mi></msub></msub><mo>+</mo><mi>d</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\left[y_{L_i}-d,y_{L_i}+d\right]</annotation></semantics></math> 这两个区间组成的矩形分成 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math> 个一样的小矩形，可以发现这些小矩形的对角线长度都是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>5</mn><mn>6</mn></mfrac><mi>d</mi></mrow><annotation encoding="application/x-tex">\frac{5}{6}d</annotation></semantics></math> ，根据 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math> 的定义，每个小矩形最多有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 个点，因此对于每一个 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math> 中的点，只有常数个 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math> 中的点可能与其配合并更新答案。可以使用双指针法得到 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math> 中可行的区间。</p>
+<p>因此时间复杂度的递推式为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>2</mn><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>Θ</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>Θ</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><msub><mo>log</mo><mn>2</mn></msub><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+T(n)=2T\left(\frac{n}{2}\right)+\Theta(n)=\Theta(n\log_2 n)
+</annotation></semantics></math></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">struct</span> Point {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>    LL x, y;</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>    Point(LL x = <span class="dv">0</span>, LL y = <span class="dv">0</span>) : x(x), y(y) {}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>} p[maxn];</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="kw">inline</span> LL sqr(LL x) { <span class="cf">return</span> x * x; }</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="kw">inline</span> LL dis(<span class="at">const</span> Point &amp;a, <span class="at">const</span> Point &amp;b) { <span class="cf">return</span> sqr(a.x - b.x) + sqr(a.y - b.y); }</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>LL solve(<span class="dt">int</span> l, <span class="dt">int</span> r) {</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>    <span class="cf">if</span> (l &gt;= r) <span class="cf">return</span> INF;</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>    <span class="dt">int</span> mid = (l + r) &gt;&gt; <span class="dv">1</span>;</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>    LL midx = p[mid].x, mnd = INF;</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>    LL res = min(solve(l, mid), solve(mid + <span class="dv">1</span>, r));</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>    vector&lt;Point&gt; lls, rls(<span class="dv">1</span>, Point());</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>    <span class="cf">for</span> (<span class="dt">int</span> i = l; i &lt;= mid; i++) <span class="cf">if</span> (sqr(midx - p[i].x) &lt; res) lls.push_back(p[i]);</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a>    <span class="cf">for</span> (<span class="dt">int</span> i = mid + <span class="dv">1</span>; i &lt;= r; i++) <span class="cf">if</span> (sqr(midx - p[i].x) &lt; res) rls.push_back(p[i]);</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a>    <span class="dt">size_t</span> rgl = <span class="dv">1</span>, rgr = <span class="dv">0</span>;</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a>    <span class="cf">for</span> (<span class="dt">size_t</span> i = <span class="dv">0</span>; i &lt; lls.size(); i++) {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a>        <span class="cf">while</span> (rgr &lt; rls.size() - <span class="dv">1</span> &amp;&amp; (rls[rgr].y &lt;= lls[i].y || sqr(rls[rgr + <span class="dv">1</span>].y - lls[i].y) &lt;= res)) rgr++;</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>        <span class="cf">while</span> (rgl &lt;= rls.size() - <span class="dv">1</span> &amp;&amp; rls[rgl].y &lt; lls[i].y &amp;&amp; sqr(rls[rgl].y - lls[i].y) &gt; res) rgl++;</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a>        <span class="cf">for</span> (<span class="dt">size_t</span> j = rgl; j &lt;= rgr; j++) mnd = min(mnd, dis(lls[i], rls[j]));</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a>    }</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a>    rgl = l, rgr = mid + <span class="dv">1</span>;</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true"></a>    lls.clear();</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true"></a>    <span class="cf">while</span> (rgl &lt;= mid &amp;&amp; rgr &lt;= r) {</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true"></a>        <span class="cf">if</span> (p[rgl].y &lt; p[rgr].y) lls.push_back(p[rgl++]);</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true"></a>        <span class="cf">else</span> lls.push_back(p[rgr++]);</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true"></a>    }</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true"></a>    <span class="cf">while</span> (rgl &lt;= mid) lls.push_back(p[rgl++]);</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true"></a>    <span class="cf">while</span> (rgr &lt;= r) lls.push_back(p[rgr++]);</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true"></a>    <span class="cf">for</span> (<span class="dt">int</span> i = l; i &lt;= r; i++) p[i] = lls[i - l];</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true"></a>    <span class="cf">return</span> min(mnd, res);</span></code></pre></div>
 </body>
 </html>
