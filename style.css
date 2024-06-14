@@ -8,6 +8,11 @@
 	background-color: #333;
 }
 
+table {
+	font-family: 'Times New Roman', Times, serif;
+	font-size: 14px;
+}
+
 .topbar-element {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	display: inline-block;
