@@ -9,14 +9,18 @@
 }
 
 td {
-	word-wrap:break-word;
-	word-break:break-all;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
 }
 
 table {
 	font-family: 'Times New Roman', Times, serif;
-	font-size: 14px;
+	font-size: 15px;
 	table-layout:fixed;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
 }
 
 .topbar-element {
