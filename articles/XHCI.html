@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>XHCI</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+</head>
+<body>
+<h1 id="前言">前言</h1>
+<p>本文参考了 <a href="https://wiki.osdev.org/XHCI">XHCI on OS Dev</a> 以及 《USB: The Universal Series Bus》。代码存储于 <code>github.com/juruohejiarui/VCPP-2.git</code> 中的 <code>VOS/kernel/hardware/USB</code> .</p>
+<p>需要先简单了解 PCIe 的数据结构和枚举、检测 UEFI 提供的 PCIe 信息的方法。</p>
+<h1 id="数据结构和注释">数据结构和注释</h1>
+<h2 id="pcie">PCIe</h2>
+<p>从 UEFI 提供的 <code>MCFG</code> 表中，可以读出一个 PCIe 数据表的结构，我们称之为 <code>PCIeConfig</code>，对于 XHCI 设备，其结构一般如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Offset</th>
+<th style="text-align: center;">Size(Byte)</th>
+<th style="text-align: center;">Name</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0x0</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Vendor ID</td>
+<td style="text-align: center;">制造商 ID</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0x2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Device ID</td>
+<td style="text-align: center;">制造商申请的设备特定的 ID</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0x4</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Command</td>
+<td style="text-align: center;">用于操作该PCIe设备的寄存器</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0x6</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Status</td>
+<td style="text-align: center;">该设备的状态</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0x8</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Revision ID</td>
+<td style="text-align: center;">我也不懂，应该不太重要，可以忽略</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0x9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Prog IF</td>
+<td style="text-align: center;">Program Interface Byte, 只读，用于寄存器级别下指定该设备的类别</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0xa</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Subclass</td>
+<td style="text-align: center;">子类 ID</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0xb</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Class Id</td>
+<td style="text-align: center;">类 ID</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0xc</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Cache Line Size</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Class Id, subClass, Prog IF</mtext><annotation encoding="application/x-tex">\text{Class Id, subClass, Prog IF}</annotation></semantics></math> 三者共同确认一个设备的类别，网上有对照表，这里就不粘出来了。对于 XHCI 设备，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Class Id</mtext><mo>=</mo><mtext mathvariant="monospace">𝟶𝚡𝙲</mtext><mo>,</mo><mtext mathvariant="normal">Subclass</mtext><mo>=</mo><mtext mathvariant="monospace">𝟶𝚡𝟹</mtext><mo>,</mo><mtext mathvariant="normal">Prog IF</mtext><mo>=</mo><mtext mathvariant="monospace">𝟶𝚡𝟹𝟶</mtext></mrow><annotation encoding="application/x-tex">\text{Class Id}=\texttt{0xC}, \text{Subclass}=\texttt{0x3}, \text{Prog IF}=\texttt{0x30}</annotation></semantics></math></p>
+</body>
+</html>
