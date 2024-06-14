@@ -1,6 +1,6 @@
 [
-	{"index":0,"name":"OS","articles":[0,2,3,5,7]},
-	{"index":1,"name":"test","articles":[1,4]},
-	{"index":2,"name":"算法","articles":[6]},
-	{"index":3,"name":"碎碎念","articles":[6]}
+	{"index":0,"name":"OS","articles":[0,1,4,6,7]},
+	{"index":1,"name":"test","articles":[2,5]},
+	{"index":2,"name":"算法","articles":[3]},
+	{"index":3,"name":"碎碎念","articles":[3]}
 ]
