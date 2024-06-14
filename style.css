@@ -11,7 +11,7 @@
 td {
 	white-space: pre-wrap;
 	word-wrap: break-word;
-	word-break: break-all;
+	word-break: normal;
 }
 
 table {
@@ -20,7 +20,7 @@ table {
 	table-layout:fixed;
 	white-space: pre-wrap;
 	word-wrap: break-word;
-	word-break: break-all;
+	word-break: normal;
 }
 
 .topbar-element {

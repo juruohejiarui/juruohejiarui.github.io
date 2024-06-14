@@ -81,21 +81,22 @@
 <p>本文参考了 <a href="https://wiki.osdev.org/XHCI">XHCI on OS Dev</a> 以及 《USB: The Universal Series Bus》。代码存储于 <code>github.com/juruohejiarui/VCPP-2.git</code> 中的 <code>VOS/kernel/hardware/USB</code> .</p>
 <p>需要先简单了解 PCIe 的数据结构和枚举、检测 UEFI 提供的 PCIe 信息的方法。</p>
 <h1 id="数据结构和注释">数据结构和注释</h1>
+<p>XHCI 控制器有大量的寄存器组和描述，需要一定的耐心。但是我们不需要全部了解，只需要知道一些基本的，可以用于设备枚举，检测和通信的寄存器就可以了。但是为了查阅方便，这里我还是几乎完全摘抄了《USB: The Universal Series Bus》对于每一个描述符的解释。当我们需要某些功能的时候再回来查阅表格即可。如果学习过程中发现一些不懂得名词，可以先把它记下来，之后遇到了定义或解释的时候再返回来看，如果之后都没有出现，那么就可以认为它并不重要。</p>
 <h2 id="pcie">PCIe</h2>
 <p>从 UEFI 提供的 <code>MCFG</code> 表中，可以读出一个 PCIe 数据表头的结构，我们称之为 <code>PCIeConfig</code>，对于 XHCI 设备，其结构一般如下：</p>
 <table>
 <colgroup>
 <col style="width: 17%" />
-<col style="width: 28%" />
-<col style="width: 28%" />
-<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: center;">Offset</th>
 <th style="text-align: center;">Size(Byte)</th>
 <th style="text-align: center;">Name</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
@@ -103,169 +104,169 @@
 <td style="text-align: center;">0x0</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 <td style="text-align: center;">Vendor ID</td>
-<td style="text-align: center;">制造商 ID</td>
+<td style="text-align: left;">制造商 ID</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x2</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 <td style="text-align: center;">Device ID</td>
-<td style="text-align: center;">制造商申请的设备特定的 ID</td>
+<td style="text-align: left;">制造商申请的设备特定的 ID</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x4</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 <td style="text-align: center;">Command</td>
-<td style="text-align: center;">用于操作该PCIe设备的寄存器</td>
+<td style="text-align: left;">用于操作该PCIe设备的寄存器</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x6</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 <td style="text-align: center;">Status</td>
-<td style="text-align: center;">该设备的状态</td>
+<td style="text-align: left;">该设备的状态</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x8</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Revision ID</td>
-<td style="text-align: center;">我也不懂，应该不太重要，可以忽略</td>
+<td style="text-align: left;">我也不懂，应该不太重要，可以忽略</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x9</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Prog IF</td>
-<td style="text-align: center;">Program Interface Byte, 只读，用于寄存器级别下指定该设备的类别</td>
+<td style="text-align: left;">Program Interface Byte, 只读，用于寄存器级别下指定该设备的类别</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0xa</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Subclass</td>
-<td style="text-align: center;">子类 ID</td>
+<td style="text-align: left;">子类 ID</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0xb</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Class Id</td>
-<td style="text-align: center;">类 ID</td>
+<td style="text-align: left;">类 ID</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0xc</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Cache Line Size</td>
-<td style="text-align: center;">我也不懂，应该不太重要，可以忽略</td>
+<td style="text-align: left;">我也不懂，应该不太重要，可以忽略</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0xd</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Latency Timer</td>
-<td style="text-align: center;">用于PCI，PCIe不支持，固定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
+<td style="text-align: left;">用于PCI，PCIe不支持，固定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0xe</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Header Type</td>
-<td style="text-align: center;">指示该表头剩余内容的结构</td>
+<td style="text-align: left;">指示该表头剩余内容的结构</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0xf</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">BIST</td>
-<td style="text-align: center;">Built-in self test, 设备的内建自检状态和控制寄存器</td>
+<td style="text-align: left;">Built-in self test, 设备的内建自检状态和控制寄存器</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x10</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Bar0</td>
-<td style="text-align: center;">Base Address 0</td>
+<td style="text-align: left;">Base Address 0</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x14</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Bar1</td>
-<td style="text-align: center;">Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
+<td style="text-align: left;">Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x18</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Bar2</td>
-<td style="text-align: center;">Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
+<td style="text-align: left;">Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x1c</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Bar3</td>
-<td style="text-align: center;">Base Address 3</td>
+<td style="text-align: left;">Base Address 3</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x20</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Bar4</td>
-<td style="text-align: center;">Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
+<td style="text-align: left;">Base Address <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x24</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Bar5</td>
-<td style="text-align: center;">Base Address 5</td>
+<td style="text-align: left;">Base Address 5</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x28</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Cardbus CIS Pointer</td>
-<td style="text-align: center;">指向 Cardbus 结构的指针，该值被 PCI 和 Cardbus 共享（机翻）</td>
+<td style="text-align: left;">指向 Cardbus 结构的指针，该值被 PCI 和 Cardbus 共享（机翻）</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x2c</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 <td style="text-align: center;">Subsystem Vendor ID</td>
-<td style="text-align: center;">子系统的Vendor ID, 不重要</td>
+<td style="text-align: left;">子系统的Vendor ID, 不重要</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x2e</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
 <td style="text-align: center;">subsystem ID</td>
-<td style="text-align: center;">子系统ID，不重要</td>
+<td style="text-align: left;">子系统ID，不重要</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x30</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></td>
 <td style="text-align: center;">Expansion ROM base address</td>
-<td style="text-align: center;">不懂，应该不太重要</td>
+<td style="text-align: left;">不懂，应该不太重要</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x34</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Capabilities Pointer</td>
-<td style="text-align: center;">使能寄存器的偏移量</td>
+<td style="text-align: left;">使能寄存器的偏移量</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x35</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math></td>
 <td style="text-align: center;">Reserved</td>
-<td style="text-align: center;">保留位置，不能读写</td>
+<td style="text-align: left;">保留位置，不能读写</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x3c</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Interrupt Line</td>
-<td style="text-align: center;">用于指定该设备连接到 PIC (不是I/O APIC) 的 (IRQ0,IRQ1…IRQ15) 哪个（些）引脚, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏</mtext><annotation encoding="application/x-tex">\texttt{0xff}</annotation></semantics></math> 则表示无连接</td>
+<td style="text-align: left;">用于指定该设备连接到 PIC (不是I/O APIC) 的 (IRQ0,IRQ1…IRQ15) 哪个（些）引脚, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏</mtext><annotation encoding="application/x-tex">\texttt{0xff}</annotation></semantics></math> 则表示无连接</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x3d</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Interrupt PIN</td>
-<td style="text-align: center;">用于指定该设备使用哪个中断引脚，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext><mo>→</mo><mtext mathvariant="normal">does not use</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟷</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙰</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟸</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙱</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x0}\rightarrow \text{does not use},\texttt{0x1}\rightarrow \texttt{INTA}, \texttt{0x2}\rightarrow \texttt{INTB}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟹</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙲</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x3}\rightarrow \texttt{INTC}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟺</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙳</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x4}\rightarrow \texttt{INTD}</annotation></semantics></math></td>
+<td style="text-align: left;">用于指定该设备使用哪个中断引脚，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext><mo>→</mo><mtext mathvariant="normal">does not use</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟷</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙰</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟸</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙱</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x0}\rightarrow \text{does not use},\texttt{0x1}\rightarrow \texttt{INTA}, \texttt{0x2}\rightarrow \texttt{INTB}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟹</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙲</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x3}\rightarrow \texttt{INTC}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟺</mtext><mo>→</mo><mtext mathvariant="monospace">𝙸𝙽𝚃𝙳</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x4}\rightarrow \texttt{INTD}</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x3e</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Min Grant</td>
-<td style="text-align: center;">用于 PCI ，PCIe 下不可用，固定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
+<td style="text-align: left;">用于 PCI ，PCIe 下不可用，固定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x3f</td>
 <td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
 <td style="text-align: center;">Max Latency</td>
-<td style="text-align: center;">用于 PCI ，PCIe 下不可用，固定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
+<td style="text-align: left;">用于 PCI ，PCIe 下不可用，固定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></td>
 </tr>
 </tbody>
 </table>
@@ -288,17 +289,17 @@
 <p>对于 Bit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>:</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">0:6</annotation></semantics></math> ，只有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟷</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟸</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x0},\texttt{0x1},\texttt{0x2}</annotation></semantics></math> 三种取值，分别表示该 PCIe 设备是一个 General Device, PCI-to-PCI bridge, PCI-to-Cardbus bridge ，对于 XHCI 设备，其 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Header Type</mtext><annotation encoding="application/x-tex">\text{Header Type}</annotation></semantics></math> 值一定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x0}</annotation></semantics></math> 或 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟾𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x80}</annotation></semantics></math> 。而上述展示的PCIe表结构就是 Bit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>:</mo><mn>6</mn><mo>=</mo><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext></mrow><annotation encoding="application/x-tex">0:6=\texttt{0x0}</annotation></semantics></math> 时的结构，对于其他情况，可以参考 <a href="https://wiki.osdev.org/PCI">PCI on OS Dev</a> 。</p>
 <h2 id="xhci">XHCI</h2>
 <h3 id="capability-registers">Capability Registers</h3>
-<p>可以翻译为使能寄存器组，这些寄存器均为只读(RO)寄存器。其基地址可以使用 <code>PCIeConfig</code> 的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">bar0</mtext><mo>,</mo><mtext mathvariant="normal">bar1</mtext></mrow><annotation encoding="application/x-tex">\text{bar0}, \text{bar1}</annotation></semantics></math> 组合获取，计算方式如下：</p>
+<p>可以翻译为使能寄存器组，这些寄存器均为只读(RO)寄存器。存储了大量的控制器支持信息。其基地址可以使用 <code>PCIeConfig</code> 的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">bar0</mtext><mo>,</mo><mtext mathvariant="normal">bar1</mtext></mrow><annotation encoding="application/x-tex">\text{bar0}, \text{bar1}</annotation></semantics></math> 组合获取，计算方式如下：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co">// 将两个地址的值拼接起来，然后对 4K 下取整对齐</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>addr=(bar0 | (bar1 &lt;&lt; <span class="dv">32</span>)) &amp; (~((<span class="dv">1</span> &lt;&lt; <span class="dv">12</span>) - <span class="dv">1</span>))</span></code></pre></div>
-<p>这个 <code>addr</code> 可以记录为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">BaseAddr</mtext><annotation encoding="application/x-tex">\text{BaseAddr}</annotation></semantics></math> ，稍后依然会用到。接下来直接列出这些寄存器的信息：</p>
+<p>这个 <code>addr</code> 可以记录为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">baseAddr</mtext><annotation encoding="application/x-tex">\text{baseAddr}</annotation></semantics></math> ，稍后依然会用到。接下来直接列出这些寄存器的信息：</p>
 <table>
 <thead>
 <tr class="header">
 <th style="text-align: center;">Offset</th>
 <th style="text-align: center;">Size(Byte)</th>
 <th style="text-align: center;">Name</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
@@ -306,61 +307,61 @@
 <td style="text-align: center;">0x0</td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">CapLen</td>
-<td style="text-align: center;">使能寄存器组的大小</td>
+<td style="text-align: left;">使能寄存器组的大小</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x1</td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">RSVD</td>
-<td style="text-align: center;">保留</td>
+<td style="text-align: left;">保留</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x2</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">hciVersion</td>
-<td style="text-align: center;">接口的版本数字，不需要关注</td>
+<td style="text-align: left;">接口的版本数字，不需要关注</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x4</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">hcsParams1</td>
-<td style="text-align: center;">结构化的参数组 #1</td>
+<td style="text-align: left;">结构化的参数组 #1</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x8</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">hcsParams2</td>
-<td style="text-align: center;">结构化的参数组 #2</td>
+<td style="text-align: left;">结构化的参数组 #2</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0xc</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">hcsParams3</td>
-<td style="text-align: center;">结构化的参数组 #3</td>
+<td style="text-align: left;">结构化的参数组 #3</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x10</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">hccParams1</td>
-<td style="text-align: center;">使能参数组 #1</td>
+<td style="text-align: left;">使能参数组 #1</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x14</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">dbOff</td>
-<td style="text-align: center;">Doorbell 寄存器组的偏移（相对于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">BaseAddr</mtext><annotation encoding="application/x-tex">\text{BaseAddr}</annotation></semantics></math>）</td>
+<td style="text-align: left;">Doorbell 寄存器组的偏移，对 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math> 对齐（相对于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">baseAddr</mtext><annotation encoding="application/x-tex">\text{baseAddr}</annotation></semantics></math>）</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">0x18</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">rtsOff</td>
-<td style="text-align: center;">运行时寄存器空间的偏移，相对于 （相对于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">BaseAddr</mtext><annotation encoding="application/x-tex">\text{BaseAddr}</annotation></semantics></math>）</td>
+<td style="text-align: left;">运行时寄存器空间的偏移，对 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>64</mn><annotation encoding="application/x-tex">64</annotation></semantics></math> 对齐，相对于 （相对于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">baseAddr</mtext><annotation encoding="application/x-tex">\text{baseAddr}</annotation></semantics></math>）</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">0x1c</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">hccParams2</td>
-<td style="text-align: center;">使能参数组 #2</td>
+<td style="text-align: left;">使能参数组 #2</td>
 </tr>
 </tbody>
 </table>
@@ -371,79 +372,283 @@
 <tr class="header">
 <th style="text-align: center;">Bit</th>
 <th style="text-align: center;">Name</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">0:7</td>
 <td style="text-align: center;">MaxSlots</td>
-<td style="text-align: center;">最大插槽的编号</td>
+<td style="text-align: left;">最大插槽的编号</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">8:18</td>
 <td style="text-align: center;">MaxIntrs</td>
-<td style="text-align: center;">最大的中断编号</td>
+<td style="text-align: left;">最大的中断编号</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">19:23</td>
 <td style="text-align: center;">Reserved</td>
-<td style="text-align: center;">保留</td>
+<td style="text-align: left;">保留</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">24:31</td>
 <td style="text-align: center;">MaxPorts</td>
-<td style="text-align: center;">最大端口的编号</td>
+<td style="text-align: left;">最大端口的编号</td>
 </tr>
 </tbody>
 </table>
+<p>这三个最大值可以用于枚举端口和中断，但注意，可用的端口和选择使用的中断可能并不连续。</p>
 <h4 id="hcsparams-2-结构化的参数组-2">hcsParams 2, 结构化的参数组 #2</h4>
 <table>
 <colgroup>
-<col style="width: 23%" />
-<col style="width: 38%" />
-<col style="width: 38%" />
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: center;">Bit</th>
 <th style="text-align: center;">Name</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">0:3</td>
 <td style="text-align: center;">Isochronous Scheduling Threshold (IST)</td>
-<td style="text-align: center;">告诉软件它可以在多远的帧中修改 TRH（传输请求块）并且仍能正确执行</td>
+<td style="text-align: left;">告诉软件它可以在多远的帧中修改 TRB（传输请求块）并且仍能正确执行</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">4:7</td>
 <td style="text-align: center;">Event Ring Segment Table Max (ERST Max)</td>
-<td style="text-align: center;">Event Ring Segment Table Base Size registers (稍后会有解释) 可以支持的最大值</td>
+<td style="text-align: left;">Event Ring Segment Table Base Size registers (稍后会有解释) 可以支持的最大值</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">8:20</td>
 <td style="text-align: center;">Reserved</td>
-<td style="text-align: center;">保留</td>
+<td style="text-align: left;">保留</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">21:25</td>
 <td style="text-align: center;">Max Scractchpad Buffer(High 5 bits)</td>
-<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">26</td>
 <td style="text-align: center;">Scratchpad Restore(SPR)</td>
-<td style="text-align: center;">表示是否支持暂存器保存/恢复缓冲区</td>
+<td style="text-align: left;">表示是否支持暂存器保存/恢复缓冲区</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">27:31</td>
 <td style="text-align: center;">Max Scractchpad Buffer(Low 5 bits)</td>
-<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
 </tr>
 </tbody>
 </table>
 <p>将 Max Scractchpad Buffer 拼接起来可以得到软件需要申请的用于暂存器缓冲区的内容大小，如果该值为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> ，那么就不需要申请内容，更多要求则和接下来提到的pageSize的值有关，但是在本人的机子上，这个值都是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>。</p>
+<h4 id="hcsparams-3-结构化的参数组-3">hcsParams 3, 结构化的参数组 #3</h4>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Name</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0:7</td>
+<td style="text-align: center;">U1 Device Exit Latency</td>
+<td style="text-align: left;">电源状态从 U1 到 U0 所需要的微秒数 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup><mi>s</mi><mo>=</mo><mn>1</mn><mi>μ</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">10^{-6}s=1\mu s</annotation></semantics></math>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8:15</td>
+<td style="text-align: center;">Reserved</td>
+<td style="text-align: left;">保留</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">16:31</td>
+<td style="text-align: center;">U2 Device Exit Latency</td>
+<td style="text-align: left;">电源状态从 U1 到 U0 所需要的微秒数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="hccparams-1-使能参数组-1">hccParams 1, 使能参数组 #1</h4>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Name</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">64-bit Addressing Capability(AC64)</td>
+<td style="text-align: left;">该XHCI控制器是(1)否(0)可以使用64-bit地址，如果不能，那么接下来使用的所有地址，都会忽略高32位。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">BW Negotiation Capability(BNC)</td>
+<td style="text-align: left;">用于指示该控制器是(1)否(0)实现了 Bandwidth Negotiation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Context Size(CSZ)</td>
+<td style="text-align: left;">指示上下文的大小 1: 64-byte; 0: 32-byte 。该位对 Stream Contexts 不生效。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Port Power Control(PPC)</td>
+<td style="text-align: left;">1: 所有的端口永远处于通电状态；0: 每个端口可以自行控制供电状态</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">Port Indicators(PIND)</td>
+<td style="text-align: left;">用于指示端口指示灯的控制。0: 控制不可用; 1: 参照端口寄存器的 Bit 14:15 来获取更多信息</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Light HC Reset Capability(LHRC)</td>
+<td style="text-align: left;">指示操作寄存器组中的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">usbCmd</mtext><annotation encoding="application/x-tex">\text{usbCmd}</annotation></semantics></math> 寄存器的 Light Host Controller 功能是(1)否(0)可用</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">Latency Tolerance Messaging Capability(LTC)</td>
+<td style="text-align: left;">表示该控制器是(1)否(0)支持传递延迟容忍消息(Latency Tolerance Messageing, LTM)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">No Secondary SID Support(NSS)</td>
+<td style="text-align: left;"><strong>是(0)否(1)</strong> 支持 Secondary Stream IDs.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">Parse All Event Data(PAE)</td>
+<td style="text-align: left;">1: 当转移到下一个传输描述符的时候，所有的 TRB 都会被解析；0: 不会。检测到一个 Short Packet 的时候会使用这个位</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Stopped - Short Packet Capability(SPC)</td>
+<td style="text-align: left;">该控制器是(1)否(0)可以发出短数据包停止代码(Stopped-Short Packet Completion code)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">Stopped EDTLA Capability(SEC)</td>
+<td style="text-align: left;">该控制器是(1)否(0)在 Stream Context 中实现了 Stopped EDTLA 区域，对于较新的硬件，这一位都是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">Continuous Frame ID Capability(CFC)</td>
+<td style="text-align: left;">该控制器是(1)否(0)能够匹配连续 ISO 传输描述符的 ID。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12:15</td>
+<td style="text-align: center;">Maximum Primary Stream Array Size(MaxPSASize)</td>
+<td style="text-align: left;">允许的最大 Stream Array 大小</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">16:31</td>
+<td style="text-align: center;">XHCI Extended Capabilities Pointer(xECP)</td>
+<td style="text-align: left;">0: 该控制器不存在拓展使能描述; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">&gt;0</annotation></semantics></math>: 拓展使能描述的偏移（相对于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">baseAddr</mtext><annotation encoding="application/x-tex">\text{baseAddr}</annotation></semantics></math> ）</td>
+</tr>
+</tbody>
+</table>
+<p>实际上的 Stream Array 最大大小需要使用如下方式计算 :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">maxSize</mtext><mo>=</mo><msup><mn>2</mn><mrow><mtext mathvariant="normal">MaxPSASize</mtext><mo>+</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">
+\text{maxSize}=2^{\text{MaxPSASize}+1}
+</annotation></semantics></math></p>
+<p>对于拓展时能描述的偏移实际上是：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">offset of extended Capabilites</mtext><mo>=</mo><mtext mathvariant="normal">baseAddr</mtext><mo>+</mo><mn>4</mn><mo>×</mo><mtext mathvariant="normal">xECP</mtext></mrow><annotation encoding="application/x-tex">
+\text{offset of extended Capabilites}=\text{baseAddr} + 4\times \text{xECP}
+</annotation></semantics></math></p>
+<h4 id="hccparams-2-使能参数组-2">hccParams 2, 使能参数组 #2</h4>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Name</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">U3 Entry Capability</td>
+<td style="text-align: left;">根(root hub)是否支持暂停完成通知(Suspend Completion notification)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">ConfigEP Command Max Exit Latency too Large(CMC)</td>
+<td style="text-align: left;">是(1)否(0)可以生成最大退出潜伏期过长的兼容错误(Exit Latency too Large compatibility error)，该位被操作寄存器的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">usbCmd</mtext><annotation encoding="application/x-tex">\text{usbCmd}</annotation></semantics></math> 的 CME 位使用。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Force Save Context Capability(FSC)</td>
+<td style="text-align: left;">Save State命令是(1)否(0)应当将所有的cached Slot, End Point, Stream和其他上下文存储到内存中</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Compliance Transition Capability(CTC)</td>
+<td style="text-align: left;">该控制器是(1)否(0) 支持 Compliance Transition Enabled 位</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">Large ESIT Payload Capability(LEC)</td>
+<td style="text-align: left;">是(1)否(0)支持大于 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mtext mathvariant="monospace">𝙺𝚋</mtext></mrow><annotation encoding="application/x-tex">48\texttt{Kb}</annotation></semantics></math> 的 ESIT Payloads</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Configuration Information Capability</td>
+<td style="text-align: left;">是(1)否(0)支持 输入控制上下文块(Input Control Context block) 中的 Configuration Value, Interface Number 和 Alternate settings 域的拓展配置信息</td>
+</tr>
+</tbody>
+</table>
+<h3 id="extended-capabilites-list">Extended Capabilites List</h3>
+<p>除了上面的 Capability Registers，XHCI 还提供了链表结构的拓展使能列表，和 PCIe 非常类似。每个拓展描述符都长下面这样：</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Name</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0:7</td>
+<td style="text-align: center;">ID</td>
+<td style="text-align: left;">RO, 该拓展描述符的 ID</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8:15</td>
+<td style="text-align: center;">Next</td>
+<td style="text-align: left;">RO, 下一个拓展描述符相对于当前描述符的偏移，计算方式如下：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">next offset</mtext><mo>=</mo><mtext mathvariant="normal">current offset</mtext><mo>+</mo><mn>4</mn><mo>×</mo><mtext mathvariant="normal">Next</mtext></mrow><annotation encoding="application/x-tex">\text{next offset}=\text{current offset} + 4\times \text{Next}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">n</td>
+<td style="text-align: center;">Varies</td>
+<td style="text-align: left;">每个 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">ID</mtext><annotation encoding="application/x-tex">\text{ID}</annotation></semantics></math> 特定的内容</td>
+</tr>
+</tbody>
+</table>
+<p>下面给出一些常用的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">ID</mtext><annotation encoding="application/x-tex">\text{ID}</annotation></semantics></math> 对照表：</p>
 </body>
 </html>

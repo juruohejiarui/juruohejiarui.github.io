@@ -14,7 +14,7 @@ window.onload = function() {
 	fetch(params.path).then(response => response.text()).then(text => {
 		contentDiv.innerHTML = text;
 	});
-
+	makeHeaderList();
 	windowSizeChange();
 }
 
@@ -34,4 +34,10 @@ function windowSizeChange() {
 	else {
 		contentDiv.style.margin = "0px 10% 0px 10%";
 	}
+}
+
+function makeHeaderList() {
+	// scan recursively to find all headers
+	var headers = document.body.querySelectorAll("h1, h2, h3, h4, h5, h6");
+	 
 }
