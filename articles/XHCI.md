@@ -34,7 +34,7 @@
 | 0x34		| $1$ | Capabilities Pointer		| 使能寄存器的偏移量 |
 | 0x35		| $7$ | Reserved					| 保留位置，不能读写 |
 | 0x3c		| $1$ | Interrupt Line				| 用于指定该设备连接到 PIC (不是I/O APIC) 的 (IRQ0,IRQ1...IRQ15) 哪个（些）引脚, $\texttt{0xff}$ 则表示无连接 |
-| 0x3d		| $1$ | Interrupt PIN				| 用于指定该设备使用哪个中断引脚，$\texttt{0x0}\rightarrow \text{does not use},\\\texttt{0x1}\rightarrow \texttt{INTA}, \texttt{0x2}\rightarrow \texttt{INTB}, \texttt{0x3}\rightarrow \texttt{INTC}, \texttt{0x4}\rightarrow \texttt{INTD}$
+| 0x3d		| $1$ | Interrupt PIN				| 用于指定该设备使用哪个中断引脚，$\texttt{0x0}\rightarrow \text{does not use},\texttt{0x1}\rightarrow \texttt{INTA}, \texttt{0x2}\rightarrow \texttt{INTB}, \texttt{0x3}\rightarrow \texttt{INTC}, \texttt{0x4}\rightarrow \texttt{INTD}$
 | 0x3e		| $1$ | Min Grant					| 用于 PCI ，PCIe 下不可用，固定为 $0$ |
 | 0x3f		| $1$ | Max Latency					| 用于 PCI ，PCIe 下不可用，固定为 $0$ |
 
