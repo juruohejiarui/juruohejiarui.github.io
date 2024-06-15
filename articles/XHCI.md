@@ -3,9 +3,18 @@
 
 需要先简单了解 PCIe 的数据结构和枚举、检测 UEFI 提供的 PCIe 信息的方法。
 
+可以遵循下列步骤设置你的XHCI控制器：
+
+1. 找到所有 XHCI 的数据结构
+2. 获取所需要的信息，建立所需要的额外的数据结构
+3. 重置控制器，并设置控制器
+4. 启动控制器
+5. 开启监测进程
+
 # 数据结构和注释
 
 XHCI 控制器有大量的寄存器组和描述，需要一定的耐心。但是我们不需要全部了解，只需要知道一些基本的，可以用于设备枚举，检测和通信的寄存器就可以了。但是为了查阅方便，这里我还是几乎完全摘抄了《USB: The Universal Series Bus》对于每一个描述符的解释。当我们需要某些功能的时候再回来查阅表格即可。如果学习过程中发现一些不懂得名词，可以先把它记下来，之后遇到了定义或解释的时候再返回来看，如果之后都没有出现，那么就可以认为它并不重要。
+
 
 ## PCIe
 从 UEFI 提供的 ``MCFG`` 表中，可以读出一个 PCIe 数据表头的结构，我们称之为 ``PCIeConfig``，对于 XHCI 设备，其结构一般如下：
@@ -74,7 +83,7 @@ addr=(bar0 | (bar1 << 32)) & (~((1 << 12) - 1))
 | 0xc	| 4 | hcsParams3		| 结构化的参数组 #3	|
 | 0x10	| 4	| hccParams1		| 使能参数组 #1 |
 | 0x14	| 4 | dbOff		| Doorbell 寄存器组的偏移，对 $4$ 对齐（相对于 $\text{baseAddr}$）|
-| 0x18	| 4	| rtsOff	| 运行时寄存器空间的偏移，对 $64$ 对齐，相对于 （相对于 $\text{baseAddr}$）|
+| 0x18	| 4	| rtsOff	| 运行时寄存器空间的偏移，对 $64$ 对齐（相对于 $\text{baseAddr}$）|
 | 0x1c	| 4 | hccParams2		| 使能参数组 #2 |
 
 上面的表中提到了五个参数组，实际上就是将一些值比较小的信息拼接起来，节省空间，接下来给出每个参数组的具体内容。
@@ -97,9 +106,9 @@ addr=(bar0 | (bar1 << 32)) & (~((1 << 12) - 1))
 | 0:3	| Isochronous Scheduling Threshold (IST)	| 告诉软件它可以在多远的帧中修改 TRB（传输请求块）并且仍能正确执行 |
 | 4:7	| Event Ring Segment Table Max (ERST Max)	| Event Ring Segment Table Base Size registers (稍后会有解释) 可以支持的最大值 |
 | 8:20	| Reserved	| 保留
-| 21:25	| Max Scractchpad Buffer(High 5 bits)  		| 
-| 26	| Scratchpad Restore(SPR)	| 表示是否支持暂存器保存/恢复缓冲区 |
-| 27:31	| Max Scractchpad Buffer(Low 5 bits)		|
+| 21:25	| Max Scractchpad Buffer (High 5 bits)  		| 
+| 26	| Scratchpad Restore (SPR)	| 表示是否支持暂存器保存/恢复缓冲区 |
+| 27:31	| Max Scractchpad Buffer (Low 5 bits)		|
 
 将 Max Scractchpad Buffer 拼接起来可以得到软件需要申请的用于暂存器缓冲区的内容大小，如果该值为 $0$ ，那么就不需要申请内容，更多要求则和接下来提到的pageSize的值有关，但是在本人的机子上，这个值都是 $0$。
 
@@ -115,20 +124,20 @@ addr=(bar0 | (bar1 << 32)) & (~((1 << 12) - 1))
 
 | Bit | Name | Description |
 | :----: | :--------: | :-------- |
-| 0		| 64-bit Addressing Capability(AC64)	| 该XHCI控制器是(1)否(0)可以使用64-bit地址，如果不能，那么接下来使用的所有地址，都会忽略高32位。|
-| 1		| BW Negotiation Capability(BNC)		| 用于指示该控制器是(1)否(0)实现了 Bandwidth Negotiation |
-| 2		| Context Size(CSZ)	| 指示上下文的大小 1: 64-byte; 0: 32-byte 。该位对 Stream Contexts 不生效。|
-| 3		| Port Power Control(PPC)	| 1: 所有的端口永远处于通电状态；0: 每个端口可以自行控制供电状态 |
-| 4		| Port Indicators(PIND)		| 用于指示端口指示灯的控制。0: 控制不可用; 1: 参照端口寄存器的 Bit 14:15 来获取更多信息 |
-| 5		| Light HC Reset Capability(LHRC)	| 指示操作寄存器组中的 $\text{usbCmd}$ 寄存器的 Light Host Controller 功能是(1)否(0)可用 |
-| 6		| Latency Tolerance Messaging Capability(LTC)	| 表示该控制器是(1)否(0)支持传递延迟容忍消息(Latency Tolerance Messageing, LTM) |
-| 7		| No Secondary SID Support(NSS)	| **是(0)否(1)** 支持 Secondary Stream IDs.
-| 8		| Parse All Event Data(PAE)		| 1: 当转移到下一个传输描述符的时候，所有的 TRB 都会被解析；0: 不会。检测到一个 Short Packet 的时候会使用这个位 |
-| 9		| Stopped - Short Packet Capability(SPC)		| 该控制器是(1)否(0)可以发出短数据包停止代码(Stopped-Short Packet Completion code) |
-| 10	| Stopped EDTLA Capability(SEC)					| 该控制器是(1)否(0)在 Stream Context 中实现了 Stopped EDTLA 区域，对于较新的硬件，这一位都是 $1$。 |
-| 11	| Continuous Frame ID Capability(CFC)			| 该控制器是(1)否(0)能够匹配连续 ISO 传输描述符的 ID。|
-| 12:15	| Maximum Primary Stream Array Size(MaxPSASize)	| 允许的最大 Stream Array 大小 |
-| 16:31	| XHCI Extended Capabilities Pointer(xECP)		| 0: 该控制器不存在拓展使能描述; $>0$: 拓展使能描述的偏移（相对于 $\text{baseAddr}$ ）|
+| 0		| 64-bit Addressing Capability (AC64)	| 该XHCI控制器是(1)否(0)可以使用64-bit地址，如果不能，那么接下来使用的所有地址，都会忽略高32位。|
+| 1		| BW Negotiation Capability (BNC)		| 用于指示该控制器是(1)否(0)实现了 Bandwidth Negotiation |
+| 2		| Context Size (CSZ)	| 指示上下文的大小 1: 64-byte; 0: 32-byte 。该位对 Stream Contexts 不生效。|
+| 3		| Port Power Control (PPC)	| 1: 所有的端口永远处于通电状态；0: 每个端口可以自行控制供电状态 |
+| 4		| Port Indicators (PIND)		| 用于指示端口指示灯的控制。0: 控制不可用; 1: 参照端口寄存器的 Bit 14:15 来获取更多信息 |
+| 5		| Light HC Reset Capability (LHRC)	| 指示操作寄存器组中的 $\text{usbCmd}$ 寄存器的 Light Host Controller 功能是(1)否(0)可用 |
+| 6		| Latency Tolerance Messaging Capability (LTC)	| 表示该控制器是(1)否(0)支持传递延迟容忍消息(Latency Tolerance Messageing, LTM) |
+| 7		| No Secondary SID Support (NSS)	| **是(0)否(1)** 支持 Secondary Stream IDs.
+| 8		| Parse All Event Data (PAE)		| 1: 当转移到下一个传输描述符的时候，所有的 TRB 都会被解析；0: 不会。检测到一个 Short Packet 的时候会使用这个位 |
+| 9		| Stopped - Short Packet Capability (SPC)		| 该控制器是(1)否(0)可以发出短数据包停止代码(Stopped-Short Packet Completion code) |
+| 10	| Stopped EDTLA Capability (SEC)					| 该控制器是(1)否(0)在 Stream Context 中实现了 Stopped EDTLA 区域，对于较新的硬件，这一位都是 $1$。 |
+| 11	| Continuous Frame ID Capability (CFC)			| 该控制器是(1)否(0)能够匹配连续 ISO 传输描述符的 ID。|
+| 12:15	| Maximum Primary Stream Array Size (MaxPSASize)	| 允许的最大 Stream Array 大小 |
+| 16:31	| XHCI Extended Capabilities Pointer (xECP)		| 0: 该控制器不存在拓展使能描述; $>0$: 拓展使能描述的偏移（相对于 $\text{baseAddr}$ ）|
 
 实际上的 Stream Array 最大大小需要使用如下方式计算 : 
 
@@ -147,10 +156,10 @@ $$
 | Bit | Name | Description |
 | :----: | :--------: | :-------- |
 | 0		| U3 Entry Capability	| 根(root hub)是否支持暂停完成通知(Suspend Completion notification) |
-| 1		| ConfigEP Command Max Exit Latency too Large(CMC) | 是(1)否(0)可以生成最大退出潜伏期过长的兼容错误(Exit Latency too Large compatibility error)，该位被操作寄存器的 $\text{usbCmd}$ 的 CME 位使用。|
-| 2		| Force Save Context Capability(FSC)	| Save State命令是(1)否(0)应当将所有的cached Slot, End Point, Stream和其他上下文存储到内存中 |
-| 3		| Compliance Transition Capability(CTC)	| 该控制器是(1)否(0) 支持 Compliance Transition Enabled 位 	|
-| 4		| Large ESIT Payload Capability(LEC)	| 是(1)否(0)支持大于 $48\texttt{Kb}$ 的 ESIT Payloads |
+| 1		| ConfigEP Command Max Exit Latency too Large (CMC) | 是(1)否(0)可以生成最大退出潜伏期过长的兼容错误(Exit Latency too Large compatibility error)，该位被操作寄存器的 $\text{usbCmd}$ 的 CME 位使用。|
+| 2		| Force Save Context Capability (FSC)	| Save State命令是(1)否(0)应当将所有的cached Slot, End Point, Stream和其他上下文存储到内存中 |
+| 3		| Compliance Transition Capability (CTC)	| 该控制器是(1)否(0) 支持 Compliance Transition Enabled 位 	|
+| 4		| Large ESIT Payload Capability (LEC)	| 是(1)否(0)支持大于 $48\texttt{Kb}$ 的 ESIT Payloads |
 | 5		| Configuration Information Capability 	| 是(1)否(0)支持 输入控制上下文块(Input Control Context block) 中的 Configuration Value, Interface Number 和 Alternate settings 域的拓展配置信息 |
 
 ### Extended Capabilites List
@@ -163,3 +172,185 @@ $$
 | n		| Varies	| 每个 $\text{ID}$ 特定的内容 |
 
 下面给出一些常用的 $\text{ID}$ 对照表：
+
+| ID | Name | Description | Size(Byte) |
+| :----: | :--------: | :-------- | :---: |
+| 0 | Reserved	| |
+| 1	| USB Legacy Support	| 提供操作系统启动前，既UEFI或BIOS的支持。如果这个拓展描述符是 USB Legacy Support，那么它一定是第一个拓展描述符。(书上是这么说的，但是貌似并不是这样的) | 8 |
+| 2	| Supported Protocol	| 该控制器支持的其中一种协议，每个控制器至少有一个这种拓展描述符，并且可能有多个。 | 16 |
+| 3 | Extened Power Management 	| 拓展的电源管理，至少有一个。	| n |
+| 4 | I/O Virtualization 	| 硬件虚拟化支持 | 最高 1280 |
+| 5	| Message Interrupt 	| 信息中断的支持 | n |
+| 6 | Local Memory 			| 本地内存支持 	| 最高 $4\texttt{TB}$ |
+| 7-9 | Reserved | | |
+| 10 | USB Debug Capability | 调试功能支持 | 56 |
+| 11-16	| Reserved | | | 
+| 17 | Extended Message Interrupt | 拓展的信息中断的支持 |
+| 18-191 | Reserved | | |
+| 192-255 | Vendor Specific | 特定的Vendor所使用的拓展使能信息 | |
+
+VMware 虚拟机的 XHCI 控制器似乎并不存在 USB Legacy Support 描述符。
+
+每个XHCI控制器，至少拥有一个 Message Interrupt 或者 Extended Message Interrupt 描述符。一般而言，有 Extended Message Interrupt 则使用 Extend Message Interrupt，否则使用 Message Interrupt 。
+
+#### XHCI USB Legacy Support
+
+整一个描述符可以使用一个 64 位整数存储，但是为了便于展示，将其分成两个 32 位整数。 
+
+对于第一个整数：
+
+| Bit | Name | Description |
+| :----: | :--------: | :-------- |
+| 0:7	| ID	| RO, $=\texttt{0x1}$ |
+| 8:15	| Next	| RO |
+| 16	| HC BIOS Owned Semaphore | R/W, $\text{Default}=0$. BIOS 将此位设置为 $1$ 来指示 BIOS 占用了该控制器。|
+| 17:23	| Reserved and preserved | R/W |
+| 24	| System Software Owned Semaphore | R/W, $\text{Default}=0$，操作系统将此位设置为 $1$ 来获取这个控制器的所有权，设置之后，待到 Bit 16 变为 $0$ 即表示所有权获取成功 |
+| 25:31	| Reserved and preserved | R/W |
+
+对于要求 Reserved and preserved 的位置，需要每次写入的之前先把这些Bit的值读出来，或上要写入的其他位置的值，然后再将整个整数写入。
+
+第二个整数的值被 BIOS 使用，操作系统软件无需关注。对于这个拓展描述符，唯一要做的就是将第一个整数的 Bit 24 设置为 $1$ ，然后等待 Bit 16 变为零即可。
+ 
+#### XHCI USB Supported Protocol Capability
+
+本拓展描述符用于描述控制器支持的其中一种协议，以及对应的端口序列。类似的，我们用 $4$ 个 32 位整数描述这个描述符：
+
+对于第一个整数：
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:15	| RO	| ID 和 Next |
+| 16:23	| RO	| Minor Revision Number, "USB 3.0" 中的 0	|
+| 24:27	| RO	| Reserved	|
+| 28:31	| RO	| Major Revision Number, "USB 3.0" 中的 3	|
+
+注意，Minor Revision Number 和 Major Revision Number 均为整数，而不是字符 。在VMware 的 USB 3.1 控制器中，其中一个拓展描述符有 $\text{Major Revision Number}=3$, $\text{Minor Revision Number}=1$ ，而另一个拓展描述符有 $\text{Major Revision Number}=2$, $\text{Minor Revision Number}=0$ ，也就是说VMware的XHCI支持 USB 3.1 和 USB 2.0 两种协议。
+
+第二个整数可以视为长度为 $4$ 的字符串，其值一定为 "USB " 。
+
+第三个整数存储了支持该协议的端口，
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:7	| RO	| Compatible Port Offset，兼容该协议的端口的偏移，也就是从第几个端口开始支持这种协议 |
+| 8:15	| RO	| Compatible Port Count，兼容该协议的端口数量 |
+| 16:27	| RO	| Protocol Defined，对于 USB 3.0 ，该段表示 Hub Depth；对于 USB 2.0，Bit 17 表示该控制器是(1)否(0)只支持高速设备，剩余位用于表示 Hub Depth。详细内容可以查询 XHCI 技术手册的 Section 7.2.2.1.3 |
+| 28:31	| RO	| Protocol Speed ID Count，$>0$：表示用于定义 被该控制器支持的速度类型 的 PSI 结构的 32 位整数的个数。 |
+
+对于第四个整数，只有 XHCI 1.1 或更新版本才有定义，否则所有位均为 Reserved and preserved 。
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0：4	| RO	| Slot Type ，插槽类型，目前只支持 $0$ |
+| 5:31	| RO	| Reserved and preserved |
+
+### Operational Registers，操作寄存器组
+这一组寄存器用于整个控制器的操作，包括重置，上电/断电等等。可以使用 $\text{opRegAddr}=\text{baseAddr}+\text{capReg}.\text{capLen}$ 获取这组寄存器的地址。若寄存器为 32 位，那么只能用读写 32 位整数的方法对其操作；只可以使用 64 位整数的操作方法对 64 位寄存器进行操作。这里涉及到 C 语言编译出的汇编码的限制，使用优化的时候需要注意。
+
+| Offset | Size(Byte) | Name | Description |
+| :----: | :--------: | :--------: | :------- |
+| 0x0	| $4$	| usbCmd	| 用于操作控制器的寄存器 |
+| 0x4	| $4$	| usbState	| 用于指示控制器状态的寄存器 	|
+| 0x8	| $4$	| pageSize	| 用于指示可用的地址的页大小的寄存器 |
+| 0xC	| $8$	| Reserved	| 保留	|
+| 0x14	| $4$	| devNotifCtrl	| Device Notification Control，用于控制控制器的报告内容的寄存器 |
+| 0x18	| $8$	| cmdRingCtrl	| Command Ring Control |
+| 0x20	| $8$	| Reserved	| 保留 |
+| 0x30	| $8$	| devCtxBaseAddr	| Device Context Base Address，用于保存上下文结构的基地址 |
+| 0x38	| $4$	| config	| Configuration，配置 |
+| 0x3c	| $964$	| Reserved	| 保留 |
+| 0x400	| $16n$ | PortRegs	| 端口的寄存器组集合 |
+
+下一个小结会解释端口寄存器组的数据结构。
+
+#### usbCmd，对控制器的命令
+
+对这个寄存器写入之后不一定立刻有效果。因此写入之后需要保证该位被成功设置。
+
+| Bit | Access | Name | Description |
+| :----: | :--------: | :--------: | :-------- |
+| 0	| R/W	| Run/Stop (RS)		| Run(1);Stop(0)，写入 $0$ 之后，需要等到 $\text{usbState}$ 中的 $\text{usbHalted}$ 位被成功置位才算完成操作。	|
+| 1	| R/W	| Host Controller Reset (HCRST)		| 重置。将操作寄存器组的所有寄存器设为默认值，将所有的 Transaction 设置为停止状态(Halt)。对 USB2.0 下游设备无效；使 USB3.0 设备进行 热重置 (Hot Reset) 或温重置 (Warm Reset) 。需要保证 $\text{usbHalted}$ 位在重置之前已经被设置为 $1$ 。重置完成之后这一位会被复位成 $0$ 。 |
+| 2	| R/W	| Interrupter Enable (INTE)			| 是(1)否(0)能让中断器移动到下一个中断临界点 (Interrupt threshold)，$=0$：禁用中断 |
+| 3	| R/W	| Host System Error Enable (HSEE)	| 是(1)否(0)允许当 $\text{usbState}$ 的 $\text{HSE}$ 位被设为 $1$ 的时候触发中断 |
+| 4:6	| R/W	| Reserved and Preserved		| 保留 |
+| 7	| R/W or RO	| Light Host Controller Reset (LHCRST)	| 如果 $\text{hccParams1}$ 的 $\text{LHRC}$ 位为 $1$ ，那么为 R/W，可以用于重置灯组寄存器，重置完成之后被复位为 $0$ ；如果为 $0$ ，那么这一位为 RO 位 |
+| 8	| R/W	| Controller Save State (CSS) 		| 用于指示是否将状态存储到操作系统申请得到的 Scratch buffers 中。在设置为 $1$ 之前，需要保证 $\text{usbHalted}$ 位为 $1$ ，保存过程中，$\text{usbState}$ 中的 $\text{Save State Status}$ 位会被设置为 $1$ 。 |
+| 9	| R/W	| Controller Restore State (CRS)	| 用于指示是否从 Scratch buffer 中恢复状态，在设置为 $1$ 之前，需要保证 $\text{usbHalted}$ 位为 $1$ 。类似的，用 $\text{usbState}$ 中的 $\text{Restore State Status}$ 位表示是否恢复完成， 恢复时被设置为 $1$。 |
+| 10	| R/W	| Enable Wrap Event (EWE) 		| 是(1)否(0)在 $\text{MFINDEX}$ 寄存器从 $\texttt{0x3fff}$ 变为 $\texttt{0x0000}$ 时候触发中断 |
+| 11	| R/W	| Enable U3 MFINDEX Stop (EU3S)	| 是(1)否(0)在 通电状态处于 U3 的时候停止 $\texttt{MFINDEX}$ 寄存器 |
+| 12	| R/W	| Stopped Short Packet Enable (SPE)	| 是(1)否(0)产生发出短数据包停止代码(Stopped-Short Packet Completion code) |
+| 13	| R/W	| CEM Enable (CME)	| 是(1)否(0)可以在 Configuration Endpoint Command 指令被接受并产生错误的时候，返回 最大退出潜伏期过长的兼容错误(Exit Latency too Large compatibility error) |
+| 14:31	| R/W	| Reserved and preserved		| 保留
+
+#### usbState，控制器的状态
+
+这里要解释一下 WC 即 Write Clear 的意思：当某一位被写入 $0$ 的时候，不会改变该位的值，当写入 $1$ 的时候，该位变为 $0$ 。
+
+| Bit | Access | Name | Description |
+| :----: | :--------: | :--------: | :-------- |
+| 0	| RO	| HCHalted	| 控制器是否因为 $\text{RS}$ 位被设置，或者控制器产生错误而停止。 |
+| 1	| R/W	| Reserved and preserved 	| 保留 |
+| 2	| R/WC	| Host System Error (HSE)	| 当控制器产生严重错误的时候被设置为 $1$ ，否则为 $0$ 。	|
+| 3	| R/WC	| Event Interrupt (EINT)	| 当任何一个中断器的 $\text{Interrupt Pending}$ 位被设置的时候，这一位被设置为 $1$，否则为 $0$ 。	|
+| 4	| R/WC	| Port Change Detected (PCD)	| 当控制器的任何一个端口的连接状态位从 $0$ 变为 $1$ 的时候，这一位被设置为 $1$，否则为 $0$ 。 |
+| 5:7	| R/W | Reserved and preserved 	| 保留 |
+| 8	| RO	| Save State Status (SSS)	| 当保存状态的操作处于进行时，这一位被设置为 $1$，保存完成之后会被设置为 $0$ 。	|
+| 9	| RO	| Restore State Status (RSS)	| 当恢复状态的操作处于进行时，这一位被设置为 $1$，恢复完成之后会被设置为 $0$ 。|
+| 10	| R/WC	| Save/Restore Error (SRE)	| 表示保存状态/恢复状态的操作是(1)否(0)产生错误。|
+| 11	| RO	| Controller Not Ready (CNR)	| 如果被设置，则禁止对操作寄存器组（除了 $\text{usbState}）或Doorbell寄存器组进行任何写入操作。当处于“重置中”时，这一位会被设置。|
+| 12	| RO	| Host Controller Error (HCE)	| 表示是(1)否(0)发生外部错误，需要重置和重新初始化控制器。|
+| 13:31	| R/W	| Reserved and preserved	| 保留 |
+
+#### pageSize，该控制器支持的页大小
+
+该寄存器的 Bit 16:31 为保留位，对于 Bit 0:15 ，如果其中的 Bit $x$ 被设置为 $1$ ，则表示该控制器支持大小为 $2^{x+12} \texttt{B}$ 的物理页 。在本人的机子上，均有 $\text{pageSize}\cap\texttt{0xffff}=0$ 。可以使用如下计算方法直接获得实际大小:
+
+```cpp
+size = (pageSize & 0xfffful) << 12
+```
+
+#### devNotifCtrl，控制器接受通知包的控制寄存器
+
+该寄存器的 Bit 16:31 为保留位，对于 Bit 0:15 ，如果其中的 Bit $x$ 被设置为 $1$ ，则表示激活第 $x$ 种通知类型。
+
+#### cmdRingCtrl，指令环的控制寄存器
+
+| Bit | Access | Name | Description |
+| :----: | :--------: | :--------: | :-------- |
+| 0	| R/W	| Ring Cycle State (RCS)	| 告知控制器携带一个设置位(set bit)或者一个清理位(clear bit)来开始处理指令环 |
+| 1	| R/WC	| Command Stop (CS)		| 告知控制器是否停止处理指令环。在处理完成当前指令之后会停止处理指令环，然后在事件环中放入一个任务环停止事件 (Command Ring Stopped event) |
+| 2	| R/WC	| Command Abort (CA)	| 直接停止处理指令环，然后放入一个任务环停止事件 (Command Ring Stopped event) |
+| 3	| RO	| Command Ring Running (CRR)	| 表示当前是否在处理指令环 |
+| 4:5	| R/W | Reserved and preserved	| 保留 |
+| 6:63	| R/W | Command Ring Pointer	| 指令环的地址的高 $58$ 位，也就是将这个寄存器 ``& (~0x3ful)`` 即为指令环的地址 |
+
+#### devCtxBaseAddr，设备上下文的基地址
+
+| Bit | Access | Name | Description |
+| :----: | :--------: | :--------: | :-------- |
+| 0:5	| R/W	| Reserved | 必须为 $0$ 	|
+| 6:63	| R/W	| Device Context Base Address Array Pointer	| 地址的高 $58$ 位 |
+
+实际上就是存储一个对 $64$ 对齐的地址。
+
+#### config，配置寄存器
+
+| Bit | Access | Name | Description |
+| :----: | :--------: | :--------: | :-------- |
+| 0:7	| R/W	| Max Device Slots Enabled (MaxSlotsEn)	| 设置激活的最大插槽ID，只能在 $\text{RS}=0$ 的时候设置这个段。 |
+| 8	| R/W	| U3 Entry Enable (U3E)	| 表示控制器转移到 U3 状态的时候是否设置 PLC 标志位。 $\text{hccParams0}$ 的 Bit 0 指示是否支持这一位。 |
+| 9	| R/W	| Configuration Information Enable (CIE)	| 是否初始化 输入控制上下文块的 Configuration Value, Interface Number 和 Alternate Settings 域，$\text{hccParams0}$ 的 Bit 5 指示是否支持这一位。|
+| 10:31	| R/W | Reserved and preserved	| 保留 |
+
+### Port Registers, 端口状态和控制寄存器组
+
+每一个端口寄存器组由 $4$ 个 $32$ 位整数描述。某些寄存器在 USB 2.0 和 3.1 下会有不同的含义。
+
+| Offset | Name | Description |
+| :----: | :--------: | :-------- |
+| 0x0	| stsCtrl	| Port Status and Control, 用于端口的状态查询和控制，几乎每一个位都有作用 |
+| 0x4	| pwStsCtrl	| Port Power Management Status and Control，用于端口电源的状态查询和控制 |
+| 0x8	| lkInfo	| Port Link Info, 保存端口的链接信息 |
+| 0xc	| hwLPMCtrl	| Port Hardware LPM Control |
