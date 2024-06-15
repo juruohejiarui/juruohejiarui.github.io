@@ -295,8 +295,7 @@
 </tbody>
 </table>
 <p>对于 Bit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>:</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">0:6</annotation></semantics></math> ，只有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟷</mtext><mo>,</mo><mtext mathvariant="monospace">𝟶𝚡𝟸</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x0},\texttt{0x1},\texttt{0x2}</annotation></semantics></math> 三种取值，分别表示该 PCIe 设备是一个 General Device, PCI-to-PCI bridge, PCI-to-Cardbus bridge ，对于 XHCI 设备，其 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Header Type</mtext><annotation encoding="application/x-tex">\text{Header Type}</annotation></semantics></math> 值一定为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x0}</annotation></semantics></math> 或 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟾𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x80}</annotation></semantics></math> 。而上述展示的PCIe表结构就是 Bit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>:</mo><mn>6</mn><mo>=</mo><mtext mathvariant="monospace">𝟶𝚡𝟶</mtext></mrow><annotation encoding="application/x-tex">0:6=\texttt{0x0}</annotation></semantics></math> 时的结构，对于其他情况，可以参考 <a href="https://wiki.osdev.org/PCI">PCI on OS Dev</a> 。</p>
-<h2 id="xhci">XHCI</h2>
-<h3 id="capability-registers">Capability Registers</h3>
+<h2 id="capability-registers">Capability Registers</h2>
 <p>可以翻译为使能寄存器组，这些寄存器均为只读(RO)寄存器。存储了大量的控制器支持信息。其基地址可以使用 <code>PCIeConfig</code> 的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">bar0</mtext><mo>,</mo><mtext mathvariant="normal">bar1</mtext></mrow><annotation encoding="application/x-tex">\text{bar0}, \text{bar1}</annotation></semantics></math> 组合获取，计算方式如下：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co">// 将两个地址的值拼接起来，然后对 4K 下取整对齐</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>addr=(bar0 | (bar1 &lt;&lt; <span class="dv">32</span>)) &amp; (~((<span class="dv">1</span> &lt;&lt; <span class="dv">12</span>) - <span class="dv">1</span>))</span></code></pre></div>
@@ -374,7 +373,7 @@
 </tbody>
 </table>
 <p>上面的表中提到了五个参数组，实际上就是将一些值比较小的信息拼接起来，节省空间，接下来给出每个参数组的具体内容。</p>
-<h4 id="hcsparams-1-结构化的参数组-1">hcsParams 1, 结构化的参数组 #1</h4>
+<h3 id="hcsparams-1-结构化的参数组-1">hcsParams 1, 结构化的参数组 #1</h3>
 <table>
 <thead>
 <tr class="header">
@@ -407,7 +406,7 @@
 </tbody>
 </table>
 <p>这三个最大值可以用于枚举端口和中断，但注意，可用的端口和选择使用的中断可能并不连续。</p>
-<h4 id="hcsparams-2-结构化的参数组-2">hcsParams 2, 结构化的参数组 #2</h4>
+<h3 id="hcsparams-2-结构化的参数组-2">hcsParams 2, 结构化的参数组 #2</h3>
 <table>
 <colgroup>
 <col style="width: 24%" />
@@ -455,7 +454,7 @@
 </tbody>
 </table>
 <p>将 Max Scractchpad Buffer 拼接起来可以得到软件需要申请的用于暂存器缓冲区的内容大小，如果该值为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> ，那么就不需要申请内容，更多要求则和接下来提到的pageSize的值有关，但是在本人的机子上，这个值都是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>。</p>
-<h4 id="hcsparams-3-结构化的参数组-3">hcsParams 3, 结构化的参数组 #3</h4>
+<h3 id="hcsparams-3-结构化的参数组-3">hcsParams 3, 结构化的参数组 #3</h3>
 <table>
 <thead>
 <tr class="header">
@@ -482,7 +481,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="hccparams-1-使能参数组-1">hccParams 1, 使能参数组 #1</h4>
+<h3 id="hccparams-1-使能参数组-1">hccParams 1, 使能参数组 #1</h3>
 <table>
 <colgroup>
 <col style="width: 24%" />
@@ -577,7 +576,7 @@
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">offset of extended Capabilites</mtext><mo>=</mo><mtext mathvariant="normal">baseAddr</mtext><mo>+</mo><mn>4</mn><mo>×</mo><mtext mathvariant="normal">xECP</mtext></mrow><annotation encoding="application/x-tex">
 \text{offset of extended Capabilites}=\text{baseAddr} + 4\times \text{xECP}
 </annotation></semantics></math></p>
-<h4 id="hccparams-2-使能参数组-2">hccParams 2, 使能参数组 #2</h4>
+<h3 id="hccparams-2-使能参数组-2">hccParams 2, 使能参数组 #2</h3>
 <table>
 <colgroup>
 <col style="width: 24%" />
@@ -624,7 +623,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="extended-capabilites-list">Extended Capabilites List</h3>
+<h2 id="extended-capabilites-list">Extended Capabilites List</h2>
 <p>除了上面的 Capability Registers，XHCI 还提供了链表结构的拓展使能列表，和 PCIe 非常类似。每个拓展描述符都长下面这样：</p>
 <table>
 <colgroup>
@@ -756,7 +755,7 @@
 </table>
 <p>VMware 虚拟机的 XHCI 控制器似乎并不存在 USB Legacy Support 描述符。</p>
 <p>每个XHCI控制器，至少拥有一个 Message Interrupt 或者 Extended Message Interrupt 描述符。一般而言，有 Extended Message Interrupt 则使用 Extend Message Interrupt，否则使用 Message Interrupt 。</p>
-<h4 id="xhci-usb-legacy-support">XHCI USB Legacy Support</h4>
+<h3 id="xhci-usb-legacy-support">XHCI USB Legacy Support</h3>
 <p>整一个描述符可以使用一个 64 位整数存储，但是为了便于展示，将其分成两个 32 位整数。</p>
 <p>对于第一个整数：</p>
 <table>
@@ -807,7 +806,7 @@
 </table>
 <p>对于要求 Reserved and preserved 的位置，需要每次写入的之前先把这些Bit的值读出来，或上要写入的其他位置的值，然后再将整个整数写入。</p>
 <p>第二个整数的值被 BIOS 使用，操作系统软件无需关注。对于这个拓展描述符，唯一要做的就是将第一个整数的 Bit 24 设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> ，然后等待 Bit 16 变为零即可。</p>
-<h4 id="xhci-usb-supported-protocol-capability">XHCI USB Supported Protocol Capability</h4>
+<h3 id="xhci-usb-supported-protocol-capability">XHCI USB Supported Protocol Capability</h3>
 <p>本拓展描述符用于描述控制器支持的其中一种协议，以及对应的端口序列。类似的，我们用 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math> 个 32 位整数描述这个描述符：</p>
 <p>对于第一个整数：</p>
 <table>
@@ -902,7 +901,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="operational-registers操作寄存器组">Operational Registers，操作寄存器组</h3>
+<h2 id="operational-registers操作寄存器组">Operational Registers，操作寄存器组</h2>
 <p>这一组寄存器用于整个控制器的操作，包括重置，上电/断电等等。可以使用 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">opRegAddr</mtext><mo>=</mo><mtext mathvariant="normal">baseAddr</mtext><mo>+</mo><mtext mathvariant="normal">capReg</mtext><mi>.</mi><mtext mathvariant="normal">capLen</mtext></mrow><annotation encoding="application/x-tex">\text{opRegAddr}=\text{baseAddr}+\text{capReg}.\text{capLen}</annotation></semantics></math> 获取这组寄存器的地址。若寄存器为 32 位，那么只能用读写 32 位整数的方法对其操作；只可以使用 64 位整数的操作方法对 64 位寄存器进行操作。这里涉及到 C 语言编译出的汇编码的限制，使用优化的时候需要注意。</p>
 <table>
 <thead>
@@ -983,7 +982,7 @@
 </tbody>
 </table>
 <p>下一个小结会解释端口寄存器组的数据结构。</p>
-<h4 id="usbcmd对控制器的命令">usbCmd，对控制器的命令</h4>
+<h3 id="usbcmd对控制器的命令">usbCmd，对控制器的命令</h3>
 <p>对这个寄存器写入之后不一定立刻有效果。因此写入之后需要保证该位被成功设置。</p>
 <table>
 <colgroup>
@@ -1081,7 +1080,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="usbstate控制器的状态">usbState，控制器的状态</h4>
+<h3 id="usbstate控制器的状态">usbState，控制器的状态</h3>
 <p>这里要解释一下 WC 即 Write Clear 的意思：当某一位被写入 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> 的时候，不会改变该位的值，当写入 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 的时候，该位变为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> 。</p>
 <table>
 <colgroup>
@@ -1173,12 +1172,12 @@
 </tr>
 </tbody>
 </table>
-<h4 id="pagesize该控制器支持的页大小">pageSize，该控制器支持的页大小</h4>
+<h3 id="pagesize该控制器支持的页大小">pageSize，该控制器支持的页大小</h3>
 <p>该寄存器的 Bit 16:31 为保留位，对于 Bit 0:15 ，如果其中的 Bit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> 被设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> ，则表示该控制器支持大小为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mrow><mi>x</mi><mo>+</mo><mn>12</mn></mrow></msup><mtext mathvariant="monospace">𝙱</mtext></mrow><annotation encoding="application/x-tex">2^{x+12} \texttt{B}</annotation></semantics></math> 的物理页 。在本人的机子上，均有 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">pageSize</mtext><mo>∩</mo><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏</mtext><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\text{pageSize}\cap\texttt{0xffff}=0</annotation></semantics></math> 。可以使用如下计算方法直接获得实际大小:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>size = (pageSize &amp; <span class="bn">0xffff</span><span class="bu">ul</span>) &lt;&lt; <span class="dv">12</span></span></code></pre></div>
-<h4 id="devnotifctrl控制器接受通知包的控制寄存器">devNotifCtrl，控制器接受通知包的控制寄存器</h4>
+<h3 id="devnotifctrl控制器接受通知包的控制寄存器">devNotifCtrl，控制器接受通知包的控制寄存器</h3>
 <p>该寄存器的 Bit 16:31 为保留位，对于 Bit 0:15 ，如果其中的 Bit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> 被设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> ，则表示激活第 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> 种通知类型。</p>
-<h4 id="cmdringctrl指令环的控制寄存器">cmdRingCtrl，指令环的控制寄存器</h4>
+<h3 id="cmdringctrl指令环的控制寄存器">cmdRingCtrl，指令环的控制寄存器</h3>
 <table>
 <colgroup>
 <col style="width: 17%" />
@@ -1233,7 +1232,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="devctxbaseaddr设备上下文的基地址">devCtxBaseAddr，设备上下文的基地址</h4>
+<h3 id="devctxbaseaddr设备上下文的基地址">devCtxBaseAddr，设备上下文的基地址</h3>
 <table>
 <thead>
 <tr class="header">
@@ -1259,7 +1258,7 @@
 </tbody>
 </table>
 <p>实际上就是存储一个对 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>64</mn><annotation encoding="application/x-tex">64</annotation></semantics></math> 对齐的地址。</p>
-<h4 id="config配置寄存器">config，配置寄存器</h4>
+<h3 id="config配置寄存器">config，配置寄存器</h3>
 <table>
 <colgroup>
 <col style="width: 17%" />
@@ -1302,7 +1301,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="port-registers-端口状态和控制寄存器组">Port Registers, 端口状态和控制寄存器组</h3>
+<h2 id="port-registers-端口状态和控制寄存器组">Port Registers, 端口状态和控制寄存器组</h2>
 <p>每一个端口寄存器组由 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math> 个 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>32</mn><annotation encoding="application/x-tex">32</annotation></semantics></math> 位整数描述。某些寄存器在 USB 2.0 和 3.1 下会有不同的含义。</p>
 <table>
 <thead>
@@ -1335,5 +1334,408 @@
 </tr>
 </tbody>
 </table>
+<h3 id="stsctrl-端口的状态和控制">stsCtrl, 端口的状态和控制</h3>
+<p>下表展示了这个寄存器每一位的作用，对于某些位置，会有一些必要的补充说明。在 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">RS</mtext><annotation encoding="application/x-tex">\text{RS}</annotation></semantics></math> 被设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 并且 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">usbHalted</mtext><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\text{usbHalted}=0</annotation></semantics></math> 之后，这个寄存器才能正常使用。</p>
+<p><strong>PS</strong>: 标有下划线的位是仅适用于 USB 3.0 的位，对于 USB 2.0 协议的端口，这些位处于 Reserved and Zero’d 状态。</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Access</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Current Connect Status，当前连接状态，1:有设备连接；0: 无设备连接。用于设备连接检测的关键位。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Port Enabled(1)/Disabled(0)，端口激活状态。控制器在重置后，或者端口重置后会激活端口并设置该位，由于为 WC 位，因此操作系统不能自行激活端口，只能通过重置端口或者控制器重新激活。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Reserved and Zero’d</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Over-current Active，表示该端口是否处于过流激活状态 (Over-current Active condition)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Port Reset，和 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">usbCmd</mtext><annotation encoding="application/x-tex">\text{usbCmd}</annotation></semantics></math> 的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">HCRST</mtext><annotation encoding="application/x-tex">\text{HCRST}</annotation></semantics></math> 位功能类似。在不同协议下，重置操作略有不同。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5:8</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Port Link State，链接状态，从 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝟶𝟶𝟶𝚋</mtext><annotation encoding="application/x-tex">\texttt{0000b}</annotation></semantics></math> 开始分别表示 U0, U1, U2, U3 。需要设置该寄存器的 Bit 16 来启用该位的写入。一般而言，需要让链接状态处于 U0 以正常使用。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Port Power，用于开启或关闭该端口的电源。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">hccParams1</mtext><annotation encoding="application/x-tex">\text{hccParams1}</annotation></semantics></math> 的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Power</mtext><annotation encoding="application/x-tex">\text{Port Power}</annotation></semantics></math> 位指示该位是(0)否(1)可以正常使用。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10:13</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Port Speed，用于指示该端口连接设备的速度和对应的协议。接下来会提供一个参照表。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">14:15</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Port Indicator Control，指标控制，表示是否可以正常操作，接下来会提供一个参照表。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">hccParams1</mtext><annotation encoding="application/x-tex">\text{hccParams1}</annotation></semantics></math> 的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">PIND</mtext><annotation encoding="application/x-tex">\text{PIND}</annotation></semantics></math> 指示该位是(1)否(0)可以正常使用。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Port Link State Write Strobe，用于指示对 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Link State</mtext><annotation encoding="application/x-tex">\text{Port Link State}</annotation></semantics></math> 的写入将会生效(1)/被忽略(0)。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Connect Status Change，连接状态是否改变，用于设备连接检测的关键位。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Port Enable/Disable Change，端口的激活状态是否被改变。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><u>19</u></td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Warm Port Reset Change，当端口为 USB 2.0 协议时，这一位被保留；当端口为 USB 3.0 时，若 Warm Port Reset 完成，这一位会被设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Over-current Change，过流状态是否发生改变。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Port Reset Change，当 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Reset</mtext><annotation encoding="application/x-tex">\text{Port Reset}</annotation></semantics></math> 位从 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 变为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> 的时候，这一位被设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Port Link State Change，当 Link State 发生改变的时候，这一位被设置为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><u>23</u></td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Port Config Error Change，指示是(1)否(0)在配置链接伙伴 (link partner) 的时候发生错误。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><u>24</u></td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Cold Attach Status，表示连接的设备是否因为电量不足、错误的电源状态或者其他问题导致不能正常运作。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Wake on Connect Enable，是否在连接的时候产生对应的事件。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Wake on Disconnect Enable，是否在断开连接的时候产生对应的事件。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">27</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Wake on Over-current Enable，是否在进入过流状态的时候产生对应的事件。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28:29</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Reserved and Zero’d</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Device Removable，当前设备是否是可移除的设备。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><u>31</u></td>
+<td style="text-align: center;">R/WC</td>
+<td style="text-align: left;">Warm Port Reset，操作方式和 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Reset</mtext><annotation encoding="application/x-tex">\text{Port Reset}</annotation></semantics></math> 类似，用 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Reset</mtext><annotation encoding="application/x-tex">\text{Port Reset}</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Reset Change</mtext><annotation encoding="application/x-tex">\text{Port Reset Change}</annotation></semantics></math> 和 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Warm Reset Change</mtext><annotation encoding="application/x-tex">\text{Warm Reset Change}</annotation></semantics></math> 来指示 Warm Reset 是否完成。</td>
+</tr>
+</tbody>
+</table>
+<p>接下来提供一个 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Speed</mtext><annotation encoding="application/x-tex">\text{Port Speed}</annotation></semantics></math> 的描述表：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Value</th>
+<th style="text-align: center;">Speed</th>
+<th style="text-align: center;">Bit Rate</th>
+<th style="text-align: center;">Protocol</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">Undefined</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">full-speed</td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mtext mathvariant="monospace">𝙼𝙱</mtext><mi>/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">12 \texttt{MB}/s</annotation></semantics></math></td>
+<td style="text-align: center;">USB 2.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">low-speed</td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.5</mn><mtext mathvariant="monospace">𝙼𝙱</mtext><mi>/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">1.5 \texttt{MB}/s</annotation></semantics></math></td>
+<td style="text-align: center;">USB 2.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">high-speed</td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>480</mn><mtext mathvariant="monospace">𝙼𝙱</mtext><mi>/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">480 \texttt{MB}/s</annotation></semantics></math></td>
+<td style="text-align: center;">USB 2.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">super-spped</td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mtext mathvariant="monospace">𝙶𝙱</mtext><mi>/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">5 \texttt{GB}/s</annotation></semantics></math></td>
+<td style="text-align: center;">USB 3.0</td>
+</tr>
+</tbody>
+</table>
+<p>还有一个 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Port Indicator Control</mtext><annotation encoding="application/x-tex">\text{Port Indicator Control}</annotation></semantics></math> 的参考表，由于不太懂英文的含义（不能理解为啥要用颜色来定义），因此直接直译书中原文：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Value</th>
+<th style="text-align: left;">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝟶𝚋</mtext><annotation encoding="application/x-tex">\texttt{00b}</annotation></semantics></math></td>
+<td style="text-align: left;">指标关闭</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝟷𝚋</mtext><annotation encoding="application/x-tex">\texttt{01b}</annotation></semantics></math></td>
+<td style="text-align: left;">琥珀色 (Amber)，通常表示存在错误，需要因此硬件注意。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟷𝟶𝚋</mtext><annotation encoding="application/x-tex">\texttt{10b}</annotation></semantics></math></td>
+<td style="text-align: left;">绿色 (Green)，一切正常。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟷𝟷𝚋</mtext><annotation encoding="application/x-tex">\texttt{11b}</annotation></semantics></math></td>
+<td style="text-align: left;">未定义</td>
+</tr>
+</tbody>
+</table>
+<p>这里的指标指的是端口的指标，而不是端口上设备的指标。</p>
+<h3 id="pwstsctrl端口电源的状态和控制">pwStsCtrl，端口电源的状态和控制</h3>
+<p>对于使用 USB 2.0 的端口，使用下面的描述表：</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Access</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0:2</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">L1 Status，表示 L1 下的暂停 (suspend) 请求的状态。接下来会提供每个值对应的含义。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Remote Wake Enable，激活从 L1 状态的远程唤醒。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4:7</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Host Initiated Resume Duration，若该段的值为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> ，则表示控制器初始化并退出 L1 状态后恢复所需要的时间为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mo>+</mo><mn>75</mn><mi>x</mi></mrow><annotation encoding="application/x-tex">50+75x</annotation></semantics></math> 。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8:15</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">L1 Device Slot，用于指示该端口的哪个设备槽用于产生 LMP Token packet，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">=0</annotation></semantics></math> 表示没有设备。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Hardware LPM Enable，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">=1</annotation></semantics></math>: 激活硬件控制的 LPM。当 硬件 LMP 使能并不支持的时候，这个位被保留。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">17:27</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Reserved and preserved，保留</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">28:31</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">软件向这个段写入某些数字来进行特定的测试。查看技术手册 (xHCI ver 1.10 p.320) 来获取更多相关信息。</td>
+</tr>
+</tbody>
+</table>
+<p>接下来是 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">L1 Status</mtext><annotation encoding="application/x-tex">\text{L1 Status}</annotation></semantics></math> 的描述表：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Value</th>
+<th style="text-align: left;">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">Invalid，不合法，如果为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>，那么 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">L1 Status</mtext><annotation encoding="application/x-tex">\text{L1 Status}</annotation></semantics></math> 应当被忽略。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Success，成功。端口成功转换到 L1 状态。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Not Yet，仍未转移到 L1 状态。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Not Supported，该端口不支持转移到 L1 状态。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">Timeout or Error，超时或者发生错误。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5~7</td>
+<td style="text-align: left;">Reserved</td>
+</tr>
+</tbody>
+</table>
+<p>对于使用 USB 3.0 的端口，使用下面的描述符表：</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 40%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Access</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0:7</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">U1 Timeout，表示在确定 U1 不活动并启动 U1 进入之前的延迟（以微秒为单位）。合法值为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶</mtext><mi>…</mi><mtext mathvariant="monospace">𝟶𝚡𝟽𝚏</mtext></mrow><annotation encoding="application/x-tex">\texttt{0x00}\dots\texttt{0x7f}</annotation></semantics></math> 以及 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏</mtext><annotation encoding="application/x-tex">\texttt{0xff}</annotation></semantics></math>，若为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x00}</annotation></semantics></math> 则表示不能进入 U1，否则表示微秒数。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8:15</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">U2 Timeour，表示在确定 U2 不活动并启动 U2 进入之前的延迟（以微秒为单位）。合法值范围和 U1 相同。若为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x00}</annotation></semantics></math> 表示不能进入 U2，否则延迟的微秒数等于该段的值乘上 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>256</mn><annotation encoding="application/x-tex">256</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Force Link PM Accept，当值为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，让端口去生成一个 Set Link Function LMP 。（不知道啥意思，这里粘出原文：tells the port to generate a Set Link Function LMP with the Force Link PM Accept Bit set.）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">17:31</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Reserved and preserved，保留</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lkinfo链接信息">lkInfo，链接信息</h3>
+<p>若端口为 USB 2.0 那么这个寄存器为 Reserved and preserved 。</p>
+<p>若端口为 USB 3.0 那么使用下面的描述表：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Access</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0:15</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Link Error Count，检测到的链接错误的的数量。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">16:19</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Rx Lane Count (RLC)，表示端口协商的接收 (Receive) 通道数减去 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">20:23</td>
+<td style="text-align: center;">RO</td>
+<td style="text-align: left;">Tx Lane Count (RLC)，表示端口协商的传输 (Transmit) 通道数减去 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24:31</td>
+<td style="text-align: center;">R/W</td>
+<td style="text-align: left;">Reseerved and preserved，保留</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hwlpmctrl硬件的-lpm-控制寄存器">hwLPMCtrl，硬件的 LPM 控制寄存器</h3>
+<p>若端口为 USB 2.0 那么使用下面的描述表：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bit</th>
+<th style="text-align: center;">Access</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0:1</td>
+<td style="text-align: center;">RWS</td>
+<td style="text-align: left;">Host Initiated Resume Duration Mode (HIRDM)，必须为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> 或 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> 。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2:9</td>
+<td style="text-align: center;">RWS</td>
+<td style="text-align: left;">L1 Timeout，表示超时时间除以 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>128</mn><annotation encoding="application/x-tex">128</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10:13</td>
+<td style="text-align: center;">RWS</td>
+<td style="text-align: left;">Best Effort Service Latency Deep (BESLD)，表示接收设备在 U2 退出后要等待多长时间。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">14:31</td>
+<td style="text-align: center;">RWS</td>
+<td style="text-align: left;">Reserved and preserved，保留</td>
+</tr>
+</tbody>
+</table>
+<p>若端口为 USB 3.0 那么这个寄存器为 Reserved and preserved 。</p>
 </body>
 </html>
