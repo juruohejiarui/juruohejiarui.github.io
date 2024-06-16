@@ -160,6 +160,7 @@ $$
 | 3		| Compliance Transition Capability (CTC)	| 该控制器是(1)否(0) 支持 Compliance Transition Enabled 位 	|
 | 4		| Large ESIT Payload Capability (LEC)	| 是(1)否(0)支持大于 $48\texttt{Kb}$ 的 ESIT Payloads |
 | 5		| Configuration Information Capability 	| 是(1)否(0)支持 输入控制上下文块(Input Control Context block) 中的 Configuration Value, Interface Number 和 Alternate settings 域的拓展配置信息 |
+| 6:31	| Reserved	| 保留 |
 
 ## Extended Capabilites List
 除了上面的 Capability Registers，XHCI 还提供了链表结构的拓展使能列表，和 PCIe 非常类似。每个拓展描述符都长下面这样：
@@ -245,7 +246,7 @@ VMware 虚拟机的 XHCI 控制器似乎并不存在 USB Legacy Support 描述�
 | 5:31	| RO	| Reserved and preserved |
 
 ## Operational Registers，操作寄存器组
-这一组寄存器用于整个控制器的操作，包括重置，上电/断电等等。可以使用 $\text{opRegAddr}=\text{baseAddr}+\text{capReg}.\text{capLen}$ 获取这组寄存器的地址。若寄存器为 32 位，那么只能用读写 32 位整数的方法对其操作；只可以使用 64 位整数的操作方法对 64 位寄存器进行操作。这里涉及到 C 语言编译出的汇编码的限制，使用优化的时候需要注意。
+这一组寄存器用于整个控制器的操作，包括重置，上电/断电等等。可以使用 $\text{opRegAddr}=\text{baseAddr}+\text{capRegs}.\text{capLen}$ 获取这组寄存器的地址。若寄存器为 32 位，那么只能用读写 32 位整数的方法对其操作；只可以使用 64 位整数的操作方法对 64 位寄存器进行操作。这里涉及到 C 语言编译出的汇编码的限制，使用优化的时候需要注意。
 
 | Offset | Size(Byte) | Name | Description |
 | :----: | :--------: | :--------: | :------- |
@@ -468,3 +469,131 @@ size = (pageSize & 0xfffful) << 12
 
 若端口为 USB 3.0 那么这个寄存器为 Reserved and preserved 。
 
+## Runtime Registers，运行时寄存器组
+
+可以使用 $\text{rtRegAddr}=\text{baseAddr}+\text{capRegs}.\text{rtsOff}$ 获取这组寄存器的位置。本组寄存器包含了当前所在的微帧 (microframe) 索引，以及至多 $1024$ 个中断寄存器组，实际中断个数可以通过 $\text{hcsParams}$ 的 $\text{maxIntr}$ 段减去 $1$ 得知。至于微帧的定义，可以参考稍后的内容。
+
+| Offset | Size(Byte) | Name | Description |
+| :----: | :--------: | :--------: | :------- |
+| 0x0000	| 4		| Microframe Index Register	| 当前所在的微帧的编号。如果 $\text{RS}=1$，控制器每隔 $125 ms$ 就会让该数值递增一次，也就是在每个开始处理每个微帧之前就会递增一次。|
+| 0x0004	| 28	| Reserved and Zero'd	| 
+| 0x0020	| 32	| Interrupter Register Set 0 (IR0)	| 第 $0$ 个中断寄存器组	|
+| 0x0040	| 32	| Interrupter Register Set 1 (IR1)	| 第 $1$ 个中断寄存器组	|
+| $\dots$	| $\dots$	| $\dots$	| |
+| 0x8000	| 32	| Interrupter Register Set 1023 (IR1023)	| 第 $1023$ 个中断寄存器组 |
+
+## Interrupter Registers，中断寄存器组
+
+第 $0$ 个中断被称为主中断 (Primary Interrupter) ，实际上 Interrupter 应该翻译为断路器，但是因本人喜好，这里和 Interrupt 混用，直接翻译为中断。剩余的所有中断都被称为次中断 (Secondary Interrupter) ，一个控制器至少会支持一个中断，因此至少会有主中断，但可能没有次中断。
+
+整个寄存器组的结构如下：
+
+| Offset | Size(Byte) | Name | Description |
+| :----: | :--------: | :--------: | :------- |
+| 0x00	| 4	| mgrReg	| Interrupter Management Register，管理用寄存器。 |
+| 0x04	| 4	| mod		| Interrupter Moderation，调节用寄存器，用于调节中断触发的频率。|
+| 0x08	| 4	| eveSegTblSize	| Event Ring Segment Table Size，事件环段的表格大小。	|
+| 0x0c	| 4	| Reserved and preserved | 保留	| 
+| 0x10	| 8	| eveSegTblAddr	| Event Ring Segment Table Base Address，事件环段的表格基地址。|
+| 0x18	| 8	| eveDeqPtr		| Event Ring Dequeue Pointer，事件环出队指针。|
+
+### mgrReg，中断的管理寄存器
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0	| R/WC	| Interrupt Pending (IP)，表示是否有中断正在等待处理。在这一位被清空之前，不会有其他中断触发。|
+| 1	| R/W	| Interrupt Enable，是(1)否(0) 激活中断。	|
+| 2:31	| R/W	| Reserved and preserved	| 保留 |
+
+中断处理中，$\text{IP}$ 位以及 $\text{usbStatus}$ 的 $\text{EINT}$ 的复位操作需要有一点讲究。这会在之后的算法和程序实现部分予以讲解。
+
+### mod，中断的调节
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:15	| R/W	| Interrupt Moderation Interval，中断的间隔最小值，单位为 $250 ns$ 。|
+| 16:31	| R/W	| Interrupt Moderation Counter，倒计时，表示距离下一个中断的至少的时间。|
+
+实际的最小间隔和中断的最高频率计算如下：
+
+$$
+\begin{aligned}
+\text{Interval}&=\frac{1}{250 \times 10^{-9} \cdot (\text{Interrupt pre sec})}\\
+\text{Interrupt pre sec}&=\frac{1}{250 \times 10^{-9} \cdot \text{Interval}}
+\end{aligned}
+$$
+
+当 $\text{IP}$ 位被复位之后，计时器就会根据 $\text{Interrupt Moderation Interval}$ 进行倒计时。可以修改倒计时段来干扰倒计时过程。
+
+### eveSegTblSize，事件环段的表格大小
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:15	| R/W	| Event Ring Segment Table Size，大小 |
+| 16:31	| R/W	| Reserved and preserved，保留	|
+
+可行的最大大小由 $\text{hcsParams2}$ 的 $\text{ERST Max}$ 段指定。
+
+### eveSegTblAddr，事件环段的表格基地址
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:5	| R/W	| Reserved and preserved，保留 |
+| 6:63	| R/W	| Event Ring Segment Table Base Address 的 Bit 6:63	|
+
+实际上就是一个对 $64$ 对齐的地址，但是写入的时候需要注意 Bit 0:5 的 preserved 。
+
+### eveDeqPtr，事件环出队指针
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:2	| R/W	| Dequeue ERST Segment Index，用于加速事件环已满状态 (Event Ring Full condition) 的检查，可以为 $0$	| 
+| 3	| R/WC	| Event Handler Busy，当前事件处理是否处于繁忙状态。当 $\text{IP}$ 位被设置为 $1$ 的时候，这一位被控制器设置为 $1$ 。	|
+| 4:63	| R/W	| Event Ring Dequeues Pointer (4:63) ，指针的 $4:63$ 位。|
+
+## Doorbell Registers，Doorbell 寄存器组
+
+似乎可以直接翻译为门铃寄存器组。但是无所谓了。使用 $\text{dbRegAddr}=\text{baseAddr}+\text{capRegs}.\text{dbOff}$ 获取这个寄存器组的地址。这里包含若干个格式类似的，紧挨着的 Doorbell 寄存器，均为 $32$ 位整数大小。
+
+第一个寄存器为 $\text{Command Doorball Register}$ ，接下来由 $\text{maxSlots}$ 个 $\text{Device Slot Doorbell}$ 寄存器，第 $x$ 个（从 $1$ 开始）写作 $\text{Device Slot \#}x\text{ Doorbell}$ 。
+
+### Command Doorbell Register 
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:7	| R/W | Target，目标值，下面会提供每个值对应的含义。|
+| 8:31	| R/W | Reserved and Zero'd ，保留 |
+
+### Deive Slot Doorbell，设备槽的 doorbell
+
+| Bit | Access | Description |
+| :----: | :--------: | :-------- |
+| 0:7	| R/W | Target，目标值，和 $\text{Command Doorbell Register}$ 的 $\text{Target}$ 段含义相同。|
+| 8:15	| R/W | Reserved and Zero'd ，保留 |
+| 16:31	| R/W | Doorbell Stream ID，被使用 Streams 的端点 (endpoint) 使用，$0,65534$ 和 $65536$ 被保留，不能使用。|
+
+### Target 值的解释
+
+$\text{Target}$ 的目标值不能为 $0$ 该值被保留。
+
+若为 $1$ ，则表示对控制端点 (Control endpoint) 进行入队指针更新 (Enqueue Pointer Update) 。
+
+对于 $2,2 \dots, 31$ ，$\left\lfloor\frac{\text{Target}}{2}\right\rfloor$ 表示操作的端点，$\text{Target}$ 为奇数则表示进行 IN 操作，为偶数则为 OUT 操作。对于特定的 $\text{Target}=x$ ，表示对 $\left\lfloor\frac{x}{2}\right\rfloor$ 端点进行 IN（奇）/ OUT（偶）的进队指针更新。
+
+对于 $32 \dots, 247$： 被保留，不能使用。
+
+对于 $248 \dots, 255$： 对于不同的 Vendor ，有特定的含义。
+
+## 需要操作系统申请的数据结构
+
+接下来会用到不少的 ``VOS`` 中已经定义好的内容，可以配合 github 中的代码仓库学习。
+
+大部分需要申请的数据结构具有三个要求：大小 (size)，对齐 (alignment) 和界限 (boundary) 。大小就不用解释了，其中对齐就是常见的，让地址的若干个低 Bit 为 $0$ 即可。重点是界限的要求。假设现在有一段大小为 $2^M$ 的内存（实际可用内存可能是更一般的整数，但是可以将一般的整数划分成若干个这样的 $2$ 的整数次幂），地址从 $0$ 开始。目前所有的界限要求只有 $2$ 的整数次幂的形式，因此假设我们申请的内存要求有 $2^x$ 的界限 ($x$ 为整数)，那么将这一整段内存按 $2^x$ 大小划分成 $2^{M-x}$ 段，第 $i$ 段的地址区间就是 $B_i=\left[i\cdot 2^{x}, (i+1)\cdot 2^{x}\right)$ ，这样的区间被称为合法区间。假设我们申请的数据结构，其基地址为 $\text{addr}$ （要满足对齐要求，也就是 $2^a | \text{addr}$ ($a$ 为要求的对齐 Bit 数量) ），要求的大小为 $\text{size}$ ，也就是占用的地址区间为 $A=[\text{addr},\text{addr}+\text{size})$ ，需满足 $\exists i\in [0,2^{M-x}] \cap \mathbb{Z}, A\subset B_i$ ，也就是<u>占用的地址区间必须是某个合法区间的一部分，不能横跨合法区间</u>。
+
+可以使用 ``MM_Buddy_alloc`` 申请若干个物理页用于分配，然后使用 USB 特化的分配器 ``_alloc(size,alignment,boundary)`` 在缓冲区中取出满足要求的地址空间。当然，对于大小 $\le \text{pageSize}/2$ 的数据结构，可以直接使用本人编写的 ``kmalloc`` 分配器。
+
+接下来提供一个需要分配内存的数据结构的要求表：
+
+
+
+接下来会逐一提供每个数据结构的注释。
