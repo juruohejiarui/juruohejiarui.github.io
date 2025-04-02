@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DSAA2011 Regression</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+<h1 id="linear-regression">Linear Regression</h1>
+<h2
+id="d-dimension-vector-to-mathbbr"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>-Dimension
+Vector to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></h2>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>:
+size of dataset 数据点个数</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>:
+dimension/length of each feature vector (input) 输入的维度/长度</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>:
+scaler or real-valued target/output 输出</p>
+<p>Design a function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>𝐖</mi><mo>,</mo><mi>b</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f_{\mathbf{W}, b}(\mathbf{x})</annotation></semantics></math>
+i.e.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>𝐰</mi><mo>,</mo><mi>b</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>𝐰</mi><mi>⊤</mi></msup><mi>𝐱</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">
+f_{\mathbf{w}, b}(\mathbf{x})=\mathbf{w}^{\top}\mathbf{x}+b
+</annotation></semantics></math></p>
+<ul>
+<li>weight:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐰</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{w}\in \mathbb{R}^d</annotation></semantics></math></li>
+<li>bias/offset:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">b\in \mathbb{R}</annotation></semantics></math></li>
+</ul>
+<p>written in vector form:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>𝐰</mi><mo>,</mo><mi>b</mi></mrow></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>b</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐰</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>⊤</mi></msup><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐱</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+f_{\mathbf{w}, b}=\begin{bmatrix}
+b\\
+\mathbf{w}
+\end{bmatrix}^{\top}\begin{bmatrix}
+1\\
+\mathbf{x}
+\end{bmatrix}
+</annotation></semantics></math></p>
+<p>let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐱</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>b</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐰</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\overline {\mathbf{x}} = \begin{bmatrix}1\\\mathbf{x}\end{bmatrix}, \overline {\mathbf{w}} = \begin{bmatrix}b\\\mathbf{w}\end{bmatrix}</annotation></semantics></math>,
+then we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>𝐰</mi><mo>,</mo><mi>b</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mo>=</mo><msup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover></mrow><annotation encoding="application/x-tex">f_{\mathbf{w}, b}(\mathbf{x})={\overline{\mathbf{w}}}^{\top}\overline{\mathbf{x}}=\overline{\mathbf{x}}^{\top}\overline{\mathbf{w}}</annotation></semantics></math></p>
+<h3 id="objective-loss-function">Objective (loss) Function</h3>
+<p>let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mo>=</mo><mo stretchy="false" form="prefix">[</mo><msubsup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mn>1</mn><mi>⊤</mi></msubsup><mo>,</mo><msubsup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mn>2</mn><mi>⊤</mi></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mi>m</mi><mi>⊤</mi></msubsup><msup><mo stretchy="false" form="postfix">]</mo><mi>⊤</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{X}=[\overline{\mathbf{x}}^{\top}_1, \overline{\mathbf{x}}^{\top}_2, \dots, \overline{\mathbf{x}}^{\top}_m]^{\top} \in \mathbb{R}^{m\times (d+1)}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐲</mi><mo>=</mo><mo stretchy="false" form="prefix">[</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>y</mi><mi>m</mi></msub><msup><mo stretchy="false" form="postfix">]</mo><mi>⊤</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><mi>m</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{y}=[y_1, y_2, \dots, y_m]^{\top}\in \mathbb{R}^m</annotation></semantics></math>
+, then loss function is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>𝐰</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mfrac><mn>1</mn><mi>m</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mo stretchy="false" form="prefix">(</mo><msub><mi>f</mi><mrow><mi>𝐰</mi><mo>,</mo><mi>b</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mfrac><mn>1</mn><mi>m</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mo stretchy="false" form="prefix">(</mo><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><msub><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mi>i</mi></msub><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mfrac><mn>1</mn><mi>m</mi></mfrac><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mi>𝐲</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mi>𝐲</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathrm{Loss}(\mathbf{w}, b)
+&amp;= \frac{1}{m}\sum_{i=1}^m (f_{\mathbf{w}, b}(\mathbf{x}_i)-y_i)^2 \\
+&amp;= \frac{1}{m}\sum_{i=1}^m ({\overline{\mathbf{w}}}^{\top}\overline{\mathbf{x}}_i-y_i)^2 \\
+&amp;= \frac{1}{m}(\mathrm{X}\overline{\mathbf{w}}-\mathbf{y})^{\top}(\mathrm{X}\overline{\mathbf{w}}-\mathbf{y})
+\end{aligned}
+</annotation></semantics></math></p>
+<p>then let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mi>𝐲</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mi>𝐲</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>2</mn><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mn>2</mn><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi>𝐲</mi><mo>+</mo><msup><mi>𝐲</mi><mi>⊤</mi></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">J(\overline{\mathbf{w}})=(\mathrm{X}\overline{\mathbf{w}}-\mathbf{y})^{\top}(\mathrm{X}\overline{\mathbf{w}}-\mathbf{y})=2\overline{\mathbf{w}}^{\top}\mathrm{X}^{\top}\mathrm{X}\overline{\mathbf{w}}-2\overline{\mathbf{w}}^{\top}\mathrm{X}^{\top}\mathbf{y}+\mathbf{y}^{\top}\mathbf{y}</annotation></semantics></math>.
+the derivative is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi mathvariant="normal">d</mi><mi>J</mi></mrow><mrow><mi mathvariant="normal">d</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover></mrow></mfrac><mo>=</mo><mn>2</mn><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mo>−</mo><mn>2</mn><msup><mi>𝐲</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi></mrow><annotation encoding="application/x-tex">\frac{\mathrm{d}J}{\mathrm{d}\overline{\mathbf{w}}}=2\overline{\mathbf{w}}^{\top}\mathrm{X}^{\top}\mathrm{X}-2\mathbf{y}^{\top}\mathrm{X}</annotation></semantics></math>
+. Then we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>*</mo></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">\color{red}{\overline{\mathbf{w}}^*}=(\mathrm{X}^{\top}\mathrm{X})^{-1}\mathrm{X}^{\top}\mathbf{y}</annotation></semantics></math></p>
+<h3 id="mle">MLE</h3>
+<p>let the likelihood function be</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>y</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><mn>2</mn><mi>π</mi><msup><mi>σ</mi><mn>2</mn></msup></mrow></msqrt></mfrac><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><msub><mi>𝐱</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow><mrow><mn>2</mn><msup><mi>σ</mi><mn>2</mn></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+L(\overline{\mathbf{w}}, \sigma^2 | \{y_i, \mathbf{x}_i\})=\frac{1}{\sqrt{2\pi \sigma^2}}\prod_{i=1}^m \exp\left(-\frac{(y_i - \overline{\mathbf{w}}^\top \mathbf{x}_i)^2}{2\sigma^2}\right)
+</annotation></semantics></math></p>
+<p>MLE of distribution of error:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>i</mi></msub><mo>∼</mo><mi>𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><msup><mover><mi>σ</mi><mo accent="true">̂</mo></mover><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">e_i\sim \mathcal{N}(0, \hat{\sigma}^2)</annotation></semantics></math></p>
+<h2
+id="d-dimensional-vector-to-h-dimensional-vector"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>-Dimensional
+Vector to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>-Dimensional
+Vector</h2>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>:
+dimension/length of output vector</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐲</mi><annotation encoding="application/x-tex">\mathbf{y}</annotation></semantics></math>:
+output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∈</mo><msup><mi>ℝ</mi><mi>h</mi></msup></mrow><annotation encoding="application/x-tex">\in \mathbb{R}^h</annotation></semantics></math></p>
+<p>Then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">W</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>h</mi><mo>×</mo><mi>d</mi></mrow></msup><mo>,</mo><mi>𝐛</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>,</mo><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msup><mi>𝐛</mi><mi>⊤</mi></msup></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi mathvariant="normal">W</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>∈</mo><msup><mi>ℝ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>×</mo><mi>h</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{W}\in \mathbb{R}^{h\times d}, \mathbf{b}\in \mathbb{R}^d, \overline{\mathrm{W}}=\begin{bmatrix}\mathbf{b}^{\top}\\\mathrm{W}\end{bmatrix}\in \mathbb{R}^{(d+1)\times h}</annotation></semantics></math></p>
+<p>then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mo>,</mo><mi>𝐝</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi mathvariant="normal">W</mi><mi>⊤</mi></msup><mi>𝐱</mi><mo>+</mo><mi>𝐛</mi></mrow><annotation encoding="application/x-tex">f_{\mathrm{W}, \mathbf{d}}(\mathbf{x})=\mathrm{W}^\top\mathbf{x}+\mathbf{b}</annotation></semantics></math></p>
+<p>then we have</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mover><mi mathvariant="normal">w</mi><mo accent="true">̂</mo></mover></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msup><mover><mi>𝐗</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><mover><mi>𝐗</mi><mo accent="true">¯</mo></mover><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mover><mi>𝐗</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><mi>𝐲</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msup><mover><mi>σ</mi><mo accent="true">̂</mo></mover><mn>2</mn></msup></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mfrac><mn>1</mn><mi>m</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mover><mi mathvariant="normal">w</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><mfrac><mn>1</mn><mi>m</mi></mfrac><mo stretchy="false" form="prefix">(</mo><mover><mi mathvariant="normal">X</mi><mo accent="true">¯</mo></mover><mover><mi>𝐰</mi><mo accent="true">̂</mo></mover><mo>−</mo><mi>𝐲</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup><mo stretchy="false" form="prefix">(</mo><mover><mi mathvariant="normal">X</mi><mo accent="true">¯</mo></mover><mover><mi>𝐰</mi><mo accent="true">̂</mo></mover><mo>−</mo><mi>𝐲</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\hat{\mathrm{w}}&amp;=(\overline{\mathbf{X}}^\top\overline{\mathbf{X}})^{-1}\overline{\mathbf{X}}^\top\mathbf{y}\\
+\hat{\sigma}^2&amp;=\frac{1}{m}\sum_{i=1}^m \left(y_i-\begin{bmatrix}1&amp;\mathbf{x}_i^\top\end{bmatrix}\hat{\mathrm{w}}\right)^2=\frac{1}{m}(\overline{\mathrm{X}}\hat{\mathbf{w}}-\mathbf{y})^\top(\overline{\mathrm{X}}\hat{\mathbf{w}}-\mathbf{y})
+\end{aligned}
+</annotation></semantics></math></p>
+<h3 id="objective-loss-function-1">Objective (Loss) Function</h3>
+<p>let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">Y</mi><mo accent="true">¯</mo></mover><mo>=</mo><mo stretchy="false" form="prefix">[</mo><msubsup><mi>𝐲</mi><mn>1</mn><mi>⊤</mi></msubsup><mo>,</mo><msubsup><mi>𝐲</mi><mn>2</mn><mi>⊤</mi></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mi>𝐲</mi><mi>m</mi><mi>⊤</mi></msubsup><msup><mo stretchy="false" form="postfix">]</mo><mi>⊤</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mi>h</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\overline{\mathrm{Y}}=[\mathbf{y}_1^\top, \mathbf{y}_2^\top, \dots, \mathbf{y}_m^\top]^\top \in \mathbb{R}^{m\times h}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">X</mi><annotation encoding="application/x-tex">\mathrm{X}</annotation></semantics></math>
+is the same as the previous definition.</p>
+<p>then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="false" form="prefix">(</mo><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>h</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">X</mi><msup><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><msup><mi mathvariant="normal">Y</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">X</mi><msup><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>−</mo><msup><mi mathvariant="normal">Y</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathrm{Loss}(\overline{\mathrm{W}})=\sum_{k=1}^h \left(\mathrm{X}\overline{\mathrm{W}}^{(k)}-\mathrm{Y}^{(k)}\right)^\top\left(\mathrm{X}\overline{\mathrm{W}}^{(k)}-\mathrm{Y}^{(k)}\right)
+</annotation></semantics></math></p>
+<p>Then the least squares solution is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mo>*</mo></msup><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><msub><mi>min</mi><mo>&#8289;</mo><mrow><mi mathvariant="normal">W</mi><mo>,</mo><mi>𝐛</mi></mrow></msub><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">Y</mi></mrow></mrow><annotation encoding="application/x-tex">\overline{\mathrm{W}}^*=\arg\min_{\mathrm{W},\mathbf{b}} \mathrm{Loss}\left(\overline{\mathrm{W}}\right)=\color{red}{\left(\mathrm{X}^\top\mathrm{X}\right)^{-1}\mathrm{X}^\top\mathrm{Y}}</annotation></semantics></math></p>
+<p>we need to guarantee that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">X</mi><annotation encoding="application/x-tex">\mathrm{X}</annotation></semantics></math>
+is full rank to make
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">(\mathrm{X}^\top\mathrm{X})^{-1}</annotation></semantics></math>
+exist.</p>
+<h2 id="for-binary-classification">For Binary Classification</h2>
+<p>let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>−</mi><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\mathrm{sign}(x)=\begin{cases}1 &amp; \text{if } x&gt;0 \\ 0 &amp;\text{if }x=0 \\ -1 &amp;\text{otherwise}\end{cases}</annotation></semantics></math></p>
+<p>we just need to modify the output with</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>𝐰</mi><mo>,</mo><mi>b</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>f</mi><mrow><mi>𝐰</mi><mo>,</mo><mi>b</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><mi>𝐰</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+g_{\mathbf{w}, b}(\mathbf{x})=\mathrm{sign}(f_{\mathbf{w},b}(\mathbf{x}))=\mathrm{sign}\left(\overline{\mathbf{x}}^\top\mathbf{w}\right)
+</annotation></semantics></math></p>
+<p>PS: output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">=0</annotation></semantics></math>
+declares error.</p>
+<h2 id="for-multi-class-classification">For Multi-class
+Classification</h2>
+<p>Apply <strong>one-hot encoding</strong> . Assume that there are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+labels, then for one output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐲</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>h</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{y}\in\mathbb{R}^h</annotation></semantics></math>,
+which is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>-th
+label, then we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>∈</mo><mi>ℤ</mi><mo>∩</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>,</mo><mi>h</mi><mo stretchy="false" form="postfix">]</mo><mo>∖</mo><mo stretchy="false" form="prefix">{</mo><mi>x</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><msub><mi>y</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\forall i\in \mathbb{Z}\cap [1, h]\backslash\{x\}, y_i=0, y_t=1</annotation></semantics></math>
+. 用人话来说就是在正确的标签上面打一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+其余位置为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</p>
+<p>Then the output label can be</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mi>h</mi><mo stretchy="false" form="postfix">}</mo></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><msup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><msup><mover><mi mathvariant="normal">W</mi><mo accent="true">¯</mo></mover><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathrm{output}=\arg\max_{k\in \{1, 2, ... h\}} \left\{\overline{\mathbf{x}}^\top \overline{\mathrm{W}}^{(k)}\right\}
+</annotation></semantics></math></p>
+<p>选取值最大的一个</p>
+<h2 id="polynomial-regression">Polynomial Regression</h2>
+<p>Treat different polynomial items of one input as items of different
+dimensions of input.</p>
+<p>Assume that we have an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>-ordered
+input, then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>d</mi><mo>′</mo></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mrow><mi>d</mi><mo>+</mo><mi>p</mi></mrow><mi>p</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">d&#39;=\binom{d+p}{p}</annotation></semantics></math>.
+And the input can be like this:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐩</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>x</mi><mn>1</mn></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>x</mi><mn>2</mn></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>…</mi></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>x</mi><mn>1</mn></msub><msub><mi>x</mi><mn>2</mn></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>…</mi></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>x</mi><mn>1</mn></msub><msub><mi>x</mi><mn>2</mn></msub><msub><mi>x</mi><mn>3</mn></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>…</mi></mtd><mtd columnalign="center" style="text-align: center"><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>p</mi></munderover><msub><mi>x</mi><mi>i</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>…</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>⊤</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mrow><mi>d</mi><mo>+</mo><mi>p</mi></mrow><mi>p</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">
+\mathbf{p}=\begin{bmatrix}1&amp;x_1&amp;x_2&amp;\dots&amp;x_1x_2&amp;\dots&amp;x_1x_2x_3&amp;\dots&amp;\prod_{i=1}^p x_i&amp;\dots\end{bmatrix}^\top \in \mathbb{R}^{\binom{d+p}{p}}
+</annotation></semantics></math></p>
+<p>Then for 1-d output, weight vector is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐰</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mrow><mi>d</mi><mo>+</mo><mi>p</mi></mrow><mi>p</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf{w}\in\mathbb{R}^{\binom{d+p}{p}}</annotation></semantics></math>
+For multi-dimensional output, weight matrix is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">W</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mrow><mi>d</mi><mo>+</mo><mi>p</mi></mrow><mi>p</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>×</mo><mi>h</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{W}\in \mathbb{R}^{\binom{d+p}{p}\times h}</annotation></semantics></math></p>
+<p>and</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>y</mi><mo>=</mo><msup><mi>𝐩</mi><mi>⊤</mi></msup><mi>𝐰</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>𝐲</mi><mo>=</mo><msup><mi>𝐩</mi><mi>⊤</mi></msup><mi mathvariant="normal">W</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+y=\mathbf{p}^\top \mathbf{w} \\
+\mathbf{y}=\mathbf{p}^\top \mathrm{W}
+\end{aligned}
+</annotation></semantics></math></p>
+<p>Then we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">P</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msubsup><mi>𝐩</mi><mn>1</mn><mi>⊤</mi></msubsup></mtd><mtd columnalign="center" style="text-align: center"><msubsup><mi>𝐩</mi><mn>2</mn><mi>⊤</mi></msubsup></mtd><mtd columnalign="center" style="text-align: center"><mi>…</mi></mtd><mtd columnalign="center" style="text-align: center"><msubsup><mi>𝐩</mi><mi>n</mi><mi>⊤</mi></msubsup></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>⊤</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mrow><mi>d</mi><mo>+</mo><mi>p</mi></mrow><mi>p</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{P}=\begin{bmatrix}\mathbf{p}_1^\top&amp;\mathbf{p}_2^\top&amp;\dots&amp;\mathbf{p}_n^\top\end{bmatrix}^\top\in \mathbb{R}^{m\times \binom{d+p}{p}}</annotation></semantics></math></p>
+<p>Similarly, we have</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msup><mi>𝐰</mi><mo>*</mo></msup></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msup><mi mathvariant="normal">P</mi><mi>⊤</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">P</mi><msup><mi mathvariant="normal">P</mi><mi>⊤</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>𝐲</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msup><mi mathvariant="normal">W</mi><mo>*</mo></msup></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msup><mi mathvariant="normal">P</mi><mi>⊤</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">P</mi><msup><mi mathvariant="normal">P</mi><mi>⊤</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi mathvariant="normal">Y</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathbf{w}^*&amp;=\mathrm{P}^\top\left(\mathrm{P}\mathrm{P}^\top\right)^{-1}\mathbf{y} \\
+\mathrm{W}^*&amp;=\mathrm{P}^\top\left(\mathrm{P}\mathrm{P}^\top\right)^{-1}\mathrm{Y}
+\end{aligned}
+</annotation></semantics></math></p>
+<h2 id="ridge-regresion">Ridge Regresion</h2>
+<p>Assume that when the data have many variables/attributes and the
+dimension
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>)
+is large, and few samples
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>)
+is small. Then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{X}\in \mathbb{R}^{m\times (d+1)}</annotation></semantics></math>
+which is hard to be full rank, then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi></mrow><annotation encoding="application/x-tex">\mathrm{X}^\top\mathrm{X}</annotation></semantics></math>
+may not exist.</p>
+<p>Then modify the loss function with a positive constant
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mi>J</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>λ</mi><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>d</mi><mo>+</mo><mn>1</mn></mrow></munderover><msubsup><mover><mi>w</mi><mo accent="true">¯</mo></mover><mi>i</mi><mn>2</mn></msubsup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mi>𝐲</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>−</mo><mi>𝐲</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>λ</mi><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mi>⊤</mi></msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+J(\overline{\mathbf{w}})&amp;=\sum_{i=1}^m \left(\overline{\mathbf{x}}^\top_i\overline{\mathbf{w}}-y_i\right)^2+\lambda\sum_{i=1}^{d+1}\overline{w}_i^2 \\
+&amp;=(\mathrm{X}\overline{\mathbf{w}}-\mathbf{y})^\top(\mathrm{X}\overline{\mathbf{w}}-\mathbf{y})+\lambda\overline{\mathbf{w}}^\top\overline{\mathbf{w}}
+\end{aligned}
+</annotation></semantics></math></p>
+<p>Then we get</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>*</mo></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mo>+</mo><mi>λ</mi><msub><mi mathvariant="normal">I</mi><mrow><mi>d</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">
+\color{red}{
+\overline{\mathbf{w}}^*=\left(\mathrm{X}^\top\mathrm{X}+\lambda \mathrm{I}_{d+1}\right)^{-1}\mathrm{X}^\top\mathbf{y}}
+</annotation></semantics></math></p>
+<p>This form is called <strong>Primal Form</strong>.</p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mo>+</mo><mi>λ</mi><msub><mi mathvariant="normal">I</mi><mrow><mi>d</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\mathrm{X}^\top\mathrm{X}+\lambda \mathrm{I}_{d+1}</annotation></semantics></math>
+is always invertible. This can be proved by applying theorems mentioned
+in <em>Mathematical Tools</em> .</p>
+<p>Since
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mo>+</mo><mi>λ</mi><msub><mi mathvariant="normal">I</mi><mrow><mi>d</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>∈</mo><msup><mi>ℝ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{X}^\top\mathrm{X}+\lambda \mathrm{I}_{d+1}\in \mathbb{R}^{(d+1)\times (d+1)}</annotation></semantics></math>
+can be large and computation of its inverse is costly, we need
+<strong>Dual Form</strong>, which is :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>𝐰</mi><mo accent="true">¯</mo></mover><mo>*</mo></msup><mo>=</mo><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">X</mi><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mo>+</mo><mi>λ</mi><msub><mi mathvariant="normal">I</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">
+\color{red}{
+\overline{\mathbf{w}}^*=\mathrm{X}^\top\left(\mathrm{X}\mathrm{X}^\top+\lambda \mathrm{I}_m\right)^{-1}\mathbf{y}}
+</annotation></semantics></math></p>
+<p>Which is equivalent to <strong>Primal Form</strong>. It can be
+obtained from <strong>Primal Form</strong> applying <em>Woodbury
+Formula</em>.</p>
+<p>PS: polynomial ridge regression is which just replace
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">X</mi><annotation encoding="application/x-tex">\mathrm{X}</annotation></semantics></math>
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">P</mi><annotation encoding="application/x-tex">\mathrm{P}</annotation></semantics></math>
+.</p>
+<h2 id="logistic-regression">Logistic Regression</h2>
+<p>Give an input vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐱</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{x}\in \mathbb{R}^{d}</annotation></semantics></math>
+. The parameters of logistic regression are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">\vec{\theta}\in \mathbb{R}^d, \theta_0\in \mathbb{R}</annotation></semantics></math>
+. let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+be the sigmoid function.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>−</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+\mathrm{Pr}\left(y=1|\mathbf{x},\vec{\theta},\theta_0\right)=g\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)=\frac{1}{1 + \exp\left(-\left&lt;\vec\theta,\mathbf{x}\right&gt;-\theta_0\right)}
+</annotation></semantics></math></p>
+<p>More generally, we have</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mn>0</mn></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mn>0</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>𝐱</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathrm{Pr}\left(y=y_0|\mathbf{x}=\mathbf{x}_0,\vec\theta,\theta_0\right)=g\left(y_0\left(\left&lt;\vec\theta,\mathbf{x}_0\right&gt;+\theta_0\right)\right)
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mn>0</mn></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">y_0\in\{-1, 1\}</annotation></semantics></math></p>
+<h3 id="why">Why?</h3>
+<p><strong>logs-odd</strong> should be linear function:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>log</mi><mo>&#8289;</mo><mfrac><mrow><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>−</mi><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">
+\log\frac{\mathrm{Pr}\left(y=1|\mathbf{x},\vec\theta,\theta_0\right)}{\mathrm{Pr}\left(y=-1|\mathbf{x},\vec\theta,\theta_0\right)}=\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0
+</annotation></semantics></math></p>
+<p>Decision boundary: where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0=0</annotation></semantics></math></p>
+<h3 id="mle-1">MLE</h3>
+<p>Likelihood function of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="normal">x</mi><mn mathvariant="normal">0</mn></msub><mo>,</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mathrm{x_0},y_0)</annotation></semantics></math>
+of given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\vec\theta, \theta_0)</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><msub><mi mathvariant="normal">x</mi><mn mathvariant="normal">0</mn></msub><mo>,</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mn>0</mn></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+L\left(\vec\theta, \theta_0|\mathrm{x_0},y_0\right)=\mathrm{Pr}\left(y=y_0|\mathbf{x}=\mathbf{x}_0,\vec\theta,\theta_0\right)
+</annotation></semantics></math></p>
+<p>For likelihood function data set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="normal">x</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{D}=\{(\mathrm{x}_i, y_i)_i\}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+L\left(\vec\theta, \theta_0|\mathcal{D}\right)=\prod_{i=1}^m \mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right)
+</annotation></semantics></math></p>
+<p>we need to maximum the value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(\vec\theta, \theta_0|\mathcal{D})</annotation></semantics></math>
+.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">}</mo></mrow></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>log</mi><mo>&#8289;</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>log</mi><mo>&#8289;</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>log</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>+</mo><mi>exp</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\arg\max_{\vec\theta, \theta_0}\left\{L(\vec\theta, \theta_0|\mathcal{D})\right\}
+&amp;=\arg\max_{\vec\theta, \theta_0}
+    \sum_{i=1}^m 
+        \log \mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right) \\
+&amp;=\arg\min_{\vec\theta, \theta_0}
+    \sum_{i=1}^m 
+        \log \mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right) \\
+&amp;=\arg\min_{\vec\theta, \theta_0}
+    \sum_{i=1}^m 
+        \log \left[1+\exp\left(-y_i\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)\right)\right]
+\end{aligned}
+</annotation></semantics></math></p>
+<p>Denote that</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>log</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>+</mo><mi>exp</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+l\left(\vec\theta, \theta_0|\mathcal{D}\right)=\sum_{i=1}^m \log \left[1+\exp\left(-y_i\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)\right)\right]
+</annotation></semantics></math></p>
+<h3 id="applying-stochastic-gradient-descent">Applying Stochastic
+Gradient Descent</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mfrac><mi mathvariant="normal">d</mi><mrow><mi mathvariant="normal">d</mi><msub><mi>θ</mi><mn>0</mn></msub></mrow></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mi>log</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>+</mo><mi>exp</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mfrac><mrow><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mrow><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mfrac><mi mathvariant="normal">d</mi><mrow><mi mathvariant="normal">d</mi><mover><mi>θ</mi><mo accent="true">→</mo></mover></mrow></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mi>log</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>+</mo><mi>exp</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mrow><mi>−</mi><msub><mi>y</mi><mi>i</mi></msub><msub><mi>𝐱</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}\theta_0}\left(\log \left[1+\exp\left(-y_i\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)\right)\right]\right)
+&amp;= -y_i\frac
+    {\exp\left(-y_i\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)\right)}
+    {1+\exp\left(-y_i\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)\right)} \\
+&amp;= \color{red}{-y_i\left[1-\mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right)\right]}\\
+\frac{\mathrm{d}}{\mathrm{d}\vec\theta}\left(\log \left[1+\exp\left(-y_i\left(\left&lt;\vec\theta,\mathbf{x}\right&gt;+\theta_0\right)\right)\right]\right)
+&amp;=
+\color{red}{-y_i\mathbf{x}_i\left[1-\mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right)\right]}\\
+\end{aligned}
+</annotation></semantics></math></p>
+<p>Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mfrac><mrow><mi mathvariant="normal">d</mi><mi>l</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi mathvariant="normal">d</mi><msub><mi>θ</mi><mn>0</mn></msub></mrow></mfrac></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mfrac><mrow><mi mathvariant="normal">d</mi><mi>l</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi mathvariant="normal">d</mi><mover><mi>θ</mi><mo accent="true">→</mo></mover></mrow></mfrac></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><msub><mi>𝐱</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>=</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\frac{\mathrm{d}l\left(\vec\theta, \theta_0|\mathcal{D}\right)}{\mathrm{d}\theta_0}
+&amp;= \sum_{i=1}^n 
+    -y_i\left[1-\mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right)\right] \\
+\frac{\mathrm{d}l\left(\vec\theta, \theta_0|\mathcal{D}\right)}{\mathrm{d}\vec\theta}
+&amp;= \sum_{i=1}^n
+    -y_i\mathbf{x}_i\left[1-\mathrm{Pr}\left(y=y_i|\mathbf{x}=\mathbf{x}_i,\vec\theta,\theta_0\right)\right]
+\end{aligned}
+</annotation></semantics></math></p>
+<p>SGD leads to <strong>no</strong> significant change on average when
+the gradient of the full objective equals zero.</p>
+<h3 id="regularization-in-logistic-regression-正则化">Regularization in
+Logistic Regression 正则化</h3>
+<p>likelihood function is strictly increasing as function of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">y_i\left(\left&lt;\vec\theta, \mathbf{x}\right&gt;+\theta_0\right)</annotation></semantics></math>
+. Then we can infinitely scale the parameters to obtains the higher
+likelihood. This can make the model emphasis too much on the partial
+features and noise, which leads to overfitting.
+参数无限制增大会导致模型过度关注噪声和局部特征，导致过拟合。</p>
+<p>e.g. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>l</mi><mn>2</mn></msub><annotation encoding="application/x-tex">l_2</annotation></semantics></math>-norm
+:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mfrac><mi>λ</mi><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">‖</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>l</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>𝒟</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+\arg\min_{\vec\theta, \theta_0}\left\{ \frac{\lambda}{2}\left\Vert\vec\theta\right\Vert^2 + l(\vec\theta, \theta_0|\mathcal{D}) \right\}
+</annotation></semantics></math></p>
+<h3 id="multi-class-logistic-regression">Multi-Class Logistic
+Regression</h3>
+<p>If we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">h\ge 2</annotation></semantics></math>
+classes, replace
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{Pr}(y=1|\mathbf{x},\vec\theta,\theta_0)</annotation></semantics></math>
+by <strong>soft-max</strong> function:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>c</mi><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>c</mi></msub><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mrow><mn>0</mn><mo>,</mo><mi>c</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>h</mi></munderover><mrow><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>i</mi></msub><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>+</mo><msub><mi>θ</mi><mrow><mn>0</mn><mo>,</mo><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+\mathrm{Pr}(y=c|\mathbf{x},\vec\theta, \theta_0)=\frac
+    {\exp\left(\left&lt;\vec\theta_c, \mathbf{x}\right&gt;+\theta_{0,c}\right)}
+    {\sum_{i=1}^h {\exp\left(\left&lt;\vec\theta_i, \mathbf{x}\right&gt;+\theta_{0,i}\right)}}
+</annotation></semantics></math></p>
+</body>
+</html>

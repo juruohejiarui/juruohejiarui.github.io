@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DSAA2011 SVM</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+<h1 id="support-vector-machine-svm-支持向量机">Support Vector Machine
+(SVM) 支持向量机</h1>
+<h2 id="preparation">Preparation</h2>
+<p>Given a set of data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>:</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{D}=\{(\mathbf{x}_i,y_i)\in \mathbb{R}^d\times \{-1,1\}:i=1,2,...n\}</annotation></semantics></math></p>
+<p>For any
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐱</mi><mo>,</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">\mathbf{x},y</annotation></semantics></math>
+, correct classification by classifier
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mover><mi>θ</mi><mo accent="true">→</mo></mover></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_{\vec\theta}(\mathbf{x})=\mathrm{sign}\left({\vec\theta}^\top\mathbf{x}\right)</annotation></semantics></math>
+means that :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>y</mi><mo>=</mo><mi>+</mi><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo>&lt;</mo><mn>0</mn><mo>,</mo><mi>y</mi><mo>=</mo><mi>−</mi><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"></mtd></mtr></mtable></mrow><mo>⇔</mo><mi>y</mi><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⇔</mo><mi>y</mi><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
+\begin{cases}
+{\vec\theta}^\top\mathbf{x}&gt;0,y=+1 \\
+{\vec\theta}^\top\mathbf{x}&lt;0,y=-1 \\
+\end{cases}
+\Leftrightarrow y=\mathrm{sign}\left({\vec\theta}^\top\mathbf{x}\right)
+\Leftrightarrow y{\vec\theta}^\top\mathbf{x}&gt;0
+</annotation></semantics></math></p>
+<h3 id="definitions">Definitions:</h3>
+<p><strong>Margin of Classifier</strong>: The margin of classifier
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mover><mi>θ</mi><mo accent="true">→</mo></mover></msub><annotation encoding="application/x-tex">f_{\vec\theta}</annotation></semantics></math>
+on sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x},y)</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>𝐱</mi></mrow><annotation encoding="application/x-tex">y{\vec\theta}\mathbf{x}</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">y\left&lt;{\vec\theta}, \mathbf{x}\right&gt;</annotation></semantics></math></p>
+<ul>
+<li><strong>Positive Margin</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x},y)</annotation></semantics></math>
+is correctly classified by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec{\theta}</annotation></semantics></math>
+.</li>
+<li><strong>Negative Margin</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x},y)</annotation></semantics></math>
+is not correctly classified by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec{\theta}</annotation></semantics></math></li>
+<li><strong>Bigger Margin</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x},y)</annotation></semantics></math>
+is more correctly clasified by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec{\theta}</annotation></semantics></math></li>
+</ul>
+<p><strong>Linearly separable</strong>: The dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>:</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{D}=\{(\mathbf{x}_i,y_i)\in \mathbb{R}^d\times \{-1,1\}:i=1,2,...n\}</annotation></semantics></math>
+is linearly separable if there exists some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec{\theta}</annotation></semantics></math>
+such that</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> or </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>y</mi><mi>i</mi></msub><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><msub><mi>𝐱</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn><mspace width="0.222em"></mspace><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">
+y_i=\mathrm{sign}\left({\vec{\theta}}^\top \mathbf{x}\right)\text{ or }y_i{\vec{\theta}}^\top\mathbf{x}_i&gt;0~\forall i=1,2,\dots,n
+</annotation></semantics></math></p>
+<p>There is some hyperplane that (strictly) separates the data into
+positive and negative samples:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec\theta</annotation></semantics></math>
+has positive margin
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>&gt;</mo><mn>0</mn><mspace width="0.222em"></mspace><mo>∀</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">y_i\left&lt;\vec\theta, \mathbf{x}_i\right&gt; &gt; 0~\forall i</annotation></semantics></math></li>
+<li>Minimum margin:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>=</mo><msub><mi>min</mi><mo>&#8289;</mo><mrow><mn>1</mn><mo>≤</mo><mi>i</mi><mo>≤</mo><mi>n</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">{</mo><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">⟨</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">⟩</mo></mrow><mo stretchy="true" form="postfix">}</mo></mrow><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\gamma=\min_{1\leq i\leq n} \left\{y_i\left&lt;\vec\theta, \mathbf{x}_i\right&gt;\right\}&gt;0</annotation></semantics></math></li>
+</ul>
+<p><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>-linear
+separatable</strong>: The dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>:</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{D}=\{(\mathbf{x}_i,y_i)\in \mathbb{R}^d\times \{-1,1\}:i=1,2,...n\}</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>-linearly
+separable for some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\gamma&gt;0</annotation></semantics></math>
+if there exists some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec{\theta}</annotation></semantics></math>
+such that</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><msub><mi>𝐱</mi><mi>i</mi></msub><mo>≥</mo><mi>γ</mi><mspace width="0.222em"></mspace><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">
+y_i{\vec{\theta}}^\top\mathbf{x}_i\ge\gamma~\forall i=1,2,\dots,n
+</annotation></semantics></math></p>
+<p><strong>Geometric margin</strong>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">m</mi></mrow></msub><mo>:=</mo><mfrac><mi>γ</mi><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><munder><mi>min</mi><mo>&#8289;</mo><mrow><mn>1</mn><mo>≤</mo><mi>i</mi><mo>≤</mo><mi>n</mi></mrow></munder><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>θ</mi><mo accent="true">→</mo></mover></mrow><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+\gamma_{\mathrm{geom}}:=\frac{\gamma}{\left\lVert\vec\theta\right\rVert}=\frac{\min_{1\leq i\leq n} y_i\mathbf{x}_i^\top\vec\theta}{\left\lVert\vec\theta\right\rVert}
+</annotation></semantics></math></p>
+<ul>
+<li>This is the smallest distance over all samples to the decision
+boundary
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>𝐱</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>:</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><mi>𝐱</mi><mo>,</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">⟩</mo></mrow><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">L=\left\{\mathbf{x}\in \mathbb{R}^d: \left&lt;\mathbf{x},\vec{\theta}\right&gt;=0\right\}</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>γ</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">m</mi></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><annotation encoding="application/x-tex">\gamma^{-1}_{\mathrm{geom}}</annotation></semantics></math>
+: fair measure of the difficulty of the classification problem</li>
+<li>maximize the geometric margin
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇒</mo><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math>
+more robust to noisy samples</li>
+</ul>
+<figure>
+<img src="image.png" alt="Sample" />
+<figcaption aria-hidden="true">Sample</figcaption>
+</figure>
+<h3 id="maximum-margin-linear-classifier">Maximum margin linear
+classifier</h3>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>-linearly
+separable dataset, we need to solve the optimization problem:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><munder><mi>max</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow></munder><mfrac><mi>γ</mi><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow></mfrac><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>≥</mo><mi>γ</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mo>⇔</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><munder><mi>min</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow></munder><mfrac><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mi>γ</mi></mfrac><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>≥</mo><mi>γ</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+&amp;\max_{\vec\theta\in \mathbb{R}^d} \frac{\gamma}{\left\lVert\vec\theta\right\rVert} \text{ s.t. } \forall i=1,2,\dots,n,  y_i\mathbf{x}_i^\top \vec\theta\ge \gamma \\
+\Leftrightarrow &amp;\min_{\vec\theta\in \mathbb{R}^d} \frac{\left\lVert\vec\theta\right\rVert}{\gamma} \text{ s.t. } \forall i=1,2,\dots,n,  y_i\mathbf{x}_i^\top \vec\theta\ge \gamma
+\end{aligned}
+</annotation></semantics></math></p>
+<p>since that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\gamma&gt;0</annotation></semantics></math>
+then we have</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mi>min</mi><mo>&#8289;</mo><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow></munder><mrow><mo stretchy="true" form="prefix">∥</mo><mfrac><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>γ</mi></mfrac><mo stretchy="true" form="postfix">∥</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mfrac><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>γ</mi></mfrac><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
+\min_{\vec\theta\in \mathbb{R}^d} \left\lVert\frac{\vec\theta}{\gamma}\right\rVert \text{ s.t. } \forall i=1,2,\dots,n,  y_i\mathbf{x}_i^\top \frac{\vec\theta}{\gamma} \ge 1
+</annotation></semantics></math></p>
+<p>Since that scaling
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec\theta</annotation></semantics></math>
+by a constant doest not change the decision boundary
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+, we have let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\left\lVert\vec\theta\right\rVert=1</annotation></semantics></math>,
+then let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>:=</mo><mfrac><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>γ</mi></mfrac></mrow><annotation encoding="application/x-tex">\vec\theta&#39;:=\frac{\vec\theta}{\gamma}</annotation></semantics></math>,
+optimizing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>⇔</mo></mrow><annotation encoding="application/x-tex">\vec\theta&#39;\Leftrightarrow</annotation></semantics></math>
+optimizing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+.</p>
+<p>缩放
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec\theta</annotation></semantics></math>
+不会对决策划线产生影响。</p>
+<p>Then we have :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow></munder><mrow><mo stretchy="true" form="prefix">∥</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo stretchy="true" form="postfix">∥</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>≥</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mo>⇔</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow></munder><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">∥</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>≥</mo><mn>1</mn></mtd><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">Primal form of SVM</mtext></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+&amp; \arg\min_{\vec\theta&#39;\in \mathbb{R}^d} \left\lVert\vec\theta&#39;\right\rVert \text{ s.t. } \forall i=1,2,\dots,n,  y_i\mathbf{x}_i^\top \vec\theta&#39; \ge 1 \\
+\Leftrightarrow&amp; \arg\min_{\vec\theta&#39;\in \mathbb{R}^d} \frac{1}{2}\left\lVert\vec\theta&#39;\right\rVert^2 \text{ s.t. } \forall i=1,2,\dots,n,  y_i\mathbf{x}_i^\top \vec\theta&#39; \ge 1 &amp; \text{Primal form of SVM}
+\end{aligned}
+</annotation></semantics></math></p>
+<h2 id="primal-svm">Primal-SVM</h2>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow></munder><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">∥</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
+\color{red}{
+\arg\min_{\vec\theta&#39;\in \mathbb{R}^d} \frac{1}{2}\left\lVert\vec\theta&#39;\right\rVert^2 \text{ s.t. } \forall i=1,2,\dots,n,  y_i\mathbf{x}_i^\top \vec\theta&#39; \ge 1}
+</annotation></semantics></math></p>
+<p>and the SVM algorithm is that finds the maximuim (geometric) margin
+linear classifier.</p>
+<h3 id="uniqueness">Uniqueness</h3>
+<p>The solution to Primal-SVM is <strong>unique</strong>.</p>
+<p><strong>Proof</strong>: suppose there are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+distinct solution for primal-SVM
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo>,</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\vec\theta_1, \vec\theta_2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow></mrow><annotation encoding="application/x-tex">\left\lVert\vec\theta_1\right\rVert=\left\lVert\vec\theta_2\right\rVert</annotation></semantics></math>,
+then let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>θ</mi><mo accent="true">¯</mo></mover><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo>+</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\overline\theta=\frac{1}{2}\left(\vec\theta_1+\vec\theta_2\right)</annotation></semantics></math>
+, then we have</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>θ</mi><mo accent="true">¯</mo></mover><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo>+</mo><msub><mi>y</mi><mi>i</mi></msub><msub><mi>𝐱</mi><mi>i</mi></msub><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
+\forall i=1,2,\dots,n, y_i\mathbf{x}_i^\top\overline{\theta}=\frac{1}{2}\left(y_i\mathbf{x}_i^\top\vec{\theta}_1+y_i\mathbf{x}_i\vec{\theta}_2\right)\ge 1
+</annotation></semantics></math></p>
+<p>Which leads to that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">¯</mo></mover><annotation encoding="application/x-tex">\overline{\theta}</annotation></semantics></math>
+is feasible.</p>
+<p>By triangle inequality, we have :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo>+</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mo>≤</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow></mrow><annotation encoding="application/x-tex">
+\left\lVert\overline{\theta}\right\rVert=\frac{1}{2}\left\lVert\vec\theta_1+\vec\theta_2\right\rVert
+\leq \frac{1}{2}\left\lVert\vec\theta_1\right\rVert + \frac{1}{2}\left\lVert\vec\theta_2\right\rVert
+=\left\lVert\vec\theta_1\right\rVert
+=\left\lVert\vec\theta_2\right\rVert
+</annotation></semantics></math></p>
+<ul>
+<li>if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow></mrow><annotation encoding="application/x-tex">\left\lVert\overline{\theta}\right\rVert&lt;\left\lVert\vec\theta_1\right\rVert</annotation></semantics></math>,
+this is a contradition</li>
+<li>if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo stretchy="true" form="postfix">∥</mo></mrow></mrow><annotation encoding="application/x-tex">\left\lVert\overline{\theta}\right\rVert=\left\lVert\vec\theta_1\right\rVert</annotation></semantics></math>,
+this can only happen when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>1</mn></msub><mo>=</mo><msub><mover><mi>θ</mi><mo accent="true">→</mo></mover><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\vec\theta_1=\vec\theta_2</annotation></semantics></math>
+.</li>
+</ul>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Q.E.D</mtext><annotation encoding="application/x-tex">\text{Q.E.D}</annotation></semantics></math></p>
+<h2 id="incorporating-an-offset">Incorporating An Offset</h2>
+<p>If data are not “centered” at zero, we can incorporate an offset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>0</mn></msub><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">\theta_0\in \mathbb{R}</annotation></semantics></math>
+:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mover><mi>θ</mi><mo accent="true">→</mo></mover></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>θ</mi><mn>0</mn></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>⊤</mi></msup><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐱</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+f_{\vec\theta,\theta_0}(\mathbf{x})=\mathrm{sign}\left(\vec{\theta}^\top\mathbf{x}+\theta_0\right)
+=\mathrm{sign}\left(
+    \begin{bmatrix}
+        \vec\theta \\
+        \theta_0
+    \end{bmatrix}^\top
+    \begin{bmatrix}
+        \mathbf{x} \\
+        1
+    \end{bmatrix}   
+\right)
+</annotation></semantics></math></p>
+<p>Then the decision boundary is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>𝐱</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>:</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>⊤</mi></msup><mi>𝐱</mi><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">L=\left\{\mathbf{x}\in\mathbb{R}^d: \vec{\theta}^\top\mathbf{x}+\theta_0=0\right\}</annotation></semantics></math></p>
+<p>Then the optimization problem becomes:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>,</mo><msub><mi>θ</mi><msup><mn>0</mn><mo>′</mo></msup></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mi>ℝ</mi></mrow></munder><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">∥</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>′</mo></msup><mo>+</mo><msub><mi>θ</mi><msup><mn>0</mn><mo>′</mo></msup></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
+\arg\min_{\left(\vec\theta&#39;,\theta_0&#39;\right)\in \mathbb{R}^d\times\mathbb{R}} \frac{1}{2}\left\lVert\vec\theta&#39;\right\rVert^2 \text{ s.t. } \forall i=1,2,\dots,n,  y_i\left(\mathbf{x}_i^\top \vec\theta&#39;+\theta_0&#39;\right) \ge 1
+</annotation></semantics></math></p>
+<p><strong>Remarks</strong>:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\theta_0</annotation></semantics></math>
+only appears in constrains.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\theta_0</annotation></semantics></math>
+只会出现在约束中.</li>
+<li>This is different from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐱</mi><mo accent="true">¯</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐱</mi></mtd><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\overline{\mathbf{x}}=\begin{bmatrix}\mathbf{x}&amp;1\end{bmatrix}</annotation></semantics></math>
+in linear regression. We do not bias in any way where the separating
+hyperplane should appear, only that it should maximize the geometric
+margin.
+我们不预设分离超平面必须处于某个固定的位置（即不人为地“偏置”超平面的出现位置），而是完全依赖于最大化几何间隔这一原则来决定超平面的位置和方向。</li>
+</ul>
+<p>Support Vectors:</p>
+<ul>
+<li>samples exactly on the margin</li>
+<li>Quatify the quality of this binary classifier</li>
+</ul>
+<p>The solution of SVM depends on a small number of data samples
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x}_i, y_i)</annotation></semantics></math>
+只需要样本的特定的一小部分即可计算出SVM的解</p>
+<figure>
+<img src="image-1.png" alt="Sample" />
+<figcaption aria-hidden="true">Sample</figcaption>
+</figure>
+<h2 id="evaluation">Evaluation</h2>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>t</mi></msup><mo>,</mo><msubsup><mi>θ</mi><mn>0</mn><mi>t</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\left(\vec\theta^t,\theta_0^t\right)</annotation></semantics></math>
+be the parameters learnt from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>∖</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐱</mi><mi>t</mi></msub><mo>,</mo><msub><mi>y</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{D}\backslash\{(\mathbf{x}_t,y_t)\}</annotation></semantics></math>
+i.e.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>t</mi></msup><mo>,</mo><msubsup><mi>θ</mi><mn>0</mn><mi>t</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mi>ℝ</mi></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mn>1</mn><mspace width="0.222em"></mspace><mo>∀</mo><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">]</mo><mo>∩</mo><mi>ℤ</mi><mo>∖</mo><mo stretchy="false" form="prefix">{</mo><mi>t</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+\left(\vec\theta^t,\theta_0^t\right)=\arg\min_{\left(\vec\theta,\theta_0\right)\in\mathbb{R}^d\times\mathbb{R}}\left\{
+    \frac{1}{2}
+    \left\lVert\vec\theta\right\rVert^2 \text{ s.t. } 
+    y_i\left(\mathbf{x}^\top\vec\theta+\theta_0\right)\ge 1~\forall i\in [1,n]\cap\mathbb{Z}\backslash\{t\}
+\right\}
+</annotation></semantics></math></p>
+<p><strong>Leave-one-out cross-validation error (LOOCV)</strong> : a
+value that can assess the robustness of the SVM :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">V</mi></mrow><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>t</mi></msub><mo>,</mo><msub><mi>f</mi><mrow><msup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mi>t</mi></msup><mo>,</mo><msubsup><mi>θ</mi><mn>0</mn><mi>t</mi></msubsup></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathrm{LOOCV}=\frac{1}{n}\sum_{t=1}^n
+    \mathrm{Loss}\left(y_t,f_{\vec\theta^t,\theta_0^t}(\mathbf{x})\right)
+</annotation></semantics></math></p>
+<p>Where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>𝕀</mi><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>≠</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathrm{Loss}(a,b)=\mathbb{I}\{a\ne b\}</annotation></semantics></math></p>
+<p>LOOCV is small, the model generalizes well.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">N\in\{0, 1, 2,\dots,n\}</annotation></semantics></math>
+be the number of support vectors. Then we have:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">V</mi></mrow><mo>≤</mo><mfrac><mi>N</mi><mi>n</mi></mfrac></mrow><annotation encoding="application/x-tex">
+\mathrm{LOOCV}\leq \frac{N}{n}
+</annotation></semantics></math></p>
+<p>Hint: Only the support vectors can contribute to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">V</mi></mrow><annotation encoding="application/x-tex">\mathrm{LOOCV}</annotation></semantics></math>
+.</p>
+<h2 id="allowing-misclassified-example">Allowing Misclassified
+Example</h2>
+<p>Permit some errors to increase robustness.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>ξ</mi><mo accent="true">→</mo></mover><mo>=</mo><mo stretchy="false" form="prefix">[</mo><msub><mi>ξ</mi><mn>1</mn></msub><mo>,</mo><msub><mi>ξ</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>ξ</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">]</mo><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">(</mo><mo>∀</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo>,</mo><msub><mi>ξ</mi><mi>i</mi></msub><mo>≥</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\vec{\xi}=[\xi_1,\xi_2,\dots,\xi_n]~(\forall i=1,2,\dots,n, \xi_i\ge 0)</annotation></semantics></math>
+be <strong>slack variables</strong>, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">C&gt;0</annotation></semantics></math>
+be pre-specified constant.</p>
+<p>Then modify the problem to this:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo>,</mo><mover><mi>ξ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mi>ℝ</mi><mo>×</mo><msubsup><mi>ℝ</mi><mo>+</mo><mi>n</mi></msubsup></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>C</mi><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>i</mi></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t. </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mn>1</mn><mo>−</mo><msub><mi>ξ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">}</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mo>⇔</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mi>arg</mi><mo>&#8289;</mo><munder><mi>min</mi><mo>&#8289;</mo><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>,</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>×</mo><mi>ℝ</mi></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">∥</mo><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>C</mi><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐱</mi><mi>i</mi><mi>⊤</mi></msubsup><mover><mi>θ</mi><mo accent="true">→</mo></mover><mo>+</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>+</mo></msup><mo stretchy="true" form="postfix">}</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+&amp; \arg\min_{
+    \left(\vec\theta,\theta_0,\vec\xi\right)
+    \in
+    \mathbb{R}^d\times \mathbb{R}\times \mathbb{R}_+^n
+}
+\left\{
+    \frac{1}{2}\left\lVert\vec{\theta}\right\rVert^2
+    +C\sum_{i=1}^n \xi_i
+    \text{ s.t. }
+    \forall i\in\{1, 2, \dots, n\},
+    y_i\left(\mathbf{x}_i^\top\vec\theta+\theta_0\right)\ge 1-\xi_i
+\right\} \\
+\Leftrightarrow
+&amp;\arg\min_{
+    \left(\vec\theta,\theta_0\right)
+    \in
+    \mathbb{R}^d\times \mathbb{R}
+}
+\left\{
+    \frac{1}{2}\left\lVert\vec\theta\right\rVert^2
+    +C\sum_{i=1}^n \left[1-y_i\left(\mathbf{x}_i^\top\vec\theta+\theta_0\right)\right]^+
+\right\}
+\end{aligned}
+</annotation></semantics></math></p>
+<ul>
+<li>The constrain is violated if some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi_i&gt;0</annotation></semantics></math>
+.</li>
+<li>Penalty for one violation:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>ξ</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">C\xi_i</annotation></semantics></math>
+.</li>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">C\rightarrow \infty</annotation></semantics></math>,
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>i</mi></msub><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi_i\rightarrow 0</annotation></semantics></math>
+, returns to the original max margin classifier.</li>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>≈</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">C\approx0</annotation></semantics></math>,
+some violation is allowed.</li>
+</ul>
+<figure>
+<img src="image-2.png" alt="Sample" />
+<figcaption aria-hidden="true">Sample</figcaption>
+</figure>
+</body>
+</html>

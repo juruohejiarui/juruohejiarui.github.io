@@ -1,1 +1,1 @@
-{"title": "Memory Management", "labels": ["Algorithm"], "description": "# Segment Registers\n- ``ds``: Data Segment\n- ``es``: Extend Segment\n- ``cs``: Code Segment\n- ``ss``:"}
+{"title": "x64 Memory Management", "labels": ["OS", "Algorithm", "Hardware"], "description": "# Segment Registers\n- ``ds``: Data Segment\n- ``es``: Extend Segment\n- ``cs``: Code Segment\n- ``ss``:"}

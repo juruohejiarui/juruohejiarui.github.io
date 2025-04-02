@@ -22,10 +22,10 @@
 	},
 	{
 		"index":3,
-		"title":"Memory Management",
-		"labels":["Algorithm"],
+		"title":"x64 Memory Management",
+		"labels":["OS","Algorithm","Hardware"],
 		"file": "memory.html",
-		"updateTime":1743580088.8562825
+		"updateTime":1743580348.8148437
 	},
 	{
 		"index":4,
@@ -54,5 +54,33 @@
 		"labels":["test"],
 		"file": "test1 copy.html",
 		"updateTime":1743580129.266383
+	},
+	{
+		"index":8,
+		"title":"DSAA2011 Gradient Descent",
+		"labels":["Lecture","DSAA2011"],
+		"file": "DSAA2011 Gradient Descent.html",
+		"updateTime":1743580503.573622
+	},
+	{
+		"index":9,
+		"title":"DSAA2011 SVM",
+		"labels":["Lecture","DSAA2011"],
+		"file": "DSAA2011 SVM.html",
+		"updateTime":1743580525.0650935
+	},
+	{
+		"index":10,
+		"title":"DSAA2011 Regression",
+		"labels":["DSAA2011","Lecture"],
+		"file": "DSAA2011 Regression.html",
+		"updateTime":1743581161.9659321
+	},
+	{
+		"index":11,
+		"title":"DSAA2011 Mathematical Tools",
+		"labels":["Lecture","DSAA2011"],
+		"file": "DSAA2011 Mathematical Tools.html",
+		"updateTime":1743580694.53215
 	}
 ]

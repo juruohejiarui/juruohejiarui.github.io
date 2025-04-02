@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DSAA2011 Mathematical Tools</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+<h1 id="mathematical-tools">Mathematical Tools</h1>
+<h2 id="basic-functions">Basic Functions</h2>
+<ul>
+<li><strong>Logistic Function / Sigmoid Function</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>exp</mi><mo>&#8289;</mo><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(x)=\frac{1}{1 + \exp(-x)}</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝕀</mi><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">statement</mtext><mo stretchy="false" form="postfix">}</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">statement is true</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">\mathbb{I}\{\text{statement}\}=\begin{cases}1 &amp; \text{statement is true} \\ 0 &amp; \text{otherwise}\end{cases}</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>x</mi><msup><mo stretchy="false" form="postfix">]</mo><mo>+</mo></msup><mo>=</mo><mi>max</mi><mo>&#8289;</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>x</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">[x]^+=\max\{0,x\}</annotation></semantics></math></li>
+</ul>
+<h2 id="probability-and-statistic">Probability and Statistic</h2>
+<h3 id="guassian-noise-高斯噪声">Guassian Noise 高斯噪声</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="prefix">|</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><mn>2</mn><mi>π</mi><msup><mi>σ</mi><mn>2</mn></msup></mrow></msqrt></mfrac><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mi>x</mi><mn>2</mn></msup><mrow><mn>2</mn><msup><mi>σ</mi><mn>2</mn></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+f(x|\sigma^2)=\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{x^2}{2\sigma^2}\right)
+</annotation></semantics></math></p>
+<h3 id="bayess-rule-贝叶斯">Bayes’s rule 贝叶斯</h3>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒳</mi><mo>,</mo><mi>𝒴</mi></mrow><annotation encoding="application/x-tex">\mathcal{X}, \mathcal{Y}</annotation></semantics></math>
+: event space</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="prefix">|</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munder><mo>∑</mo><mrow><msup><mi>y</mi><mo>′</mo></msup><mo>∈</mo><mi>𝒴</mi></mrow></munder><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="prefix">|</mo><msup><mi>y</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>y</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+p(y|x)=\frac{p(x|y)p(y)}{\sum_{y&#39;\in \mathcal{Y}}p(x|y&#39;)p(y&#39;)}
+</annotation></semantics></math></p>
+<h3 id="expectation-期望">Expectation 期望</h3>
+<ul>
+<li>Discrete case 离散情况：</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mi>Y</mi><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>y</mi><mo>∈</mo><mi>𝒴</mi></mrow></munder><mi>y</mi><mo>⋅</mo><msub><mi>p</mi><mi>Y</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>x</mi><mo>∈</mo><mi>𝒳</mi></mrow></munder><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>p</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+\mathbb{E} Y= \mathbb{E}[g(X)]=\sum_{y\in \mathcal{Y}} y\cdot p_Y(y)=\sum_{x\in \mathcal{X}} g(x)p_X(x)
+</annotation></semantics></math></p>
+<ul>
+<li>Continuous case 连续情况： where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+is the probability density funtion 概率密度函数</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mi>Y</mi><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msub><mo>∫</mo><mi>ℝ</mi></msub><mi>y</mi><msub><mi>f</mi><mi>Y</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="normal">d</mi><mi>y</mi><mo>=</mo><msub><mo>∫</mo><mi>ℝ</mi></msub><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>f</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="normal">d</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">
+\mathbb{E} Y=\mathbb{E}[g(X)]=\int_{\mathbb{R}} yf_Y(y)\mathrm{d}y=\int_{\mathbb{R}}g(x)f_X(x)\mathrm{d}x
+</annotation></semantics></math></p>
+<h3 id="maximum-likelihood-estimation-mle-最大似然估计">Maximum
+Likelihood Estimation (MLE) 最大似然估计</h3>
+<p>Assume we get a probability function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>;</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_X(x; \theta)</annotation></semantics></math>
+with unconfirmed parameters,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+. Additionally, there is a data set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">x=\{x_1,x_2,\dots,x_n\}</annotation></semantics></math>
+, then the MLE of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+is :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mover><mi>θ</mi><mo accent="true">̂</mo></mover><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">L</mi></mrow></msub></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mi>θ</mi></munder><msub><mi>p</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo>;</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mi>θ</mi></munder><mi>log</mi><mo>&#8289;</mo><msub><mi>p</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo>;</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\hat{\theta}_{\mathrm{ML}} &amp;= \arg\max_{\theta} p_{X}(x_1, x_2, \dots, x_n; \theta) \\
+&amp;=\arg\max_{\theta} \log p_{X}(x_1, x_2, \dots, x_n; \theta)
+\end{aligned}
+</annotation></semantics></math></p>
+<p>if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">x_1, x_2, \dots, x_n</annotation></semantics></math>
+are independent, then:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mover><mi>θ</mi><mo accent="true">̂</mo></mover><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">L</mi></mrow></msub></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mi>θ</mi></munder><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>p</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>;</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mi>arg</mi><mo>&#8289;</mo><munder><mi>max</mi><mo>&#8289;</mo><mi>θ</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>log</mi><mo>&#8289;</mo><msub><mi>p</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>;</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\hat{\theta}_{\mathrm{ML}} &amp;= \arg\max_{\theta} \prod_{i=1}^n p_{X}(x_i; \theta) \\
+&amp;= \arg\max_{\theta} \sum_{i=1}^n \log p_{X}(x_i; \theta)
+\end{aligned}
+</annotation></semantics></math></p>
+<p>MLE can be biased （最大似然估计不一定是无偏的）</p>
+<h4 id="consistency">Consistency</h4>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>θ</mi><mo accent="true">̂</mo></mover><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">L</mi></mrow></msub><mover><mo>→</mo><mi>p</mi></mover><mi>θ</mi></mrow><annotation encoding="application/x-tex">\hat\theta_{\mathrm{ML}}\xrightarrow{p} \theta</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\rightarrow \infty</annotation></semantics></math>
+. We say
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>n</mi></msub><mover><mo>→</mo><mi>p</mi></mover><mi>X</mi></mrow><annotation encoding="application/x-tex">X_n \xrightarrow{p} X</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\rightarrow \infty</annotation></semantics></math>
+if</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mi>lim</mi><mo>&#8289;</mo><mrow><mi>n</mi><mo>→</mo></mrow></munder><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>X</mi><mi>n</mi></msub><mo>−</mo><mi>X</mi><mo stretchy="false" form="postfix">∥</mo><mo>&gt;</mo><mi>ϵ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mo>∀</mo><mi>ϵ</mi><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">
+\lim_{n\rightarrow}\mathrm{Pr}(\|X_n-X\|&gt;\epsilon) = 0, \forall \epsilon\in \mathbb{R}
+</annotation></semantics></math></p>
+<h4 id="asymptotic-normality-渐进正态">Asymptotic Normality
+渐进正态</h4>
+<p>we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mi>n</mi></msqrt><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>θ</mi><mo accent="true">̂</mo></mover><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">L</mi></mrow></msub><mo>−</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mover><mo>→</mo><mi>d</mi></mover><mi>𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sqrt{n} \left(\hat\theta_{\mathrm{ML}} - \theta\right)\xrightarrow{d} \mathcal{N}(0, I(\theta)^{-1})</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\rightarrow \infty</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">I(\theta)</annotation></semantics></math>
+is fisher information of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+(larger information
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇒</mo><annotation encoding="application/x-tex">\Longrightarrow</annotation></semantics></math>
+smaller variance)</p>
+<p>We say
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>n</mi></msub><mover><mo>→</mo><mi>d</mi></mover><mi>X</mi></mrow><annotation encoding="application/x-tex">X_n\xrightarrow{d}X</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\rightarrow \infty</annotation></semantics></math>
+if</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mi>lim</mi><mo>&#8289;</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>F</mi><msub><mi>X</mi><mi>n</mi></msub></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mo>∀</mo><mi>x</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> where </mtext><mspace width="0.333em"></mspace></mrow><mi>f</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> is continuous</mtext></mrow></mrow><annotation encoding="application/x-tex">
+\lim_{n\rightarrow \infty}F_{X_n}(x)=F(x)~\forall x \text{  where }f\text{ is continuous}
+</annotation></semantics></math></p>
+<h4 id="model-sensitivity">Model Sensitivity</h4>
+<p>MLE is sensitive to model assumptions, and incorrect assumptions can
+lead to biased or inconsistent estimates. MLE
+对模型的选择比较敏感，错误的模型选择会导致偏差’</p>
+<h3 id="standard-normal-distribution-标准正态分布">Standard Normal
+Distribution 标准正态分布</h3>
+<p>This is normal distribution with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mn>0</mn><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\mu=0, \sigma^2=1</annotation></semantics></math>
+.</p>
+<p>Probability density function (PDF):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt></mfrac><mi>exp</mi><mo>&#8289;</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mfrac><msup><mi>x</mi><mn>2</mn></msup><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(x)=\frac{1}{\sqrt{2\pi}} \exp\left(-\frac{x^2}{2}\right)</annotation></semantics></math></p>
+<p>Cumulative distributionm function (CDF):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mo>∫</mo><mrow><mi>−</mi><mi>∞</mi></mrow><mi>x</mi></msubsup><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="normal">d</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\Phi(x)=\int_{-\infty}^x f(x) \mathrm{d} x</annotation></semantics></math></p>
+<h3 id="central-limit-theorem-clt-中心极限定理">Central Limit Theorem
+(CLT) 中心极限定理</h3>
+<p>Suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub><mo>,</mo><msub><mi>X</mi><mn>3</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">X_1, X_2, X_3, \dots</annotation></semantics></math>
+is a sequence of i.i.d random variables with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">\mathbb{E}[X_i]=\mu</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">v</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">[</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mi>σ</mi><mo>&lt;</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\mathrm{var}[X_i]=\sigma&lt;\infty</annotation></semantics></math>
+. then as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\rightarrow\infty</annotation></semantics></math>
+, the distribution of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mi>n</mi></msqrt><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>X</mi><mo accent="true">¯</mo></mover><mi>n</mi></msub><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sqrt{n}(\overline{X}_n-\mu)</annotation></semantics></math>
+converges to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{N}(0, \sigma^2)</annotation></semantics></math>
+.</p>
+<p>This implies that, when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sigma&gt;0</annotation></semantics></math>,
+the CDF of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mi>n</mi></msqrt><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>X</mi><mo accent="true">¯</mo></mover><mi>n</mi></msub><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sqrt{n}(\overline{X}_n-\mu)</annotation></semantics></math>
+converge pointwise to the CDF of standard normal CDF, which is :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mi>lim</mi><mo>&#8289;</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msqrt><mi>n</mi></msqrt><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>X</mi><mo accent="true">¯</mo></mover><mi>n</mi></msub><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mi>lim</mi><mo>&#8289;</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><msqrt><mi>n</mi></msqrt><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>X</mi><mo accent="true">¯</mo></mover><mi>n</mi></msub><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><mi>σ</mi></mfrac><mo>≤</mo><mfrac><mi>z</mi><mi>σ</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi mathvariant="normal">Φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>z</mi><mi>σ</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\lim_{n\rightarrow \infty} \mathrm{Pr}(\sqrt{n}(\overline{X}_n-\mu)\leq z)=\lim_{n\rightarrow \infty} \mathrm{Pr}\left(\frac{\sqrt{n}(\overline{X}_n-\mu)}{\sigma}\leq \frac{z}{\sigma}\right)=\Phi\left(\frac{z}{\sigma}\right)
+</annotation></semantics></math></p>
+<h2 id="linear-algebra">Linear Algebra</h2>
+<h3 id="symbols">Symbols</h3>
+<ul>
+<li><p>For a matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mi>n</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{X}\in \mathbb{R}^{m\times n}</annotation></semantics></math>
+,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">X</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathrm{X}^{(k)}</annotation></semantics></math>
+represents the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-th
+colutmn of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">X</mi><annotation encoding="application/x-tex">\mathrm{X}</annotation></semantics></math>
+, which is a vector in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>-dimensional
+vector space.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">I</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\mathrm{I}_n</annotation></semantics></math>
+, an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">n\times n</annotation></semantics></math>
+matrix where the element on the main diagonal is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+otherwise
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</p></li>
+</ul>
+<h3 id="rouch-e-capelli-theorem">Rouch´ e-Capelli Theorem</h3>
+<p>For sytem
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mi>𝐰</mi><mo>=</mo><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">\mathrm{X}\mathbf{w}=\mathbf{y}</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mi>n</mi></mrow></msup><mo>,</mo><mi>𝐰</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo>,</mo><mi>𝐲</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>m</mi></msup></mrow><annotation encoding="application/x-tex">\mathrm{X}\in \mathbb{R}^{m\times n}, \mathbf{w}\in \mathbb{R}^{n}, \mathbf{y}\in \mathbb{R}^m</annotation></semantics></math>
+, where we need to find a solution of variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐰</mi><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math>.</p>
+<p>let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi mathvariant="normal">X</mi><mo accent="true">̃</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi mathvariant="normal">X</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>𝐲</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\tilde{\mathrm{X}}=\begin{bmatrix}\mathrm{X}&amp;\mathbf{y}\end{bmatrix}</annotation></semantics></math>
+be an argumented matrix.</p>
+<ul>
+<li>this system admits a <strong>unique</strong> solution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇔</mo><annotation encoding="application/x-tex">\Longleftrightarrow</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mover><mi mathvariant="normal">X</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">\mathrm{rank}(\mathrm{X})=\mathrm{rank}(\tilde{\mathrm{X}})=n</annotation></semantics></math></li>
+<li>this system has <strong>no</strong> solution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇔</mo><annotation encoding="application/x-tex">\Longleftrightarrow</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mover><mi mathvariant="normal">X</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{rank}(\mathrm{X})&lt;\mathrm{rank}(\tilde{\mathrm{X}})</annotation></semantics></math></li>
+<li>this system has <strong>infinity</strong> many solution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇔</mo><annotation encoding="application/x-tex">\Longleftrightarrow</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">X</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mover><mi mathvariant="normal">X</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">\mathrm{rank}(\mathrm{X})=\mathrm{rank}(\tilde{\mathrm{X}})&lt;n</annotation></semantics></math></li>
+</ul>
+<h3 id="woodbury-formula">Woodbury Formula</h3>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">I</mi><mo>−</mo><mi mathvariant="normal">U</mi><mi mathvariant="normal">V</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>=</mo><mi mathvariant="normal">I</mi><mo>−</mo><mi mathvariant="normal">U</mi><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">I</mi><mo>+</mo><mi mathvariant="normal">V</mi><mi mathvariant="normal">U</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi mathvariant="normal">V</mi></mrow><annotation encoding="application/x-tex">
+(\mathrm{I}-\mathrm{U}\mathrm{V})^{-1}=\mathrm{I}-\mathrm{U}(\mathrm{I}+\mathrm{V}\mathrm{U})^{-1}\mathrm{V}
+</annotation></semantics></math></p>
+<h3 id="least-square-solution">Least Square Solution</h3>
+<p>For a linearly system
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mi>𝐰</mi><mo>=</mo><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">\mathrm{X}\mathbf{w}=\mathbf{y}</annotation></semantics></math>
+, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">X</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>m</mi><mo>×</mo><mi>n</mi></mrow></msup><mo>,</mo><mi>𝐰</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo>,</mo><mi>𝐲</mi><mo>∈</mo><msup><mi>ℝ</mi><mi>m</mi></msup></mrow><annotation encoding="application/x-tex">\mathrm{X}\in \mathbb{R}^{m\times n}, \mathbf{w}\in \mathbb{R}^n, \mathbf{y}\in\mathbb{R}^m</annotation></semantics></math>,
+the least square solution is :</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi mathvariant="normal">X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><msup><mi mathvariant="normal">X</mi><mi>⊤</mi></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">
+\tilde{\mathbf{w}}=\left(\mathrm{X}^\top\mathrm{X}\right)^{-1}\mathrm{X}^\top\mathbf{y}
+</annotation></semantics></math></p>
+<h3 id="unamed-theorems">Unamed Theorems</h3>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">A</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo stretchy="false" form="prefix">(</mo><mrow><msup><mi mathvariant="normal">A</mi><mi mathvariant="normal">⊤</mi></msup><mi mathvariant="normal">A</mi></mrow><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{rank}(\mathrm{A})=\mathrm{rank}(\mathrm{A^\top A})</annotation></semantics></math></li>
+<li>if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">A</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>n</mi><mo>×</mo><mi>n</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{A}\in \mathbb{R}^{n\times n}</annotation></semantics></math>
+is positive or negative definite, then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">A</mi><annotation encoding="application/x-tex">\mathrm{A}</annotation></semantics></math>
+is invertible.</li>
+</ul>
+</body>
+</html>

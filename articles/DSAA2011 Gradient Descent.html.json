@@ -1,0 +1,1 @@
+{"title": "DSAA2011 Gradient Descent", "labels": ["Lecture", "DSAA2011"], "description": "# Gradiant Descent\n\n## Standard GD\n\n$$\\nabla_\\mathbf{w}C(\\mathbf{w})=\\begin{bmatrix}\n\\frac{\\partial "}
