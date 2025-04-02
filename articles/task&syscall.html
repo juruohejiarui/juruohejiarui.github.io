@@ -6,22 +6,213 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>task&syscall</title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
 <h1 id="instructions">Instructions</h1>
-<p>To be compatible for both processors of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙰𝙼𝙳</mtext><annotation encoding="application/x-tex">\texttt{AMD}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙸𝚗𝚝𝚎𝚕</mtext><annotation encoding="application/x-tex">\texttt{Intel}</annotation></semantics></math>, this project will only use <code>syscall/sysret</code>, excepts <code>sysenter/sysexit</code> .</p>
+<p>To be compatible for both processors of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙰𝙼𝙳</mtext><annotation encoding="application/x-tex">\texttt{AMD}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙸𝚗𝚝𝚎𝚕</mtext><annotation encoding="application/x-tex">\texttt{Intel}</annotation></semantics></math>,
+this project will only use <code>syscall/sysret</code>, excepts
+<code>sysenter/sysexit</code> .</p>
 <h2 id="description">Description</h2>
-<p>For <code>syscall</code>, before jumping into the entry function, <code>rip</code> will be stored in <code>rcx</code> and <code>rflags</code> will be in <code>r11</code>. Then, the <code>cs</code> and <code>ss</code> will be loaded corresponding to the value of msr <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{STAR}</annotation></semantics></math>. There is no operation for switching the stack, so, it is our responsibility to manuallly switch the user stack to kernel stack.</p>
-<p>For <code>sysret</code>, it does the opposite thing. This instruction will not switch the stack as well.</p>
+<p>For <code>syscall</code>, before jumping into the entry function,
+<code>rip</code> will be stored in <code>rcx</code> and
+<code>rflags</code> will be in <code>r11</code>. Then, the
+<code>cs</code> and <code>ss</code> will be loaded corresponding to the
+value of msr
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{STAR}</annotation></semantics></math>.
+There is no operation for switching the stack, so, it is our
+responsibility to manuallly switch the user stack to kernel stack.</p>
+<p>For <code>sysret</code>, it does the opposite thing. This instruction
+will not switch the stack as well.</p>
 <h2 id="initialization">Initialization</h2>
-<p>To enable this function, the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>-th bit of msr in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙲𝟶𝟶𝟶𝟶𝟶𝟾𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xC0000080}</annotation></semantics></math> should be set. Then the segment index of <code>cs</code> and <code>ss</code> for user level should be stored in the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mi>…</mi><mn>63</mn></mrow><annotation encoding="application/x-tex">48\dots63</annotation></semantics></math>-th bits of msr called <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{STAR}</annotation></semantics></math>, whose index is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙲𝟶𝟶𝟶𝟶𝟶𝟾𝟷</mtext><annotation encoding="application/x-tex">\texttt{0xC0000081}</annotation></semantics></math>, which that <code>ss</code> will be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><mo stretchy="false" form="prefix">[</mo><mn>48</mn><mi>…</mi><mn>63</mn><mo stretchy="false" form="postfix">]</mo><mo>+</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">\texttt{STAR}[48\dots 63]+8</annotation></semantics></math> and <code>cs</code> will be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><mo stretchy="false" form="prefix">[</mo><mn>48</mn><mi>…</mi><mn>63</mn><mo stretchy="false" form="postfix">]</mo><mo>+</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">\texttt{STAR}[48\dots 63]+16</annotation></semantics></math>. Similarly, the <code>cs</code> and <code>ss</code> of kernel level are stored in the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>…</mi><mn>47</mn></mrow><annotation encoding="application/x-tex">32\dots 47</annotation></semantics></math>-th bits of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{STAR}</annotation></semantics></math> . Then, the pointer to the entry function of syscall, should be stored in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙻𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{LSTAR}</annotation></semantics></math> in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙲𝟶𝟶𝟶𝟶𝟶𝟾𝟸</mtext><annotation encoding="application/x-tex">\texttt{0xC0000082}</annotation></semantics></math> .</p>
+<p>To enable this function, the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>-th
+bit of msr in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙲𝟶𝟶𝟶𝟶𝟶𝟾𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xC0000080}</annotation></semantics></math>
+should be set. Then the segment index of <code>cs</code> and
+<code>ss</code> for user level should be stored in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mi>…</mi><mn>63</mn></mrow><annotation encoding="application/x-tex">48\dots63</annotation></semantics></math>-th
+bits of msr called
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{STAR}</annotation></semantics></math>,
+whose index is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙲𝟶𝟶𝟶𝟶𝟶𝟾𝟷</mtext><annotation encoding="application/x-tex">\texttt{0xC0000081}</annotation></semantics></math>,
+which that <code>ss</code> will be
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><mo stretchy="false" form="prefix">[</mo><mn>48</mn><mi>…</mi><mn>63</mn><mo stretchy="false" form="postfix">]</mo><mo>+</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">\texttt{STAR}[48\dots 63]+8</annotation></semantics></math>
+and <code>cs</code> will be
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><mo stretchy="false" form="prefix">[</mo><mn>48</mn><mi>…</mi><mn>63</mn><mo stretchy="false" form="postfix">]</mo><mo>+</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">\texttt{STAR}[48\dots 63]+16</annotation></semantics></math>.
+Similarly, the <code>cs</code> and <code>ss</code> of kernel level are
+stored in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>…</mi><mn>47</mn></mrow><annotation encoding="application/x-tex">32\dots 47</annotation></semantics></math>-th
+bits of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{STAR}</annotation></semantics></math>
+. Then, the pointer to the entry function of syscall, should be stored
+in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙻𝚂𝚃𝙰𝚁</mtext><annotation encoding="application/x-tex">\texttt{LSTAR}</annotation></semantics></math>
+in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝙲𝟶𝟶𝟶𝟶𝟶𝟾𝟸</mtext><annotation encoding="application/x-tex">\texttt{0xC0000082}</annotation></semantics></math>
+.</p>
 <h1 id="task">Task</h1>
 <h2 id="virtual-address-layout">Virtual Address Layout</h2>
 <table>
@@ -30,55 +221,94 @@
 <col style="width: 53%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: center;">Description</th>
 <th style="text-align: center;">Range</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">Task Structure</td>
-<td style="text-align: center;">Start from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟷𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x0000000000100000}</annotation></semantics></math></td>
+<td style="text-align: center;">Start from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟷𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0x0000000000100000}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">User Code</td>
-<td style="text-align: center;">Up aligns the end of previous to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></td>
+<td style="text-align: center;">Up aligns the end of previous to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">User Data</td>
-<td style="text-align: center;">Up aligns the end of previous to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></td>
+<td style="text-align: center;">Up aligns the end of previous to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">User Rodata</td>
-<td style="text-align: center;">Up aligns the end of previous to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></td>
+<td style="text-align: center;">Up aligns the end of previous to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">User Stack</td>
-<td style="text-align: center;">End at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶𝟶𝟶𝟽𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏</mtext><annotation encoding="application/x-tex">\texttt{0x00007fffffffffff}</annotation></semantics></math></td>
+<td style="text-align: center;">End at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝟶𝟶𝟶𝟶𝟽𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏</mtext><annotation encoding="application/x-tex">\texttt{0x00007fffffffffff}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
-<td style="text-align: center;">Kernel Program <br>(includes data and code)</td>
-<td style="text-align: center;">Start from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝟾𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xffff800000000000}</annotation></semantics></math></td>
+<tr>
+<td style="text-align: center;">Kernel Program <br>(includes data and
+code)</td>
+<td style="text-align: center;">Start from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝟾𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xffff800000000000}</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">DMAS Area</td>
-<td style="text-align: center;">Start from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝟾𝟾𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xffff880000000000}</annotation></semantics></math></td>
+<td style="text-align: center;">Start from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝟾𝟾𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xffff880000000000}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">Interrupt Stack</td>
-<td style="text-align: center;">End at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝟾𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xffffffffff800000}</annotation></semantics></math></td>
+<td style="text-align: center;">End at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝟾𝟶𝟶𝟶𝟶𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xffffffffff800000}</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">Kernel Stack</td>
-<td style="text-align: center;">End at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xfffffffffffffff0}</annotation></semantics></math></td>
+<td style="text-align: center;">End at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝟶𝚡𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝚏𝟶</mtext><annotation encoding="application/x-tex">\texttt{0xfffffffffffffff0}</annotation></semantics></math></td>
 </tr>
 </tbody>
 </table>
 <h2 id="processes">Processes</h2>
 <h3 id="switch-task">Switch Task</h3>
-<p>Initially, we can switch task when time interrupt was triggered. Since the registers and other state are stored in the stack of the current task, it can be used directly to restore this task. Additionally, since the task can only be switched out when the interrupt was trigered, so the next task we need to conduct can be also loaded using the save function. Additionally, the instruction <code>iretq</code> use the <code>cs</code> stored in the stack to recognize which ring should switch to, and in this project, all the interrupt handler will run in Ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>, so, it is not necessary to write different handler function to switch from Ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo></mrow><annotation encoding="application/x-tex">3\rightarrow</annotation></semantics></math> Ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>, Ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>→</mo></mrow><annotation encoding="application/x-tex">1\rightarrow</annotation></semantics></math> Ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> …</p>
-<p>The state storing function and state restoring function are the entry and exit functions of interrupt &amp; exception handlers respectively.</p>
-<p>Furthermore, to reduce the probability of causing bugs, the screen drawing function <code>printStr</code> used in <code>printk</code> can only run in Ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> and all the interrupts will be masked during the process of <code>printStr</code> .</p>
-<p>When a task is in interrupt or trapped state and can not restore itself, for example, accessing an address that is not represented, then because that we masked all the interrupts by default, then we need to enable the interrupts at this time.</p>
+<p>Initially, we can switch task when time interrupt was triggered.
+Since the registers and other state are stored in the stack of the
+current task, it can be used directly to restore this task.
+Additionally, since the task can only be switched out when the interrupt
+was trigered, so the next task we need to conduct can be also loaded
+using the save function. Additionally, the instruction
+<code>iretq</code> use the <code>cs</code> stored in the stack to
+recognize which ring should switch to, and in this project, all the
+interrupt handler will run in Ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>,
+so, it is not necessary to write different handler function to switch
+from Ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo></mrow><annotation encoding="application/x-tex">3\rightarrow</annotation></semantics></math>
+Ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+Ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>→</mo></mrow><annotation encoding="application/x-tex">1\rightarrow</annotation></semantics></math>
+Ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+…</p>
+<p>The state storing function and state restoring function are the entry
+and exit functions of interrupt &amp; exception handlers
+respectively.</p>
+<p>Furthermore, to reduce the probability of causing bugs, the screen
+drawing function <code>printStr</code> used in <code>printk</code> can
+only run in Ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+and all the interrupts will be masked during the process of
+<code>printStr</code> .</p>
+<p>When a task is in interrupt or trapped state and can not restore
+itself, for example, accessing an address that is not represented, then
+because that we masked all the interrupts by default, then we need to
+enable the interrupts at this time.</p>
 </body>
 </html>

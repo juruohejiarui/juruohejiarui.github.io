@@ -6,21 +6,201 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>interrupt&trap</title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
 <h1 id="中断和异常">中断和异常</h1>
-<p>对于 <code>x64</code> 平台，陷阱/异常的处理非常相似，现在以异常为例。当程序触发了某种错误，比如除以 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> 触发的 <code>#DE</code>，这时候就会根据 <code>IDT</code> 中的对应的描述符（每个中断/异常会有对应的编号），提取出中断/异常处理程序的指针，所在的特权级（方便起见，项目的异常处理程序特权级都在 ring <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> ），以及栈顶寄存器 <code>rsp</code> 应当作出的变化（如果 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\texttt{IST}\ne 0</annotation></semantics></math>, 那么使用 <code>TSS</code> 中对应的 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><annotation encoding="application/x-tex">\texttt{IST}</annotation></semantics></math> 项；否则使用 <code>TSS</code> 中对应特权级的 <code>rspX</code> ），更多具体内容，请 《GDT, IDT and TSS》。接着CPU会在切换之后的栈中按顺序压入切换之前的 <code>ss, rsp, rflags, rip, cs</code> ，如果特权级没有变化，那么可能不会压入 <code>ss, rsp</code> ，但是按照本人经验，确实会压入这 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math> 个寄存器。接着，如果这个异常存在错误码，那么还会压入一个描述错误原因的，长度为 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mstyle mathvariant="normal"><mspace width="0.222em"></mspace><mi>b</mi><mi>i</mi><mi>t</mi><mi>s</mi></mstyle></mrow><annotation encoding="application/x-tex">64\mathrm{~bits}</annotation></semantics></math> 的错误码 <code>errorCode</code> . 中断没有错误码。最后，程序会转跳到异常/中断处理程序。</p>
+<p>对于 <code>x64</code>
+平台，陷阱/异常的处理非常相似，现在以异常为例。当程序触发了某种错误，比如除以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+触发的 <code>#DE</code>，这时候就会根据 <code>IDT</code>
+中的对应的描述符（每个中断/异常会有对应的编号），提取出中断/异常处理程序的指针，所在的特权级（方便起见，项目的异常处理程序特权级都在
+ring
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+），以及栈顶寄存器 <code>rsp</code> 应当作出的变化（如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\texttt{IST}\ne 0</annotation></semantics></math>,
+那么使用 <code>TSS</code> 中对应的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝙸𝚂𝚃</mtext><annotation encoding="application/x-tex">\texttt{IST}</annotation></semantics></math>
+项；否则使用 <code>TSS</code> 中对应特权级的 <code>rspX</code>
+），更多具体内容，请 《GDT, IDT and
+TSS》。接着CPU会在切换之后的栈中按顺序压入切换之前的
+<code>ss, rsp, rflags, rip, cs</code>
+，如果特权级没有变化，那么可能不会压入 <code>ss, rsp</code>
+接着，如果这个异常存在错误码，那么还会压入一个描述错误原因的，长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mrow><mspace width="0.222em"></mspace><mi mathvariant="normal">b</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">s</mi></mrow></mrow><annotation encoding="application/x-tex">64\mathrm{~bits}</annotation></semantics></math>
+的错误码 <code>errorCode</code> .
+中断没有错误码。最后，程序会转跳到异常/中断处理程序。</p>
 <p>值得注意的是，在执行完成中断/异常处理程序之前，我们会屏蔽所有的中断。</p>
-<p>某些异常是不可恢复的，比如 <code>#DE</code> ，这时候我们需要让整个进程死循环，同时设置该进程为可回收，然后将运行频率降低（将优先度的数值设置为 <code>Task_Priority_Trapped</code> ），而有些是可以恢复的，比如 <code>#GF</code> 有可能是因为访问了栈中还没有伸展到的位置，这时候只需要分配物理页，即可重新执行产生错误的指令了。</p>
+<p>某些异常是不可恢复的，比如 <code>#DE</code>
+，这时候我们需要让整个进程死循环，同时设置该进程为可回收，然后将运行频率降低（将优先度的数值设置为
+<code>Task_Priority_Trapped</code> ），而有些是可以恢复的，比如
+<code>#GF</code>
+有可能是因为访问了栈中还没有伸展到的位置，这时候只需要分配物理页，即可重新执行产生错误的指令了。</p>
 <h1 id="软中断">软中断</h1>
 <p>对于某一些中断，其处理时间会很长，比如进程的调度，这时候，我们接受不到鼠标和键盘的中断，这并不好，因此我们可以在中断/异常处理程序中处理比较应急的部分（比如应答和重新读取键盘），然后保存下需要的用的信息，然后等到软中断期，继续处理中断遗留下的内容。</p>
-<p>项目中的 <code>interrupt/softirq/</code> 文件夹下的所有文件用于实现软中断的架构和某些内置的软中断（比如计时器），<code>interrupt/entry.S</code> 中的 <code>Intr_retFromIntr</code> 函数中实现了中断程序结束之后转跳到软中断分发函数 <code>Intr_SoftIrq_dispatch</code> 的功能。</p>
+<p>项目中的 <code>interrupt/softirq/</code>
+文件夹下的所有文件用于实现软中断的架构和某些内置的软中断（比如计时器），<code>interrupt/entry.S</code>
+中的 <code>Intr_retFromIntr</code>
+函数中实现了中断程序结束之后转跳到软中断分发函数
+<code>Intr_SoftIrq_dispatch</code> 的功能。</p>
 </body>
 </html>
