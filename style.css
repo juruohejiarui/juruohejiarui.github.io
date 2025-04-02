@@ -8,21 +8,6 @@
 	background-color: #333;
 }
 
-td {
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: break-all;
-}
-
-table {
-	font-family: 'Times New Roman', Times, serif;
-	font-size: 15px;
-	table-layout:fixed;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: break-all;
-}
-
 .topbar-element {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	display: inline-block;
@@ -88,28 +73,4 @@ table {
 	margin-right: 10%;
 	font-size: 15px;
 	font-family: 'Times New Roman', Times, serif;
-}
-code, code * {
-	font-family: 'Consolas', 'ubuntu mono', 'Courier New', Courier, monospace;
-	font-size: 15px;
-}
-h1 {
-	font-size: 24px;
-	font-family: 'Times New Roman', Times, serif;
-}
-h2 {
-	font-size: 22px;
-	font-family: 'Times New Roman', Times, serif;
-}
-h3 {
-	font-size: 20px;
-	font-family: 'Times New Roman', Times, serif;
-}
-h4 {
-	font-size: 18px;
-	font-family: 'Times New Roman', Times, serif;
-}
-math {
-	font-family: 'Cambria Math', 'Times New Roman', Times, serif;
-	font-size: 15px;
 }
